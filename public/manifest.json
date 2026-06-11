@@ -1,0 +1,10 @@
+{
+  "name": "Bolso em Dia",
+  "short_name": "Bolso",
+  "description": "Controle financeiro pessoal mobile-first.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f4ee",
+  "theme_color": "#21594f",
+  "icons": []
+}

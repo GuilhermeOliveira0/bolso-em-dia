@@ -1,0 +1,37 @@
+# language: pt
+Funcionalidade: Responsividade
+  Como usuário do Bolso em Dia
+  Quero usar o sistema no celular e no desktop
+  Para cadastrar e consultar gastos sem dificuldade
+
+  Cenário: Login funciona no celular
+    Dado que acesso o sistema por uma tela pequena
+    Quando abro a tela de login
+    Então os campos devem caber na tela
+    E o botão principal deve ser fácil de tocar
+
+  Cenário: Cadastro de gasto funciona no celular
+    Dado que estou autenticado no sistema
+    E acesso o cadastro de gasto por uma tela pequena
+    Quando preencho valor, data, categoria, tipo e forma de pagamento
+    Então o formulário deve continuar legível
+    E nenhuma informação importante deve ficar sobreposta
+
+  Cenário: Listagem funciona no celular
+    Dado que estou autenticado no sistema
+    E tenho gastos cadastrados
+    Quando abro a listagem em uma tela pequena
+    Então os gastos devem ser legíveis
+    E ações principais devem ser fáceis de tocar
+
+  Cenário: Sistema funciona no desktop
+    Dado que acesso o sistema em uma tela maior
+    Quando uso login, cadastro e listagem
+    Então o conteúdo deve aproveitar melhor o espaço
+    E não deve parecer uma tela mobile esticada
+
+  Cenário: Campos e botões não quebram em telas pequenas
+    Dado que uso o sistema em largura reduzida
+    Quando navego pelas telas principais da primeira fatia
+    Então textos, campos e botões não devem sobrepor outros elementos
+    E nenhum controle importante deve ficar fora da tela

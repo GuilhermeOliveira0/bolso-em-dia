@@ -1,0 +1,500 @@
+:root {
+  --background: #f7f4ee;
+  --surface: #fffdf8;
+  --surface-muted: #eee8dc;
+  --ink: #17211f;
+  --ink-muted: #66716e;
+  --line: rgba(23, 33, 31, 0.13);
+  --brand: #21594f;
+  --brand-strong: #17423a;
+  --danger: #a33a35;
+  --success: #2d6b4f;
+  --focus: #d79c41;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color: var(--ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.9), rgba(247, 244, 238, 0.95)),
+    var(--background);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+a {
+  color: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-shell {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.auth-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.72fr);
+  gap: 20px;
+  align-items: center;
+  width: min(1040px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.auth-copy {
+  width: min(640px, 100%);
+}
+
+.auth-copy h1 {
+  margin-bottom: 16px;
+}
+
+.auth-copy p:not(.eyebrow) {
+  max-width: 560px;
+  margin-bottom: 0;
+  color: var(--ink-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.auth-panel {
+  padding: 18px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-switch {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.setup-alert {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(163, 58, 53, 0.25);
+  border-radius: 8px;
+  background: rgba(163, 58, 53, 0.06);
+  color: var(--danger);
+  padding: 12px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.setup-alert code {
+  display: inline-block;
+  border-radius: 6px;
+  background: rgba(255, 253, 248, 0.8);
+  color: var(--ink);
+  padding: 5px 7px;
+  overflow-wrap: anywhere;
+}
+
+.private-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.72);
+  padding: 12px;
+}
+
+.private-topbar div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.private-topbar span {
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.private-topbar strong {
+  overflow-wrap: anywhere;
+}
+
+.hero {
+  display: grid;
+  min-height: 220px;
+  align-items: end;
+  padding: 32px 0 24px;
+}
+
+.hero > div {
+  width: min(720px, 100%);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--brand);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 14px;
+  font-size: clamp(2.1rem, 11vw, 4.7rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 1.3rem;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.hero p:not(.eyebrow) {
+  max-width: 620px;
+  margin-bottom: 0;
+  color: var(--ink-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 16px 50px rgba(23, 33, 31, 0.08);
+}
+
+.form-panel,
+.list-panel {
+  padding: 18px;
+}
+
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 18px;
+}
+
+.expense-form,
+.field,
+.field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.expense-form {
+  gap: 14px;
+}
+
+.field-group {
+  gap: 14px;
+}
+
+.field {
+  gap: 7px;
+}
+
+.field span {
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.field input,
+.field select {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f4ee;
+  color: var(--ink);
+  padding: 0 12px;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--focus);
+  background: #fffaf0;
+  box-shadow: 0 0 0 3px rgba(215, 156, 65, 0.23);
+}
+
+.field[data-invalid="true"] input,
+.field[data-invalid="true"] select {
+  border-color: rgba(163, 58, 53, 0.65);
+}
+
+.field small {
+  color: var(--danger);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.primary-action {
+  min-height: 50px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fffdf8;
+  font-weight: 800;
+  transition:
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.primary-action:hover {
+  background: var(--brand-strong);
+}
+
+.primary-action:active {
+  transform: translateY(1px);
+}
+
+.secondary-action {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  padding: 0 14px;
+  font-weight: 800;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.secondary-action:hover {
+  border-color: rgba(33, 89, 79, 0.36);
+  background: rgba(33, 89, 79, 0.08);
+}
+
+.success-message {
+  margin: 14px 0 0;
+  border: 1px solid rgba(45, 107, 79, 0.25);
+  border-radius: 8px;
+  background: rgba(45, 107, 79, 0.08);
+  color: var(--success);
+  padding: 11px 12px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.error-message {
+  margin: 0;
+  border: 1px solid rgba(163, 58, 53, 0.25);
+  border-radius: 8px;
+  background: rgba(163, 58, 53, 0.07);
+  color: var(--danger);
+  padding: 11px 12px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.empty-state {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: rgba(238, 232, 220, 0.35);
+  padding: 18px;
+}
+
+.empty-state p {
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+
+.empty-state span {
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.expense-item {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(247, 244, 238, 0.52);
+  padding: 14px;
+}
+
+.expense-item > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.expense-item strong {
+  font-size: 1.3rem;
+  letter-spacing: 0;
+}
+
+.expense-item span {
+  color: var(--ink-muted);
+  line-height: 1.35;
+}
+
+.expense-item dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.expense-item dl div {
+  min-width: 0;
+}
+
+.expense-item dt {
+  color: var(--ink-muted);
+  font-size: 0.73rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.expense-item dd {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 680px) {
+  .app-shell {
+    padding: 32px 24px 56px;
+  }
+
+  .field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding-top: 28px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .app-shell {
+    padding: 18px 12px 32px;
+  }
+
+  .hero {
+    min-height: 190px;
+    padding-top: 18px;
+  }
+
+  .form-panel,
+  .list-panel,
+  .auth-panel {
+    padding: 14px;
+  }
+
+  .auth-shell {
+    padding: 18px 12px 32px;
+  }
+
+  .private-topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .secondary-action {
+    width: 100%;
+  }
+
+  .expense-item dl {
+    grid-template-columns: 1fr;
+  }
+}
