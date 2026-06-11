@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { ExpenseForm } from "@/components/expense/ExpenseForm";
 import { ExpenseList } from "@/components/expense/ExpenseList";
+import { PrivateHeader } from "@/components/navigation/PrivateHeader";
 import { createManualExpenseAction, listExpensesAction } from "@/app/gastos/actions";
 import type { AuthenticatedUser } from "@/lib/users/current-user";
 import type { Expense, ExpenseDraft, ExpenseFormErrors } from "@/types/finance";
@@ -18,10 +19,9 @@ const EMPTY_DRAFT: ExpenseDraft = {
 
 type ManualExpenseAppProps = {
   user: AuthenticatedUser;
-  headerAction?: ReactNode;
 };
 
-export function ManualExpenseApp({ user, headerAction }: ManualExpenseAppProps) {
+export function ManualExpenseApp({ user }: ManualExpenseAppProps) {
   const [draft, setDraft] = useState<ExpenseDraft>(EMPTY_DRAFT);
   const [errors, setErrors] = useState<ExpenseFormErrors>({});
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -91,13 +91,7 @@ export function ManualExpenseApp({ user, headerAction }: ManualExpenseAppProps) 
 
   return (
     <main className="app-shell">
-      <section className="private-topbar" aria-label="Sessão do usuário">
-        <div>
-          <span>Conta</span>
-          <strong>{user.email}</strong>
-        </div>
-        {headerAction}
-      </section>
+      <PrivateHeader activePath="/gastos" email={user.email} name={user.name} />
 
       <section className="hero">
         <div>

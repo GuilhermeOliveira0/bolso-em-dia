@@ -4,11 +4,17 @@ Funcionalidade: Autenticação
   Quero criar conta, entrar e sair do sistema
   Para manter meus dados financeiros privados
 
-  Cenário: Criar conta com e-mail e senha
+  Cenário: Criar conta com nome, e-mail e senha
     Dado que não tenho conta no sistema
-    Quando informo e-mail e senha válidos
+    Quando informo nome, e-mail e senha válidos
     Então o sistema deve criar minha conta
     E deve liberar o acesso à área privada
+
+  Cenário: Mostrar nome do usuário autenticado
+    Dado que minha conta possui um nome cadastrado
+    Quando acesso uma área privada
+    Então o cabeçalho deve mostrar meu nome
+    E não deve usar meu e-mail como identificação principal
 
   Cenário: Fazer login com e-mail e senha
     Dado que tenho uma conta no sistema

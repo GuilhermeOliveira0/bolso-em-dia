@@ -4,6 +4,19 @@
 
 A dashboard deve ajudar o usuário autenticado a entender onde está gastando mais, identificar gastos supérfluos e perceber oportunidades de economia. A leitura deve ser simples, visual, mobile-first e boa no celular e no computador.
 
+## Primeira fatia da dashboard
+
+A versão básica entrega somente:
+
+- filtro por mês e ano;
+- total do período, necessário, lazer e supérfluo;
+- economia possível estimada em 50% do total supérfluo;
+- resumos simples por categoria e tipo;
+- cinco últimos gastos e cinco maiores gastos;
+- estado vazio e acesso ao cadastro manual.
+
+Filtros avançados, gráficos e comparações históricas permanecem para a fatia de dashboard avançada.
+
 ## Cards principais
 
 O topo da dashboard deve mostrar:

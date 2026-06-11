@@ -17,6 +17,7 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/gastos";
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,7 +41,11 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
     const supabase = createClient();
     const result = isLogin
       ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({ email, password });
+      : await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { name: name.trim() } },
+        });
 
     if (result.error) {
       setError(result.error.message);
@@ -67,6 +72,23 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
           <code>NEXT_PUBLIC_SUPABASE_URL</code>
           <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>
         </div>
+      ) : null}
+
+      {!isLogin ? (
+        <label className="field" htmlFor="name">
+          <span>Nome</span>
+          <input
+            autoComplete="name"
+            id="name"
+            maxLength={80}
+            name="name"
+            placeholder="Como você quer ser chamado"
+            type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            required
+          />
+        </label>
       ) : null}
 
       <label className="field" htmlFor="email">

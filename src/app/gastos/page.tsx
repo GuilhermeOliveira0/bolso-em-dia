@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { LogoutButton } from "@/components/auth/LogoutButton";
 import { ManualExpenseApp } from "@/components/expense/ManualExpenseApp";
 import { getAuthenticatedUser } from "@/lib/auth/session";
 
@@ -17,8 +16,8 @@ export default async function ExpensesPage() {
       user={{
         id: session.user.id,
         email: session.user.email,
+        name: session.user.name,
       }}
-      headerAction={<LogoutButton />}
     />
   );
 }

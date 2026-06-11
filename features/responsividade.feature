@@ -30,6 +30,12 @@ Funcionalidade: Responsividade
     Então o conteúdo deve aproveitar melhor o espaço
     E não deve parecer uma tela mobile esticada
 
+  Cenário: Dashboard funciona no celular
+    Dado que estou autenticado no sistema
+    Quando acesso a dashboard em uma tela com 390 pixels de largura
+    Então cards, filtros e listas devem caber sem rolagem horizontal
+    E a navegação para gastos deve continuar acessível
+
   Cenário: Campos e botões não quebram em telas pequenas
     Dado que uso o sistema em largura reduzida
     Quando navego pelas telas principais da primeira fatia

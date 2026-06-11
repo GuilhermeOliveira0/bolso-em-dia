@@ -9,15 +9,16 @@ Funcionalidade: Dashboard financeiro
     Quando acesso a dashboard
     Então o sistema deve exibir o gasto total do mês
 
-  Cenário: Filtrar por categoria
-    Dado que tenho gastos em categorias diferentes
-    Quando filtro a dashboard por uma categoria
-    Então o sistema deve mostrar apenas dados dessa categoria
+  Cenário: Filtrar por mês e ano
+    Dado que tenho gastos em períodos diferentes
+    Quando seleciono um mês e um ano na dashboard
+    Então o sistema deve calcular o resumo apenas com gastos desse período
 
-  Cenário: Filtrar por tipo de gasto
-    Dado que tenho gastos com tipos diferentes
-    Quando filtro a dashboard por tipo de gasto
-    Então o sistema deve atualizar cards, gráficos e rankings com esse tipo
+  Cenário: Visualizar resumos por categoria e tipo
+    Dado que tenho gastos em categorias e tipos diferentes
+    Quando acesso a dashboard
+    Então o sistema deve agrupar os totais por categoria
+    E deve agrupar os totais por tipo de gasto
 
   Cenário: Visualizar gastos supérfluos
     Dado que tenho gastos classificados como Supérfluo
@@ -30,13 +31,19 @@ Funcionalidade: Dashboard financeiro
     Quando acesso o ranking de maiores gastos
     Então o sistema deve listar os maiores gastos primeiro
 
-  Cenário: Visualizar evolução mensal
-    Dado que tenho gastos em meses diferentes
-    Quando acesso o gráfico de evolução mensal
-    Então o sistema deve mostrar a variação de gastos por mês
-
   Cenário: Visualizar economia possível
-    Dado que tenho gastos supérfluos ou limite mensal definido
+    Dado que tenho gastos supérfluos no período selecionado
     Quando acesso a dashboard
-    Então o sistema deve exibir uma estimativa simples de economia possível
+    Então o sistema deve exibir como economia possível 50% do total supérfluo
     E deve deixar claro que é uma sugestão de controle, não uma recomendação financeira profissional
+
+  Cenário: Visualizar estado vazio
+    Dado que não tenho gastos no período selecionado
+    Quando acesso a dashboard
+    Então o sistema deve mostrar uma mensagem amigável
+    E deve oferecer acesso ao cadastro de gasto
+
+  Cenário: Impedir acesso sem autenticação
+    Dado que não estou autenticado
+    Quando tento acessar a dashboard
+    Então devo ser redirecionado para o login
