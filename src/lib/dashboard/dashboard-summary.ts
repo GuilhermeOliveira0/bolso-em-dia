@@ -7,6 +7,11 @@ export type DashboardPeriod = {
   year: number;
 };
 
+export type DashboardDateRange = {
+  startDate: string;
+  endDate: string;
+};
+
 export type DashboardGroup = {
   id: string;
   name: string;
@@ -93,4 +98,21 @@ export function parseDashboardPeriod(
     month: Number.isInteger(month) && month >= 1 && month <= 12 ? month : now.getMonth() + 1,
     year: Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : now.getFullYear(),
   };
+}
+
+export function getDashboardDateRange(period: DashboardPeriod): DashboardDateRange {
+  const startDate = `${period.year}-${String(period.month).padStart(2, "0")}-01`;
+  const nextMonth = period.month === 12 ? 1 : period.month + 1;
+  const nextYear = period.month === 12 ? period.year + 1 : period.year;
+
+  return {
+    startDate,
+    endDate: `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`,
+  };
+}
+
+export function getDashboardYears(selectedYear: number, now = new Date()): number[] {
+  const currentYear = now.getFullYear();
+  return Array.from(new Set([selectedYear, ...Array.from({ length: 6 }, (_, index) => currentYear - index)]))
+    .sort((a, b) => b - a);
 }

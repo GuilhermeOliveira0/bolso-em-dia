@@ -1,7 +1,7 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
-import { SupabaseExpenseRepository, type CreateExpenseResult } from "@/lib/expenses/expense-repository";
+import type { CreateExpenseResult } from "@/lib/expenses/expense-repository";
+import { createServerExpenseRepository } from "@/lib/expenses/server-expense-repository";
 import { getAuthenticatedUser } from "@/lib/auth/session";
 import type { Expense, ExpenseDraft } from "@/types/finance";
 
@@ -16,8 +16,7 @@ export async function listExpensesAction(): Promise<ListExpensesResult> {
     return { ok: false, message: session.message };
   }
 
-  const supabase = await createClient();
-  const repository = new SupabaseExpenseRepository(supabase);
+  const repository = await createServerExpenseRepository();
   const expenses = await repository.listByUser(session.user.id);
 
   return { ok: true, expenses };
@@ -32,8 +31,7 @@ export async function createManualExpenseAction(
     return { ok: false, errors: { amount: session.message } };
   }
 
-  const supabase = await createClient();
-  const repository = new SupabaseExpenseRepository(supabase);
+  const repository = await createServerExpenseRepository();
 
   return repository.createManual(session.user.id, draft);
 }

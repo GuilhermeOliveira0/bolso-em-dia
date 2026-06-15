@@ -9,8 +9,12 @@ export type CreateExpenseResult =
 
 export interface ExpenseRepository {
   listByUser(userId: string): Promise<Expense[]>;
+  listByUserInDateRange(userId: string, startDate: string, endDate: string): Promise<Expense[]>;
   createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult>;
 }
+
+const EXPENSE_COLUMNS =
+  "id,user_id,amount,description,date,category,expense_type,payment_method,source,created_at,updated_at";
 
 function createExpenseId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -46,8 +50,33 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
 
     const { data, error } = await this.supabase
       .from("expenses")
-      .select("*")
+      .select(EXPENSE_COLUMNS)
       .eq("user_id", userId)
+      .order("date", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw new Error("Não foi possível listar seus gastos agora.");
+    }
+
+    return (data ?? []).map(mapExpenseRow);
+  }
+
+  async listByUserInDateRange(
+    userId: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<Expense[]> {
+    if (!userId) {
+      return [];
+    }
+
+    const { data, error } = await this.supabase
+      .from("expenses")
+      .select(EXPENSE_COLUMNS)
+      .eq("user_id", userId)
+      .gte("date", startDate)
+      .lt("date", endDate)
       .order("date", { ascending: false })
       .order("created_at", { ascending: false });
 
@@ -85,7 +114,7 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
         created_at: now,
         updated_at: now,
       })
-      .select("*")
+      .select(EXPENSE_COLUMNS)
       .single();
 
     if (error || !data) {
@@ -96,73 +125,5 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
     }
 
     return { ok: true, expense: mapExpenseRow(data) };
-  }
-}
-
-const LEGACY_STORAGE_KEY = "bolso-em-dia:expenses:v1";
-
-// Legado de desenvolvimento: nao usar como persistencia segura multiusuario.
-function readLegacyExpenses(): Expense[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
-
-  try {
-    const raw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
-    if (!raw) {
-      return [];
-    }
-
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeLegacyExpenses(expenses: Expense[]): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  window.localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(expenses));
-}
-
-export class LegacyLocalExpenseRepository implements ExpenseRepository {
-  async listByUser(userId: string): Promise<Expense[]> {
-    return readLegacyExpenses()
-      .filter((expense) => expense.userId === userId)
-      .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
-  }
-
-  async createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult> {
-    const validation = validateExpenseDraft(draft);
-
-    if (!validation.ok) {
-      return { ok: false, errors: validation.errors };
-    }
-
-    if (!userId) {
-      return { ok: false, errors: { amount: "Usuário obrigatório para salvar gasto." } };
-    }
-
-    const now = new Date().toISOString();
-    const expense: Expense = {
-      id: createExpenseId(),
-      userId,
-      amountInCents: validation.amountInCents,
-      description: validation.data.description,
-      date: validation.data.date,
-      categoryId: validation.data.categoryId,
-      expenseTypeId: validation.data.expenseTypeId,
-      paymentMethod: validation.data.paymentMethod,
-      source: "manual",
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    writeLegacyExpenses([...readLegacyExpenses(), expense]);
-
-    return { ok: true, expense };
   }
 }

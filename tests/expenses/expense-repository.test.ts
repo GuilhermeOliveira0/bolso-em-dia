@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { LegacyLocalExpenseRepository } from "@/lib/expenses/expense-repository";
+import { LegacyLocalExpenseRepository } from "@/lib/expenses/legacy-local-expense-repository";
 import type { ExpenseDraft } from "@/types/finance";
 
 const validDraft: ExpenseDraft = {

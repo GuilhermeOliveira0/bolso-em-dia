@@ -137,6 +137,8 @@ Service worker ou cache futuro não deve armazenar respostas privadas de forma c
 - OCR deve gerar uma sugestão revisável, não um lançamento automático.
 - A primeira fatia corrigida deve incluir autenticação e isolamento por usuário antes de tratar cadastro manual como completo.
 - O armazenamento local temporário não é seguro para multiusuário e só pode ser usado em desenvolvimento.
+- Páginas e Server Actions devem obter o repositório financeiro por uma fábrica server-side, mantendo detalhes do Supabase fora da interface.
+- Consultas da dashboard devem filtrar `user_id` e período no banco e selecionar somente as colunas necessárias.
 
 ## Assumptions
 

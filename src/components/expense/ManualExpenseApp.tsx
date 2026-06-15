@@ -78,13 +78,12 @@ export function ManualExpenseApp({ user }: ManualExpenseAppProps) {
 
     setDraft({ ...EMPTY_DRAFT, date: new Date().toISOString().slice(0, 10) });
     setErrors({});
-    const listResult = await listExpensesAction();
-    if (listResult.ok) {
-      setExpenses(listResult.expenses);
-      setLoadError("");
-    } else {
-      setLoadError(listResult.message);
-    }
+    setExpenses((currentExpenses) =>
+      [result.expense, ...currentExpenses].sort(
+        (a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt),
+      ),
+    );
+    setLoadError("");
     setMessage("Gasto salvo e exibido na listagem.");
     setIsSubmitting(false);
   }

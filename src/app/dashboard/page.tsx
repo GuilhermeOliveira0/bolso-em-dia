@@ -3,9 +3,13 @@ import { redirect } from "next/navigation";
 import { DashboardView } from "@/components/dashboard/DashboardView";
 import { PrivateHeader } from "@/components/navigation/PrivateHeader";
 import { getAuthenticatedUser } from "@/lib/auth/session";
-import { buildDashboardSummary, parseDashboardPeriod } from "@/lib/dashboard/dashboard-summary";
-import { SupabaseExpenseRepository } from "@/lib/expenses/expense-repository";
-import { createClient } from "@/lib/supabase/server";
+import {
+  buildDashboardSummary,
+  getDashboardDateRange,
+  getDashboardYears,
+  parseDashboardPeriod,
+} from "@/lib/dashboard/dashboard-summary";
+import { createServerExpenseRepository } from "@/lib/expenses/server-expense-repository";
 
 export const dynamic = "force-dynamic";
 
@@ -19,11 +23,15 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const period = parseDashboardPeriod(query.month, query.year);
 
   try {
-    const supabase = await createClient();
-    const repository = new SupabaseExpenseRepository(supabase);
-    const expenses = await repository.listByUser(session.user.id);
+    const repository = await createServerExpenseRepository();
+    const { startDate, endDate } = getDashboardDateRange(period);
+    const expenses = await repository.listByUserInDateRange(
+      session.user.id,
+      startDate,
+      endDate,
+    );
     const summary = buildDashboardSummary(expenses, period);
-    const availableYears = Array.from(new Set([period.year, new Date().getFullYear(), ...expenses.map((expense) => Number(expense.date.slice(0, 4)))])).sort((a, b) => b - a);
+    const availableYears = getDashboardYears(period.year);
     return <DashboardView availableYears={availableYears} email={session.user.email} name={session.user.name} period={period} summary={summary} />;
   } catch {
     return (

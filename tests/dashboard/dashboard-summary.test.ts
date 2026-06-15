@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { buildDashboardSummary } from "@/lib/dashboard/dashboard-summary";
+import {
+  buildDashboardSummary,
+  getDashboardDateRange,
+  getDashboardYears,
+} from "@/lib/dashboard/dashboard-summary";
 import type { Expense } from "@/types/finance";
 
 function expense(overrides: Partial<Expense>): Expense {
@@ -78,5 +82,22 @@ describe("buildDashboardSummary", () => {
     expect(summary.byCategory).toEqual([]);
     expect(summary.byType).toEqual([]);
     expect(summary.topExpenses).toEqual([]);
+  });
+
+  it("builds an exclusive date range for regular months and December", () => {
+    expect(getDashboardDateRange({ month: 6, year: 2026 })).toEqual({
+      startDate: "2026-06-01",
+      endDate: "2026-07-01",
+    });
+    expect(getDashboardDateRange({ month: 12, year: 2026 })).toEqual({
+      startDate: "2026-12-01",
+      endDate: "2027-01-01",
+    });
+  });
+
+  it("offers recent years while preserving an older selected year", () => {
+    expect(getDashboardYears(2020, new Date("2026-06-11T12:00:00Z"))).toEqual([
+      2026, 2025, 2024, 2023, 2022, 2021, 2020,
+    ]);
   });
 });
