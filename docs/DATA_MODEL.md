@@ -175,16 +175,18 @@ Classificar o tipo de gasto para ajudar o usuário a entender prioridade e compo
 
 ### Objetivo
 
-Representar o comprovante enviado pelo usuário e o resultado de leitura OCR.
+Representar o comprovante enviado pelo usuário. Na fatia atual, guarda apenas imagem e metadados; OCR fica para a próxima fatia.
 
 ### Campos principais
 
 - `id`: identificador único.
 - `user_id`: dono do comprovante.
+- `expense_id`: gasto relacionado, opcional por enquanto.
 - `file_path`: caminho privado no storage.
-- `file_type`: imagem ou PDF.
+- `file_name`: nome original higienizado.
+- `file_type`: MIME type da imagem.
 - `file_size`: tamanho do arquivo.
-- `ocr_status`: pendente, processando, concluído ou erro.
+- `status`: status do comprovante, começando com `uploaded`.
 - `extracted_amount`: valor extraído.
 - `extracted_date`: data extraída.
 - `extracted_receiver`: recebedor extraído.
@@ -194,6 +196,7 @@ Representar o comprovante enviado pelo usuário e o resultado de leitura OCR.
 - `confidence`: confiança geral.
 - `fields_need_review`: campos com baixa confiança.
 - `created_at`: data de envio.
+- `updated_at`: data da última alteração.
 
 ### Relacionamentos
 
@@ -203,12 +206,16 @@ Representar o comprovante enviado pelo usuário e o resultado de leitura OCR.
 ### Regras importantes
 
 - Comprovante não cria gasto automaticamente.
+- Nesta fatia, aceitar somente `image/png`, `image/jpeg` e `image/webp`.
+- Nesta fatia, recusar arquivos acima de 5 MB.
+- PDF e OCR ficam para fatias futuras.
 - Campos de baixa confiança devem ser revisados.
 - OCR com erro deve permitir correção manual ou novo envio.
 
 ### Segurança
 
 - Arquivo deve ficar em storage privado.
+- Caminho deve ser organizado por usuário: `user_id/receipt_id/nome-do-arquivo.png`.
 - Texto bruto do comprovante deve ser evitado ou minimizado.
 - Logs não devem conter dados completos do comprovante.
 

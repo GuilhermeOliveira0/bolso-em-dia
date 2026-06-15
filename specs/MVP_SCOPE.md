@@ -39,6 +39,7 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 
 - Deploy.
 - Integração real com serviço de OCR.
+- PDF no upload de comprovantes.
 - Aplicativo nativo.
 - Cobrança ou assinatura.
 - Dashboard avançada.

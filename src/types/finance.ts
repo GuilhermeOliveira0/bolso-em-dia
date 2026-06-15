@@ -1,4 +1,5 @@
 export type ExpenseSource = "manual";
+export type ReceiptStatus = "uploaded";
 
 export type User = {
   id: string;
@@ -50,3 +51,20 @@ export type ExpenseDraft = {
 };
 
 export type ExpenseFormErrors = Partial<Record<keyof ExpenseDraft, string>>;
+
+export type Receipt = {
+  id: string;
+  userId: string;
+  expenseId: string | null;
+  filePath: string;
+  fileName: string;
+  fileType: "image/png" | "image/jpeg" | "image/webp";
+  fileSize: number;
+  status: ReceiptStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ReceiptWithPreview = Receipt & {
+  previewUrl: string | null;
+};

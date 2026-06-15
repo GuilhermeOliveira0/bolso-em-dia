@@ -36,6 +36,12 @@ Funcionalidade: Responsividade
     Então cards, filtros e listas devem caber sem rolagem horizontal
     E a navegação para gastos deve continuar acessível
 
+  Cenário: Upload de comprovante funciona no celular
+    Dado que estou autenticado no sistema
+    Quando acesso a área de comprovantes em uma tela pequena
+    Então o campo de imagem e o botão de envio devem ser fáceis de tocar
+    E a listagem de comprovantes deve aparecer em cards sem rolagem horizontal
+
   Cenário: Campos e botões não quebram em telas pequenas
     Dado que uso o sistema em largura reduzida
     Quando navego pelas telas principais da primeira fatia

@@ -94,19 +94,28 @@ Caso Supabase seja usado:
 
 ## Upload permitido
 
-Tipos permitidos na primeira versão:
+Tipos permitidos na fatia atual de upload de imagem:
 
 - PNG;
 - JPG;
 - JPEG;
 - WEBP;
-- PDF.
 
-Limite inicial sugerido:
+PDF fica para uma fatia futura.
 
-- até 10 MB por arquivo.
+Limite inicial:
 
-Esse limite pode ser ajustado depois com base no OCR escolhido e nos custos de storage.
+- até 5 MB por imagem.
+
+Regras:
+
+- validar tipo e tamanho no servidor;
+- salvar em bucket privado;
+- organizar arquivos por `user_id`;
+- usar RLS em `receipts` e políticas de Storage;
+- não criar gasto automaticamente;
+- não rodar OCR nesta fatia;
+- não registrar conteúdo do comprovante em logs.
 
 ## Riscos principais
 

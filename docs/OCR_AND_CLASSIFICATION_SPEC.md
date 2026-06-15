@@ -6,6 +6,22 @@ Permitir que o usuário envie comprovante Pix por imagem ou PDF, leia os dados a
 
 ## Upload do comprovante Pix
 
+### Fatia atual: upload seguro de imagem
+
+Nesta fatia, o sistema deve permitir apenas upload de imagem de comprovante Pix, sem OCR e sem criação automática de gasto.
+
+- formatos aceitos: PNG, JPG/JPEG e WEBP;
+- limite: 5 MB por imagem;
+- PDF fica para uma fatia futura;
+- OCR fica para a próxima fatia;
+- arquivo deve ficar em bucket privado;
+- o caminho deve ser organizado por `user_id`;
+- o sistema deve salvar metadados do comprovante com status `uploaded`;
+- o comprovante pode se vincular a um gasto no futuro, mas `expense_id` é opcional agora;
+- nenhum gasto deve ser criado automaticamente.
+
+### Fluxo completo futuro com OCR
+
 1. O usuário escolhe um arquivo.
 2. O sistema valida tipo e tamanho.
 3. O arquivo é enviado para armazenamento privado.

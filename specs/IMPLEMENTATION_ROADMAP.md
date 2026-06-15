@@ -120,18 +120,19 @@ Mostrar um resumo inicial dos gastos do mês do usuário autenticado.
 - Não criar rankings completos.
 - Não criar OCR.
 
-## Fatia 3: Upload de comprovante Pix
+## Fatia 3: Upload seguro de imagem de comprovante Pix
 
 ### Objetivo
 
-Permitir envio seguro de imagem ou PDF de comprovante Pix.
+Permitir envio seguro de imagem de comprovante Pix, sem OCR e sem criação automática de gasto.
 
 ### Escopo
 
-- Upload.
-- Validação de arquivo.
-- Armazenamento seguro.
-- Estado de processamento.
+- Upload de PNG, JPG/JPEG e WEBP.
+- Validação server-side de tipo e limite de 5 MB.
+- Armazenamento em bucket privado.
+- Metadados em `receipts` com status `uploaded`.
+- Listagem e preview privado por usuário autenticado.
 
 ### Arquivos prováveis
 
@@ -143,11 +144,12 @@ Permitir envio seguro de imagem ou PDF de comprovante Pix.
 
 ### Critérios de aceite
 
-- Usuário envia PNG, JPG, JPEG, WEBP ou PDF.
+- Usuário envia PNG, JPG, JPEG ou WEBP.
 - Sistema rejeita tipo inválido.
 - Sistema rejeita arquivo acima do limite definido.
 - Arquivo fica privado.
-- Registro mostra status de processamento.
+- Registro mostra status `uploaded`.
+- Nenhum gasto é criado automaticamente.
 
 ### Critérios de verificação
 
@@ -164,6 +166,8 @@ Permitir envio seguro de imagem ou PDF de comprovante Pix.
 ### Não fazer nesta fatia
 
 - Não salvar gasto automaticamente.
+- Não aceitar PDF ainda.
+- Não implementar OCR ainda.
 - Não implementar classificação avançada.
 - Não criar dashboard avançada.
 
