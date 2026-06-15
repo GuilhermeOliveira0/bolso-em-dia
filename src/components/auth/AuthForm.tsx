@@ -64,7 +64,7 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
+    <form className="auth-form" method="post" onSubmit={handleSubmit}>
       {!isConfigured ? (
         <div className="setup-alert" role="alert">
           <strong>Configuração necessária</strong>

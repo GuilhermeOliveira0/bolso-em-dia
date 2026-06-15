@@ -33,7 +33,7 @@ export function ReceiptUploadForm() {
         <h2 id="receipt-upload-title">Enviar imagem</h2>
       </div>
 
-      <form ref={formRef} className="receipt-form" onSubmit={handleSubmit}>
+      <form ref={formRef} className="receipt-form" encType="multipart/form-data" method="post" onSubmit={handleSubmit}>
         <label className="field">
           <span>Imagem do comprovante</span>
           <input
