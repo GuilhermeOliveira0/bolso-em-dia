@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { uploadReceiptAction, type UploadReceiptResult } from "@/app/comprovantes/actions";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { MAX_RECEIPT_FILE_SIZE_BYTES } from "@/lib/receipts/receipt-file-schema";
 
 export function ReceiptUploadForm() {
@@ -23,7 +24,7 @@ export function ReceiptUploadForm() {
       } catch {
         actionResult = {
           ok: false,
-          message: "Não foi possível enviar o comprovante. Tente novamente.",
+          message: "Nao foi possivel enviar o comprovante. Tente novamente.",
         };
       }
 
@@ -37,33 +38,30 @@ export function ReceiptUploadForm() {
   }
 
   return (
-    <section className="panel receipt-upload-panel" aria-labelledby="receipt-upload-title">
-      <div className="section-heading">
-        <p className="eyebrow">Comprovante Pix</p>
-        <h2 id="receipt-upload-title">Enviar imagem</h2>
-        <p>Guarde a imagem do comprovante sem criar um gasto automaticamente.</p>
-      </div>
-
-      <form ref={formRef} className="receipt-form" encType="multipart/form-data" method="post" onSubmit={handleSubmit}>
+    <section
+      aria-labelledby="receipt-upload-title"
+      className="panel receipt-upload-panel prototype-upload-card"
+    >
+      <form
+        ref={formRef}
+        className="receipt-form"
+        encType="multipart/form-data"
+        method="post"
+        onSubmit={handleSubmit}
+      >
         <div className="receipt-dropzone">
-          <div className="receipt-dropzone-icon" aria-hidden="true" />
+          <AppIcon className="app-icon upload-icon" name="receipt" />
+          <h2 id="receipt-upload-title">Anexar Comprovante</h2>
+          <p>Arraste e solte seu comprovante Pix aqui ou clique para selecionar o arquivo.</p>
           <label className="field">
             <span>Imagem do comprovante</span>
-            <input
-              accept="image/png,image/jpeg,image/webp"
-              name="receipt"
-              required
-              type="file"
-            />
+            <input accept="image/png,image/jpeg,image/webp" name="receipt" required type="file" />
           </label>
-          <p className="receipt-help">
-            Selecione uma imagem do comprovante Pix para manter o arquivo privado na sua conta.
-          </p>
         </div>
 
         <p className="info-message">
-          OCR ainda não está ativo. PNG, JPG, JPEG ou WEBP até{" "}
-          {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
+          <strong>Leitura Inteligente:</strong> OCR ainda nao esta ativo. PNG, JPG, JPEG ou WEBP
+          ate {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
         </p>
 
         {result ? (

@@ -23,10 +23,15 @@ describe("Next.js Supabase proxy", () => {
 
   it("skips framework assets while protecting application routes", () => {
     const proxySource = readProxySource();
+    const middlewareSource = readFileSync(
+      join(process.cwd(), "src", "lib", "supabase", "middleware.ts"),
+      "utf8",
+    );
 
     expect(proxySource).toContain("matcher");
     expect(proxySource).toContain("_next/static");
     expect(proxySource).toContain("_next/image");
     expect(proxySource).toContain("favicon.ico");
+    expect(middlewareSource).toContain('"/extrato"');
   });
 });

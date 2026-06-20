@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PrivateHeader } from "@/components/navigation/PrivateHeader";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { getCategoryName } from "@/lib/categories/default-categories";
 import type {
   DashboardGroup,
@@ -13,7 +14,7 @@ import type { Expense } from "@/types/finance";
 const MONTHS = [
   "Janeiro",
   "Fevereiro",
-  "Março",
+  "Marco",
   "Abril",
   "Maio",
   "Junho",
@@ -34,22 +35,27 @@ type DashboardViewProps = {
 };
 
 export function DashboardView({ email, name, period, summary, availableYears }: DashboardViewProps) {
-  const latestExpenses = summary.expenses.slice(0, 5);
+  const latestExpenses = summary.expenses.slice(0, 3);
 
   return (
     <main className="app-shell dashboard-shell">
       <PrivateHeader activePath="/dashboard" email={email} name={name} />
+
+      <section className="dashboard-mobile-head">
+        <p>Bolso em Dia</p>
+        <h1>Ola, {name}</h1>
+      </section>
+
+      <section className="mobile-total-card">
+        <span>Gasto Total do Mes</span>
+        <strong>{formatCentsToCurrency(summary.totalInCents)}</strong>
+        <small>
+          <AppIcon className="app-icon" name="check" />
+          No controle
+        </small>
+      </section>
+
       <section className="dashboard-intro">
-        <div>
-          <p className="eyebrow">Resumo financeiro</p>
-          <h1>Seu mês em foco.</h1>
-          <p>Veja rapidamente o total, os tipos de gasto e onde existe economia possível.</p>
-          <div className="quick-actions" aria-label="Indicadores acompanhados">
-            <span className="quick-pill">Total do período</span>
-            <span className="quick-pill">Ranking de gastos</span>
-            <span className="quick-pill">Economia possível</span>
-          </div>
-        </div>
         <form className="period-filter" method="get">
           <label>
             <span>Mes</span>
@@ -79,41 +85,53 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
 
       {summary.expenseCount === 0 ? (
         <section className="dashboard-empty" aria-live="polite">
-          <p>
-            Nenhum gasto encontrado em {MONTHS[period.month - 1].toLowerCase()} de{" "}
-            {period.year}.
-          </p>
-          <span>Cadastre um gasto ou escolha outro período para visualizar seu resumo.</span>
+          <p>Nenhum gasto encontrado em {MONTHS[period.month - 1]} de {period.year}.</p>
+          <span>Cadastre um gasto para visualizar seu resumo financeiro.</span>
           <Link className="primary-link" href="/lancamentos">
-            Abrir lançamentos
+            Cadastrar despesa
           </Link>
         </section>
       ) : (
         <>
           <section className="metric-grid" aria-label="Indicadores do periodo">
             <MetricCard
-              description={`${summary.expenseCount} lançamento${summary.expenseCount === 1 ? "" : "s"} no período.`}
-              label="Total do mês"
+              icon="wallet"
+              label="Total do Mes"
               tone="primary"
               value={summary.totalInCents}
             />
-            <MetricCard label="Necessário" value={summary.necessaryInCents} />
-            <MetricCard label="Lazer" value={summary.leisureInCents} />
-            <MetricCard label="Supérfluo" tone="accent" value={summary.superfluousInCents} />
             <MetricCard
-              description="Estimativa de 50% dos gastos supérfluos."
-              label="Economia possível"
+              icon="home"
+              label="Necessario"
+              tone="blue"
+              value={summary.necessaryInCents}
+            />
+            <MetricCard
+              icon="martini"
+              label="Lazer"
+              tone="purple"
+              value={summary.leisureInCents}
+            />
+            <MetricCard
+              icon="shopping-bag"
+              label="Superfluo"
+              tone="accent"
+              value={summary.superfluousInCents}
+            />
+            <MetricCard
+              icon="lightbulb"
+              label="Economia"
               tone="success"
               value={summary.possibleSavingsInCents}
             />
           </section>
+
           <section className="dashboard-grid">
-            <SummaryList groups={summary.byCategory} title="Gastos por categoria" />
-            <SummaryList groups={summary.byType} title="Gastos por tipo" />
-          </section>
-          <section className="dashboard-grid dashboard-lists">
-            <ExpenseRanking expenses={latestExpenses} title="Últimos gastos" />
-            <ExpenseRanking expenses={summary.topExpenses} title="Maiores gastos" />
+            <div className="dashboard-main-column">
+              <AlertCard savingsInCents={summary.possibleSavingsInCents} />
+              <SummaryList groups={summary.byCategory} title="Resumo por Categoria" />
+            </div>
+            <ExpenseRanking expenses={latestExpenses} title="Ultimos Gastos" />
           </section>
         </>
       )}
@@ -124,24 +142,42 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
 function MetricCard({
   label,
   value,
-  description,
+  icon,
   tone = "default",
 }: {
   label: string;
   value: number;
-  description?: string;
-  tone?: "default" | "primary" | "accent" | "success";
+  icon: "wallet" | "home" | "martini" | "shopping-bag" | "lightbulb";
+  tone?: "default" | "primary" | "accent" | "success" | "blue" | "purple";
 }) {
   return (
     <article className={`metric-card is-${tone}`}>
-      <span>{label}</span>
+      <span className="metric-header">
+        <b>{label}</b>
+        <AppIcon className="app-icon" name={icon} />
+      </span>
       <strong>{formatCentsToCurrency(value)}</strong>
-      {tone === "primary" ? (
-        <div className="metric-bar" aria-hidden="true">
-          <span />
+    </article>
+  );
+}
+
+function AlertCard({ savingsInCents }: { savingsInCents: number }) {
+  return (
+    <article className="dashboard-panel">
+      <h2>
+        <AppIcon className="app-icon" name="bell" />
+        Alertas Inteligentes
+      </h2>
+      <div className="alert-item">
+        <AppIcon className="app-icon" name="lightbulb" />
+        <div>
+          <h3>Atencao aos Superfluos</h3>
+          <p>
+            Reduzindo parte dos gastos nao essenciais, voce pode economizar ate{" "}
+            {formatCentsToCurrency(savingsInCents)} neste periodo.
+          </p>
         </div>
-      ) : null}
-      {description ? <small>{description}</small> : null}
+      </div>
     </article>
   );
 }
@@ -150,16 +186,19 @@ function SummaryList({ groups, title }: { groups: DashboardGroup[]; title: strin
   const highestValue = groups[0]?.totalInCents ?? 0;
   return (
     <article className="dashboard-panel">
-      <h2>{title}</h2>
+      <h2>
+        <AppIcon className="app-icon" name="chart" />
+        {title}
+      </h2>
       <ul className="summary-list">
-        {groups.map((group) => (
+        {groups.slice(0, 4).map((group) => (
           <li key={group.id}>
             <div>
               <span>{group.name}</span>
               <strong>{formatCentsToCurrency(group.totalInCents)}</strong>
             </div>
             <div className="summary-track" aria-hidden="true">
-              <span style={{ width: `${(group.totalInCents / highestValue) * 100}%` }} />
+              <span style={{ width: `${highestValue ? (group.totalInCents / highestValue) * 100 : 0}%` }} />
             </div>
           </li>
         ))}
@@ -170,26 +209,24 @@ function SummaryList({ groups, title }: { groups: DashboardGroup[]; title: strin
 
 function ExpenseRanking({ expenses, title }: { expenses: Expense[]; title: string }) {
   return (
-    <article className="dashboard-panel">
-      <h2>{title}</h2>
+    <article className="dashboard-panel latest-panel">
+      <h2>
+        <AppIcon className="app-icon" name="list" />
+        {title}
+      </h2>
       <ol className="ranking-list">
         {expenses.map((expense) => (
           <li key={expense.id}>
             <div>
-              <strong>{expense.description || "Gasto sem descrição"}</strong>
+              <strong>{expense.description || "Gasto sem descricao"}</strong>
               <span>
-                {getCategoryName(expense.categoryId)} |{" "}
-                {getExpenseTypeName(expense.expenseTypeId)} | {formatDate(expense.date)}
+                {getCategoryName(expense.categoryId)} | {getExpenseTypeName(expense.expenseTypeId)}
               </span>
             </div>
-            <b>{formatCentsToCurrency(expense.amountInCents)}</b>
+            <b>- {formatCentsToCurrency(expense.amountInCents)}</b>
           </li>
         ))}
       </ol>
     </article>
   );
-}
-
-function formatDate(date: string): string {
-  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${date}T00:00:00`));
 }

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ReceiptUploadForm } from "@/components/receipts/ReceiptUploadForm";
 import { uploadReceiptAction } from "@/app/comprovantes/actions";
+import { ReceiptUploadForm } from "@/components/receipts/ReceiptUploadForm";
 
 const refresh = vi.fn();
 
@@ -30,7 +30,7 @@ describe("ReceiptUploadForm", () => {
     fireEvent.submit(screen.getByRole("button", { name: "Enviar comprovante" }).closest("form")!);
 
     expect(
-      await screen.findByText("Não foi possível enviar o comprovante. Tente novamente."),
+      await screen.findByText("Nao foi possivel enviar o comprovante. Tente novamente."),
     ).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByLabelText("Imagem do comprovante")).toBeInTheDocument();
