@@ -11,9 +11,16 @@ export function AuthPageShell({ eyebrow, title, description, children }: AuthPag
   return (
     <main className="auth-shell">
       <section className="auth-copy">
-        <p className="eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
-        <p>{description}</p>
+        <div>
+          <p className="eyebrow">{eyebrow}</p>
+          <h1>{title}</h1>
+          <p>{description}</p>
+          <div className="auth-benefits" aria-label="Beneficios do Bolso em Dia">
+            <span>Dados privados</span>
+            <span>Gastos por usuario</span>
+            <span>Uso rapido no celular</span>
+          </div>
+        </div>
       </section>
       <section className="panel auth-panel">{children}</section>
     </main>

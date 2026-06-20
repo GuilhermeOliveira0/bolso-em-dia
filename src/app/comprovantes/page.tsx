@@ -39,9 +39,14 @@ export default async function ReceiptsPage() {
             <p className="eyebrow">Comprovantes</p>
             <h1>Guarde seus comprovantes Pix.</h1>
             <p>
-              Envie apenas imagens nesta fatia. O arquivo fica privado e nenhum gasto e criado
-              automaticamente.
+              Envie apenas imagens nesta fatia. O arquivo fica privado, o OCR ainda nao
+              esta ativo e nenhum gasto e criado automaticamente.
             </p>
+            <div className="quick-actions" aria-label="Garantias desta area">
+              <span className="quick-pill">Bucket privado</span>
+              <span className="quick-pill">Imagem ate 5 MB</span>
+              <span className="quick-pill">Sem gasto automatico</span>
+            </div>
           </div>
           <Link className="primary-link" href="/gastos">
             Cadastrar gasto

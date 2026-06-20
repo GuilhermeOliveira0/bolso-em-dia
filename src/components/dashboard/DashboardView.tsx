@@ -13,7 +13,7 @@ import type { Expense } from "@/types/finance";
 const MONTHS = [
   "Janeiro",
   "Fevereiro",
-  "Março",
+  "Marco",
   "Abril",
   "Maio",
   "Junho",
@@ -42,12 +42,17 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
       <section className="dashboard-intro">
         <div>
           <p className="eyebrow">Resumo financeiro</p>
-          <h1>Dashboard</h1>
-          <p>Veja rapidamente onde o dinheiro foi usado no período selecionado.</p>
+          <h1>Seu mes em foco.</h1>
+          <p>Veja rapidamente o total, os tipos de gasto e onde existe economia possivel.</p>
+          <div className="quick-actions" aria-label="Indicadores acompanhados">
+            <span className="quick-pill">Total do periodo</span>
+            <span className="quick-pill">Ranking de gastos</span>
+            <span className="quick-pill">Economia possivel</span>
+          </div>
         </div>
         <form className="period-filter" method="get">
           <label>
-            <span>Mês</span>
+            <span>Mes</span>
             <select defaultValue={period.month} name="month">
               {MONTHS.map((month, index) => (
                 <option key={month} value={index + 1}>
@@ -78,21 +83,27 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
             Nenhum gasto encontrado em {MONTHS[period.month - 1].toLowerCase()} de{" "}
             {period.year}.
           </p>
-          <span>Cadastre um gasto ou escolha outro período para visualizar seu resumo.</span>
+          <span>Cadastre um gasto ou escolha outro periodo para visualizar seu resumo.</span>
           <Link className="primary-link" href="/gastos">
             Cadastrar gasto
           </Link>
         </section>
       ) : (
         <>
-          <section className="metric-grid" aria-label="Indicadores do período">
-            <MetricCard label="Total do mês" value={summary.totalInCents} />
-            <MetricCard label="Necessário" value={summary.necessaryInCents} />
-            <MetricCard label="Lazer" value={summary.leisureInCents} />
-            <MetricCard label="Supérfluo" value={summary.superfluousInCents} />
+          <section className="metric-grid" aria-label="Indicadores do periodo">
             <MetricCard
-              description="Estimativa de 50% dos gastos supérfluos."
-              label="Economia possível"
+              description={`${summary.expenseCount} lancamento${summary.expenseCount === 1 ? "" : "s"} no periodo.`}
+              label="Total do mes"
+              tone="primary"
+              value={summary.totalInCents}
+            />
+            <MetricCard label="Necessario" value={summary.necessaryInCents} />
+            <MetricCard label="Lazer" value={summary.leisureInCents} />
+            <MetricCard label="Superfluo" tone="accent" value={summary.superfluousInCents} />
+            <MetricCard
+              description="Estimativa de 50% dos gastos superfluos."
+              label="Economia possivel"
+              tone="success"
               value={summary.possibleSavingsInCents}
             />
           </section>
@@ -101,7 +112,7 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
             <SummaryList groups={summary.byType} title="Gastos por tipo" />
           </section>
           <section className="dashboard-grid dashboard-lists">
-            <ExpenseRanking expenses={latestExpenses} title="Últimos gastos" />
+            <ExpenseRanking expenses={latestExpenses} title="Ultimos gastos" />
             <ExpenseRanking expenses={summary.topExpenses} title="Maiores gastos" />
           </section>
         </>
@@ -110,11 +121,26 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
   );
 }
 
-function MetricCard({ label, value, description }: { label: string; value: number; description?: string }) {
+function MetricCard({
+  label,
+  value,
+  description,
+  tone = "default",
+}: {
+  label: string;
+  value: number;
+  description?: string;
+  tone?: "default" | "primary" | "accent" | "success";
+}) {
   return (
-    <article className="metric-card">
+    <article className={`metric-card is-${tone}`}>
       <span>{label}</span>
       <strong>{formatCentsToCurrency(value)}</strong>
+      {tone === "primary" ? (
+        <div className="metric-bar" aria-hidden="true">
+          <span />
+        </div>
+      ) : null}
       {description ? <small>{description}</small> : null}
     </article>
   );
@@ -150,10 +176,10 @@ function ExpenseRanking({ expenses, title }: { expenses: Expense[]; title: strin
         {expenses.map((expense) => (
           <li key={expense.id}>
             <div>
-              <strong>{expense.description || "Gasto sem descrição"}</strong>
+              <strong>{expense.description || "Gasto sem descricao"}</strong>
               <span>
-                {getCategoryName(expense.categoryId)} ·{" "}
-                {getExpenseTypeName(expense.expenseTypeId)} · {formatDate(expense.date)}
+                {getCategoryName(expense.categoryId)} |{" "}
+                {getExpenseTypeName(expense.expenseTypeId)} | {formatDate(expense.date)}
               </span>
             </div>
             <b>{formatCentsToCurrency(expense.amountInCents)}</b>

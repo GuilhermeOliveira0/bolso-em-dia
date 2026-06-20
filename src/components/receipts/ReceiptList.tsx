@@ -39,6 +39,7 @@ export function ReceiptList({ receipts }: ReceiptListProps) {
       <div className="section-heading">
         <p className="eyebrow">Arquivo privado</p>
         <h2 id="receipt-list-title">Meus comprovantes</h2>
+        <p>Arquivos recentes com preview temporario e metadados seguros.</p>
       </div>
 
       <ul className="receipt-list">
@@ -56,12 +57,11 @@ export function ReceiptList({ receipts }: ReceiptListProps) {
               )}
             </div>
             <div className="receipt-details">
-              <strong>{receipt.fileName}</strong>
+              <div className="receipt-title-row">
+                <strong>{receipt.fileName}</strong>
+                <span className="status-badge">{receipt.status}</span>
+              </div>
               <dl>
-                <div>
-                  <dt>Status</dt>
-                  <dd>{receipt.status}</dd>
-                </div>
                 <div>
                   <dt>Tamanho</dt>
                   <dd>{formatFileSize(receipt.fileSize)}</dd>

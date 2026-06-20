@@ -15,7 +15,7 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
     return (
       <section className="empty-state" aria-live="polite">
         <p>Nenhum gasto cadastrado ainda.</p>
-        <span>Cadastre o primeiro gasto manual para começar o controle.</span>
+        <span>Cadastre o primeiro gasto manual para comecar o controle.</span>
       </section>
     );
   }
@@ -24,15 +24,14 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
     <ul className="expense-list" aria-label="Gastos cadastrados">
       {expenses.map((expense) => (
         <li className="expense-item" key={expense.id}>
-          <div>
-            <strong>{formatCentsToCurrency(expense.amountInCents)}</strong>
-            <span>{expense.description || "Gasto sem descrição"}</span>
+          <div className="expense-main">
+            <div>
+              <strong>{formatCentsToCurrency(expense.amountInCents)}</strong>
+              <span>{expense.description || "Gasto sem descricao"}</span>
+            </div>
+            <span className="expense-date-pill">{formatDate(expense.date)}</span>
           </div>
           <dl>
-            <div>
-              <dt>Data</dt>
-              <dd>{formatDate(expense.date)}</dd>
-            </div>
             <div>
               <dt>Categoria</dt>
               <dd>{getCategoryName(expense.categoryId)}</dd>

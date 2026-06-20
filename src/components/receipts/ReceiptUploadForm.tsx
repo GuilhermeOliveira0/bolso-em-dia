@@ -16,7 +16,17 @@ export function ReceiptUploadForm() {
     const formData = new FormData(event.currentTarget);
 
     startTransition(async () => {
-      const actionResult = await uploadReceiptAction(formData);
+      let actionResult: UploadReceiptResult;
+
+      try {
+        actionResult = await uploadReceiptAction(formData);
+      } catch {
+        actionResult = {
+          ok: false,
+          message: "Nao foi possivel enviar o comprovante. Tente novamente.",
+        };
+      }
+
       setResult(actionResult);
 
       if (actionResult.ok) {
@@ -31,22 +41,28 @@ export function ReceiptUploadForm() {
       <div className="section-heading">
         <p className="eyebrow">Comprovante Pix</p>
         <h2 id="receipt-upload-title">Enviar imagem</h2>
+        <p>Guarde a imagem do comprovante sem criar um gasto automaticamente.</p>
       </div>
 
       <form ref={formRef} className="receipt-form" encType="multipart/form-data" method="post" onSubmit={handleSubmit}>
-        <label className="field">
-          <span>Imagem do comprovante</span>
-          <input
-            accept="image/png,image/jpeg,image/webp"
-            name="receipt"
-            required
-            type="file"
-          />
-        </label>
+        <div className="receipt-dropzone">
+          <label className="field">
+            <span>Imagem do comprovante</span>
+            <input
+              accept="image/png,image/jpeg,image/webp"
+              name="receipt"
+              required
+              type="file"
+            />
+          </label>
+          <p className="receipt-help">
+            Selecione uma imagem do comprovante Pix para manter o arquivo privado na sua conta.
+          </p>
+        </div>
 
-        <p className="receipt-help">
-          PNG, JPG, JPEG ou WEBP ate {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
-          OCR e criacao automatica de gasto ficam para uma proxima fatia.
+        <p className="info-message">
+          OCR ainda nao esta ativo. PNG, JPG, JPEG ou WEBP ate{" "}
+          {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
         </p>
 
         {result ? (

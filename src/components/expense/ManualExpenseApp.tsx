@@ -97,9 +97,14 @@ export function ManualExpenseApp({ user }: ManualExpenseAppProps) {
           <p className="eyebrow">Bolso em Dia</p>
           <h1>Cadastre gastos na sua conta.</h1>
           <p>
-            Primeira fatia corrigida: login, cadastro manual, validação e listagem
-            simples vinculada ao usuário autenticado.
+            Registre um gasto em poucos campos e mantenha a leitura do mes organizada por
+            categoria, tipo e forma de pagamento.
           </p>
+          <div className="quick-actions" aria-label="Resumo do fluxo">
+            <span className="quick-pill">Conta privada</span>
+            <span className="quick-pill">Cadastro rapido</span>
+            <span className="quick-pill">Lista atualizada</span>
+          </div>
         </div>
       </section>
 
@@ -108,6 +113,7 @@ export function ManualExpenseApp({ user }: ManualExpenseAppProps) {
           <div className="section-heading">
             <p className="eyebrow">Novo gasto</p>
             <h2>Registro manual</h2>
+            <p>Campos essenciais primeiro para o cadastro continuar simples no celular.</p>
           </div>
           <ExpenseForm
             draft={draft}
@@ -132,11 +138,12 @@ export function ManualExpenseApp({ user }: ManualExpenseAppProps) {
           <div className="section-heading">
             <p className="eyebrow">Listagem</p>
             <h2>Gastos cadastrados</h2>
+            <p>Uma visao em formato de recibo para conferir valor, data e classificacao.</p>
           </div>
           {isLoading ? (
             <section className="empty-state" aria-live="polite">
               <p>Carregando gastos...</p>
-              <span>Buscando apenas os lançamentos da sua conta.</span>
+              <span>Buscando apenas os lancamentos da sua conta.</span>
             </section>
           ) : (
             <ExpenseList expenses={expenses} />

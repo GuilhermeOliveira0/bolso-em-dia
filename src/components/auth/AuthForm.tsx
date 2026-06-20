@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, type FormEvent } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useSearchParams } from "next/navigation";
+import { useActionState } from "react";
+import { loginAction, signupAction, type AuthActionState } from "@/app/auth-actions";
 
 type AuthMode = "login" | "signup";
 
@@ -14,57 +14,20 @@ type AuthFormProps = {
 };
 
 export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/gastos";
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const isLogin = mode === "login";
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (!isConfigured) {
-      setError(configMessage ?? "Supabase ainda não está configurado.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError("");
-    setMessage("");
-
-    const supabase = createClient();
-    const result = isLogin
-      ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { name: name.trim() } },
-        });
-
-    if (result.error) {
-      setError(result.error.message);
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!isLogin && !result.data.session) {
-      setMessage("Conta criada. Confirme seu e-mail se o Supabase exigir confirmação.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    router.replace(redirectTo);
-    router.refresh();
-  }
+  const action = isLogin ? loginAction : signupAction;
+  const initialState: AuthActionState = { error: "", message: "" };
+  const [state, formAction, isSubmitting] = useActionState(
+    action,
+    initialState,
+  );
 
   return (
-    <form className="auth-form" method="post" onSubmit={handleSubmit}>
+    <form action={formAction} className="auth-form">
+      <input name="redirectTo" type="hidden" value={redirectTo} />
       {!isConfigured ? (
         <div className="setup-alert" role="alert">
           <strong>Configuração necessária</strong>
@@ -84,8 +47,6 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
             name="name"
             placeholder="Como você quer ser chamado"
             type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
             required
           />
         </label>
@@ -99,8 +60,6 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
           name="email"
           placeholder="voce@email.com"
           type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
           required
         />
       </label>
@@ -114,21 +73,19 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
           name="password"
           placeholder="Minimo de 6 caracteres"
           type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
           required
         />
       </label>
 
-      {error ? (
+      {state.error || (!isConfigured && configMessage) ? (
         <p className="error-message" role="alert">
-          {error}
+          {state.error || configMessage}
         </p>
       ) : null}
 
-      {message ? (
+      {state.message ? (
         <p className="success-message" role="status">
-          {message}
+          {state.message}
         </p>
       ) : null}
 
