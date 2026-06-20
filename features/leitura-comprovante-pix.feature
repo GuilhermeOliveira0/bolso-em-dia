@@ -44,3 +44,10 @@ Funcionalidade: Upload de imagem de comprovante Pix
     Quando o upload for concluído
     Então nenhum gasto deve ser criado automaticamente
     E OCR deve permanecer fora desta fatia
+
+  Cenário: Enviar comprovante no fluxo de lançamentos
+    Dado que estou autenticado no sistema
+    Quando acesso a área de lançamentos
+    Então devo ver uma aba ou seção "Novo comprovante"
+    E o envio deve manter as mesmas regras de tipo, tamanho, privacidade e autoria
+    E nenhum gasto deve ser criado automaticamente

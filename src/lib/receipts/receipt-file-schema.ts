@@ -38,12 +38,12 @@ export function validateReceiptFile(
   if (!ACCEPTED_RECEIPT_MIME_TYPES.includes(value.type as AcceptedReceiptMimeType)) {
     return {
       ok: false,
-      message: "Somente imagens PNG, JPG, JPEG ou WEBP sao aceitas agora.",
+      message: "Somente imagens PNG, JPG, JPEG ou WEBP são aceitas agora.",
     };
   }
 
   if (value.size > MAX_RECEIPT_FILE_SIZE_BYTES) {
-    return { ok: false, message: "A imagem deve ter no maximo 5 MB." };
+    return { ok: false, message: "A imagem deve ter no máximo 5 MB." };
   }
 
   return {

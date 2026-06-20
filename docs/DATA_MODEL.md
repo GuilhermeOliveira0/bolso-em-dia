@@ -79,6 +79,8 @@ Representar um gasto confirmado pelo usuário.
 - `user_id` é obrigatório.
 - Nenhum gasto pode ser criado, listado, editado ou excluído sem usuário autenticado.
 - A listagem deve retornar apenas gastos do usuário autenticado.
+- O Extrato da área de lançamentos lista apenas registros confirmados de `expenses`.
+- Comprovantes enviados sem gasto vinculado permanecem em `receipts` e não entram automaticamente no Extrato.
 
 ### Segurança
 

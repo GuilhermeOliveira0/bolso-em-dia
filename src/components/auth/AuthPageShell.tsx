@@ -17,8 +17,8 @@ export function AuthPageShell({ eyebrow, title, description, children }: AuthPag
           <p>{description}</p>
           <div className="auth-benefits" aria-label="Beneficios do Bolso em Dia">
             <span>Dados privados</span>
-            <span>Gastos por usuario</span>
-            <span>Uso rapido no celular</span>
+            <span>Gastos por usuário</span>
+            <span>Uso rápido no celular</span>
           </div>
         </div>
       </section>

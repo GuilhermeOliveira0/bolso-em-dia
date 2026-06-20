@@ -55,7 +55,7 @@ export class SupabaseReceiptRepository implements ReceiptRepository {
       .order("created_at", { ascending: false });
 
     if (error) {
-      throw new Error("Nao foi possivel listar seus comprovantes agora.");
+      throw new Error("Não foi possível listar seus comprovantes agora.");
     }
 
     return (data ?? []).map(mapReceiptRow);
@@ -90,7 +90,7 @@ export class SupabaseReceiptRepository implements ReceiptRepository {
     if (error || !data) {
       return {
         ok: false,
-        message: "Nao foi possivel salvar o comprovante. Verifique a configuracao do banco.",
+        message: "Não foi possível salvar o comprovante. Verifique a configuração do banco.",
       };
     }
 

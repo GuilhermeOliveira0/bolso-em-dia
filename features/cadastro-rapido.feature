@@ -51,9 +51,16 @@ Funcionalidade: Cadastro rápido de gastos
   Cenário: Listar apenas os próprios gastos
     Dado que estou autenticado no sistema
     E salvei um gasto confirmado
-    Quando acesso a listagem de gastos
+    Quando acesso o Extrato na área de lançamentos
     Então o sistema deve exibir o gasto cadastrado
     E não deve exibir gastos de outros usuários
+
+  Cenário: Alternar entre nova despesa e extrato
+    Dado que estou autenticado no sistema
+    Quando acesso a área de lançamentos
+    Então devo ver uma aba ou seção "Nova despesa"
+    E devo ver uma aba ou seção "Extrato"
+    E o cadastro manual deve continuar disponível sem sair do fluxo
 
   Cenário: Sair da conta após cadastrar gasto
     Dado que estou autenticado no sistema

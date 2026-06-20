@@ -171,6 +171,37 @@ Permitir envio seguro de imagem de comprovante Pix, sem OCR e sem criação auto
 - Não implementar classificação avançada.
 - Não criar dashboard avançada.
 
+## Fatia 3.1: Lançamentos unificados e extrato
+
+### Objetivo
+
+Unificar visualmente o cadastro manual, o upload de comprovante e a listagem de gastos para reduzir atrito no uso mobile.
+
+### Escopo
+
+- Rota `/lancamentos` com abas ou navegação interna.
+- Aba "Nova despesa" reutilizando o cadastro manual existente.
+- Aba "Novo comprovante" reutilizando o upload seguro de imagem existente.
+- Aba "Extrato" listando gastos da tabela `expenses` do usuário autenticado.
+- Navegação privada atualizada para apontar para o novo fluxo.
+- `/gastos` e `/comprovantes` preservadas ou redirecionadas de forma segura.
+
+### Critérios de aceite
+
+- Usuário autenticado acessa a área de lançamentos.
+- Usuário não autenticado é redirecionado para login.
+- Nova despesa continua salvando com `user_id` autenticado.
+- Novo comprovante continua aceitando somente PNG, JPG/JPEG e WEBP até 5 MB.
+- Extrato lista somente gastos do usuário autenticado.
+- OCR, PDF e sugestão automática continuam fora do escopo.
+- Interface funciona sem overflow horizontal em 390px e 1280px.
+
+### Não fazer nesta fatia
+
+- Não alterar regras de RLS.
+- Não criar gasto automaticamente a partir de comprovante.
+- Não implementar OCR, PDF ou classificação automática.
+
 ## Fatia 4: OCR e extração
 
 ### Objetivo

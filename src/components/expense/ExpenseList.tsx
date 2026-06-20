@@ -15,7 +15,7 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
     return (
       <section className="empty-state" aria-live="polite">
         <p>Nenhum gasto cadastrado ainda.</p>
-        <span>Cadastre o primeiro gasto manual para comecar o controle.</span>
+        <span>Cadastre o primeiro gasto manual para começar o controle.</span>
       </section>
     );
   }
@@ -27,7 +27,7 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
           <div className="expense-main">
             <div>
               <strong>{formatCentsToCurrency(expense.amountInCents)}</strong>
-              <span>{expense.description || "Gasto sem descricao"}</span>
+              <span>{expense.description || "Gasto sem descrição"}</span>
             </div>
             <span className="expense-date-pill">{formatDate(expense.date)}</span>
           </div>

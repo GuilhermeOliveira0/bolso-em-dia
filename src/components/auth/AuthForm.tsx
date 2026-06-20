@@ -15,7 +15,7 @@ type AuthFormProps = {
 
 export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/gastos";
+  const redirectTo = searchParams.get("redirect") || "/lancamentos";
 
   const isLogin = mode === "login";
   const action = isLogin ? loginAction : signupAction;
@@ -71,7 +71,7 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
           id="password"
           minLength={6}
           name="password"
-          placeholder="Minimo de 6 caracteres"
+          placeholder="Mínimo de 6 caracteres"
           type="password"
           required
         />

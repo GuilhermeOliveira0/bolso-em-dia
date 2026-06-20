@@ -47,3 +47,9 @@ Funcionalidade: Responsividade
     Quando navego pelas telas principais da primeira fatia
     Então textos, campos e botões não devem sobrepor outros elementos
     E nenhum controle importante deve ficar fora da tela
+
+  Cenário: Lançamentos unificados funcionam no celular
+    Dado que estou autenticado no sistema
+    Quando acesso a área de lançamentos em uma tela com 390 pixels de largura
+    Então as abas de nova despesa, novo comprovante e extrato devem caber sem rolagem horizontal
+    E os cards do extrato devem ser legíveis e confortáveis para toque

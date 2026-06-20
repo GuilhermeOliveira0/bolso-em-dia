@@ -13,7 +13,7 @@ import type { Expense } from "@/types/finance";
 const MONTHS = [
   "Janeiro",
   "Fevereiro",
-  "Marco",
+  "Março",
   "Abril",
   "Maio",
   "Junho",
@@ -42,12 +42,12 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
       <section className="dashboard-intro">
         <div>
           <p className="eyebrow">Resumo financeiro</p>
-          <h1>Seu mes em foco.</h1>
-          <p>Veja rapidamente o total, os tipos de gasto e onde existe economia possivel.</p>
+          <h1>Seu mês em foco.</h1>
+          <p>Veja rapidamente o total, os tipos de gasto e onde existe economia possível.</p>
           <div className="quick-actions" aria-label="Indicadores acompanhados">
-            <span className="quick-pill">Total do periodo</span>
+            <span className="quick-pill">Total do período</span>
             <span className="quick-pill">Ranking de gastos</span>
-            <span className="quick-pill">Economia possivel</span>
+            <span className="quick-pill">Economia possível</span>
           </div>
         </div>
         <form className="period-filter" method="get">
@@ -83,26 +83,26 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
             Nenhum gasto encontrado em {MONTHS[period.month - 1].toLowerCase()} de{" "}
             {period.year}.
           </p>
-          <span>Cadastre um gasto ou escolha outro periodo para visualizar seu resumo.</span>
-          <Link className="primary-link" href="/gastos">
-            Cadastrar gasto
+          <span>Cadastre um gasto ou escolha outro período para visualizar seu resumo.</span>
+          <Link className="primary-link" href="/lancamentos">
+            Abrir lançamentos
           </Link>
         </section>
       ) : (
         <>
           <section className="metric-grid" aria-label="Indicadores do periodo">
             <MetricCard
-              description={`${summary.expenseCount} lancamento${summary.expenseCount === 1 ? "" : "s"} no periodo.`}
-              label="Total do mes"
+              description={`${summary.expenseCount} lançamento${summary.expenseCount === 1 ? "" : "s"} no período.`}
+              label="Total do mês"
               tone="primary"
               value={summary.totalInCents}
             />
-            <MetricCard label="Necessario" value={summary.necessaryInCents} />
+            <MetricCard label="Necessário" value={summary.necessaryInCents} />
             <MetricCard label="Lazer" value={summary.leisureInCents} />
-            <MetricCard label="Superfluo" tone="accent" value={summary.superfluousInCents} />
+            <MetricCard label="Supérfluo" tone="accent" value={summary.superfluousInCents} />
             <MetricCard
-              description="Estimativa de 50% dos gastos superfluos."
-              label="Economia possivel"
+              description="Estimativa de 50% dos gastos supérfluos."
+              label="Economia possível"
               tone="success"
               value={summary.possibleSavingsInCents}
             />
@@ -112,7 +112,7 @@ export function DashboardView({ email, name, period, summary, availableYears }: 
             <SummaryList groups={summary.byType} title="Gastos por tipo" />
           </section>
           <section className="dashboard-grid dashboard-lists">
-            <ExpenseRanking expenses={latestExpenses} title="Ultimos gastos" />
+            <ExpenseRanking expenses={latestExpenses} title="Últimos gastos" />
             <ExpenseRanking expenses={summary.topExpenses} title="Maiores gastos" />
           </section>
         </>
@@ -176,7 +176,7 @@ function ExpenseRanking({ expenses, title }: { expenses: Expense[]; title: strin
         {expenses.map((expense) => (
           <li key={expense.id}>
             <div>
-              <strong>{expense.description || "Gasto sem descricao"}</strong>
+              <strong>{expense.description || "Gasto sem descrição"}</strong>
               <span>
                 {getCategoryName(expense.categoryId)} |{" "}
                 {getExpenseTypeName(expense.expenseTypeId)} | {formatDate(expense.date)}

@@ -50,7 +50,7 @@ export async function uploadReceiptAction(formData: FormData): Promise<UploadRec
   if (uploadError) {
     return {
       ok: false,
-      message: "Nao foi possivel enviar o comprovante. Verifique o Storage do Supabase.",
+      message: "Não foi possível enviar o comprovante. Verifique o Storage do Supabase.",
     };
   }
 
@@ -69,6 +69,7 @@ export async function uploadReceiptAction(formData: FormData): Promise<UploadRec
   }
 
   revalidatePath("/comprovantes");
+  revalidatePath("/lancamentos");
 
-  return { ok: true, message: "Comprovante enviado com seguranca." };
+  return { ok: true, message: "Comprovante enviado com segurança." };
 }

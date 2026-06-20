@@ -4,10 +4,8 @@ import { PrivateHeader } from "@/components/navigation/PrivateHeader";
 import { ReceiptList } from "@/components/receipts/ReceiptList";
 import { ReceiptUploadForm } from "@/components/receipts/ReceiptUploadForm";
 import { getAuthenticatedUser } from "@/lib/auth/session";
+import { buildReceiptsWithPreview } from "@/lib/receipts/receipt-preview";
 import { createServerReceiptRepository } from "@/lib/receipts/server-receipt-repository";
-import { createReceiptPreviewUrl } from "@/lib/receipts/receipt-storage";
-import { createClient } from "@/lib/supabase/server";
-import type { ReceiptWithPreview } from "@/types/finance";
 
 export const dynamic = "force-dynamic";
 
@@ -17,14 +15,8 @@ export default async function ReceiptsPage() {
 
   try {
     const repository = await createServerReceiptRepository();
-    const supabase = await createClient();
     const receipts = await repository.listByUser(session.user.id);
-    const receiptsWithPreview: ReceiptWithPreview[] = await Promise.all(
-      receipts.map(async (receipt) => ({
-        ...receipt,
-        previewUrl: await createReceiptPreviewUrl(supabase, receipt.filePath),
-      })),
-    );
+    const receiptsWithPreview = await buildReceiptsWithPreview(receipts);
 
     return (
       <main className="app-shell receipts-shell">
@@ -39,8 +31,8 @@ export default async function ReceiptsPage() {
             <p className="eyebrow">Comprovantes</p>
             <h1>Guarde seus comprovantes Pix.</h1>
             <p>
-              Envie apenas imagens nesta fatia. O arquivo fica privado, o OCR ainda nao
-              esta ativo e nenhum gasto e criado automaticamente.
+              Envie apenas imagens nesta fatia. O arquivo fica privado, o OCR ainda não
+              está ativo e nenhum gasto é criado automaticamente.
             </p>
             <div className="quick-actions" aria-label="Garantias desta area">
               <span className="quick-pill">Bucket privado</span>
@@ -48,8 +40,8 @@ export default async function ReceiptsPage() {
               <span className="quick-pill">Sem gasto automatico</span>
             </div>
           </div>
-          <Link className="primary-link" href="/gastos">
-            Cadastrar gasto
+          <Link className="primary-link" href="/lancamentos">
+            Abrir lançamentos
           </Link>
         </section>
 
@@ -68,8 +60,8 @@ export default async function ReceiptsPage() {
           name={session.user.name}
         />
         <section className="dashboard-error" role="alert">
-          <p>Nao foi possivel carregar seus comprovantes agora.</p>
-          <span>Seus arquivos nao foram alterados. Tente novamente em alguns instantes.</span>
+          <p>Não foi possível carregar seus comprovantes agora.</p>
+          <span>Seus arquivos não foram alterados. Tente novamente em alguns instantes.</span>
           <Link className="primary-link" href="/comprovantes">
             Tentar novamente
           </Link>

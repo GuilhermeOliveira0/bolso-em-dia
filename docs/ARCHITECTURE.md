@@ -63,6 +63,8 @@ Esta é uma sugestão técnica. Nenhum código, migration ou dependência deve s
 - Não conter segredos.
 - Não acessar comprovantes privados sem autorização.
 - Não considerar uma tela concluída sem checar responsividade mobile e desktop.
+- Compor a área de lançamentos com componentes separados para nova despesa, novo comprovante e extrato.
+- Manter `/lancamentos` como hub visual, preservando `/gastos` e `/comprovantes` como rotas seguras.
 
 ### Backend/API
 
@@ -139,6 +141,8 @@ Service worker ou cache futuro não deve armazenar respostas privadas de forma c
 - O armazenamento local temporário não é seguro para multiusuário e só pode ser usado em desenvolvimento.
 - Páginas e Server Actions devem obter o repositório financeiro por uma fábrica server-side, mantendo detalhes do Supabase fora da interface.
 - Consultas da dashboard devem filtrar `user_id` e período no banco e selecionar somente as colunas necessárias.
+- A experiência de lançamentos deve reaproveitar actions e repositórios existentes, sem colocar Supabase diretamente em componentes client-side.
+- O upload de comprovante no hub continua usando validação server-side, bucket privado e metadados em `receipts`.
 
 ## Assumptions
 

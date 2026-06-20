@@ -90,19 +90,19 @@ export function ManualExpenseApp({ user }: ManualExpenseAppProps) {
 
   return (
     <main className="app-shell">
-      <PrivateHeader activePath="/gastos" email={user.email} name={user.name} />
+      <PrivateHeader activePath="/lancamentos" email={user.email} name={user.name} />
 
       <section className="hero">
         <div>
           <p className="eyebrow">Bolso em Dia</p>
           <h1>Cadastre gastos na sua conta.</h1>
           <p>
-            Registre um gasto em poucos campos e mantenha a leitura do mes organizada por
+            Registre um gasto em poucos campos e mantenha a leitura do mês organizada por
             categoria, tipo e forma de pagamento.
           </p>
           <div className="quick-actions" aria-label="Resumo do fluxo">
             <span className="quick-pill">Conta privada</span>
-            <span className="quick-pill">Cadastro rapido</span>
+            <span className="quick-pill">Cadastro rápido</span>
             <span className="quick-pill">Lista atualizada</span>
           </div>
         </div>
@@ -138,12 +138,12 @@ export function ManualExpenseApp({ user }: ManualExpenseAppProps) {
           <div className="section-heading">
             <p className="eyebrow">Listagem</p>
             <h2>Gastos cadastrados</h2>
-            <p>Uma visao em formato de recibo para conferir valor, data e classificacao.</p>
+            <p>Uma visão em formato de recibo para conferir valor, data e classificação.</p>
           </div>
           {isLoading ? (
             <section className="empty-state" aria-live="polite">
               <p>Carregando gastos...</p>
-              <span>Buscando apenas os lancamentos da sua conta.</span>
+              <span>Buscando apenas os lançamentos da sua conta.</span>
             </section>
           ) : (
             <ExpenseList expenses={expenses} />

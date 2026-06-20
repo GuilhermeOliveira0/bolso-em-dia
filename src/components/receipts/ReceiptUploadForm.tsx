@@ -23,7 +23,7 @@ export function ReceiptUploadForm() {
       } catch {
         actionResult = {
           ok: false,
-          message: "Nao foi possivel enviar o comprovante. Tente novamente.",
+          message: "Não foi possível enviar o comprovante. Tente novamente.",
         };
       }
 
@@ -46,6 +46,7 @@ export function ReceiptUploadForm() {
 
       <form ref={formRef} className="receipt-form" encType="multipart/form-data" method="post" onSubmit={handleSubmit}>
         <div className="receipt-dropzone">
+          <div className="receipt-dropzone-icon" aria-hidden="true" />
           <label className="field">
             <span>Imagem do comprovante</span>
             <input
@@ -61,7 +62,7 @@ export function ReceiptUploadForm() {
         </div>
 
         <p className="info-message">
-          OCR ainda nao esta ativo. PNG, JPG, JPEG ou WEBP ate{" "}
+          OCR ainda não está ativo. PNG, JPG, JPEG ou WEBP até{" "}
           {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
         </p>
 

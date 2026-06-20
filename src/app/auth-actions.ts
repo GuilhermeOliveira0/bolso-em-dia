@@ -17,7 +17,7 @@ function getRedirectPath(formData: FormData): string {
   const redirectTo = getFormValue(formData, "redirectTo");
 
   if (!redirectTo.startsWith("/") || redirectTo.startsWith("//")) {
-    return "/gastos";
+    return "/lancamentos";
   }
 
   return redirectTo;

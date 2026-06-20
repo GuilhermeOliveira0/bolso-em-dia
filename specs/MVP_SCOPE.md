@@ -18,6 +18,7 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 10. Proteção básica de comprovantes enviados.
 11. Layout responsivo para celular e computador.
 12. Telas de login, cadastro de conta e logout.
+13. Área unificada de lançamentos com nova despesa, novo comprovante e extrato.
 
 ## Fica para depois
 
@@ -40,6 +41,8 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 - Deploy.
 - Integração real com serviço de OCR.
 - PDF no upload de comprovantes.
+- OCR no fluxo unificado de lançamentos.
+- Sugestão automática de categoria no fluxo unificado de lançamentos.
 - Aplicativo nativo.
 - Cobrança ou assinatura.
 - Dashboard avançada.

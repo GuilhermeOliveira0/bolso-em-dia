@@ -28,7 +28,7 @@ export function ReceiptList({ receipts }: ReceiptListProps) {
         </div>
         <div className="empty-state">
           <p>Nenhum comprovante enviado ainda.</p>
-          <span>Envie uma imagem para guardar o comprovante com seguranca.</span>
+          <span>Envie uma imagem para guardar o comprovante com segurança.</span>
         </div>
       </section>
     );
@@ -39,7 +39,7 @@ export function ReceiptList({ receipts }: ReceiptListProps) {
       <div className="section-heading">
         <p className="eyebrow">Arquivo privado</p>
         <h2 id="receipt-list-title">Meus comprovantes</h2>
-        <p>Arquivos recentes com preview temporario e metadados seguros.</p>
+        <p>Arquivos recentes com preview temporário e metadados seguros.</p>
       </div>
 
       <ul className="receipt-list">
@@ -53,7 +53,7 @@ export function ReceiptList({ receipts }: ReceiptListProps) {
                   src={receipt.previewUrl}
                 />
               ) : (
-                <span>Preview indisponivel</span>
+                <span>Preview indisponível</span>
               )}
             </div>
             <div className="receipt-details">

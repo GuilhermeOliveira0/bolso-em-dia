@@ -44,12 +44,15 @@ Muitas pessoas deixam de controlar gastos porque o cadastro manual é lento, os 
 1. O usuário acessa o sistema pelo celular.
 2. Se ainda não tiver conta, o usuário cria uma conta com e-mail e senha.
 3. O usuário faz login.
-4. O usuário cadastra um gasto manualmente ou envia um comprovante Pix.
-5. Quando houver comprovante, o sistema lê o arquivo e extrai dados possíveis.
-6. O sistema sugere categoria e tipo do gasto.
-7. O usuário revisa, corrige se necessário e confirma.
-8. O gasto confirmado aparece na listagem somente do usuário autenticado.
-9. A dashboard mostra totais, filtros, gráficos e rankings somente com dados do usuário autenticado.
+4. O usuário acessa uma área principal de lançamentos.
+5. Na mesma experiência visual, o usuário alterna entre nova despesa, novo comprovante e extrato.
+6. O usuário cadastra um gasto manualmente ou envia uma imagem de comprovante Pix.
+7. Nesta fatia, comprovantes enviados não geram gasto automaticamente.
+8. Quando houver OCR em fatia futura, o sistema lê o arquivo e extrai dados possíveis.
+9. O sistema sugere categoria e tipo do gasto somente em fatia futura.
+10. O usuário revisa, corrige se necessário e confirma antes de qualquer gasto extraído ser salvo.
+11. O gasto confirmado aparece no extrato somente do usuário autenticado.
+12. A dashboard mostra totais, filtros, gráficos e rankings somente com dados do usuário autenticado.
 
 ## MVP
 
@@ -91,6 +94,14 @@ O MVP será considerado a primeira versão utilizável do produto. Ele deve incl
 - O desenvolvimento deve seguir Spec-Driven Development, BDD e Vertical Slice.
 - Cada fatia vertical deve entregar uma funcionalidade completa e verificável.
 - Não criar funcionalidades grandes sem dividir em etapas.
+
+## Decisão de UX: lançamentos unificados
+
+- "Nova despesa" e "Novo comprovante" ficam no mesmo fluxo visual para reduzir troca de tela.
+- "Extrato" passa a ser a área de leitura dos gastos cadastrados na tabela `expenses`.
+- `/lancamentos` é a rota preferencial dessa experiência.
+- `/gastos` e `/comprovantes` devem continuar funcionando para compatibilidade e acesso direto.
+- OCR, PDF e sugestão automática de categoria continuam fora do escopo desta fatia.
 
 ## Assumptions
 

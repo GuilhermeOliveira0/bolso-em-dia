@@ -31,15 +31,18 @@ export function ExpenseForm({
       <div className="field-group">
         <label className="field" data-invalid={Boolean(errors.amount)} htmlFor="amount">
           <span>Valor</span>
-          <input
-            aria-invalid={Boolean(errors.amount)}
-            id="amount"
-            inputMode="decimal"
-            name="amount"
-            placeholder="0,00"
-            value={draft.amount}
-            onChange={(event) => onChange("amount", event.target.value)}
-          />
+          <div className="money-input">
+            <b>R$</b>
+            <input
+              aria-invalid={Boolean(errors.amount)}
+              id="amount"
+              inputMode="decimal"
+              name="amount"
+              placeholder="0,00"
+              value={draft.amount}
+              onChange={(event) => onChange("amount", event.target.value)}
+            />
+          </div>
           {errors.amount ? <small>{errors.amount}</small> : null}
         </label>
 
@@ -129,7 +132,7 @@ export function ExpenseForm({
       </label>
 
       <button className="primary-action" disabled={isSubmitting} type="submit">
-        {isSubmitting ? "Salvando..." : "Salvar gasto"}
+        {isSubmitting ? "Salvando..." : "Salvar despesa"}
       </button>
     </form>
   );
