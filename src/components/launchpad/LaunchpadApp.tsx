@@ -50,18 +50,13 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
 
     setDraft({ ...EMPTY_DRAFT, date: new Date().toISOString().slice(0, 10) });
     setErrors({});
-    setMessage("Despesa salva. Ela ja aparece no Extrato.");
+    setMessage("Despesa salva. Ela já aparece no extrato.");
     setIsSubmitting(false);
   }
 
   return (
     <main className="app-shell launchpad-shell">
       <PrivateHeader activePath="/lancamentos" email={user.email} name={user.name} />
-
-      <section className="launchpad-mobile-title">
-        <p>Bolso em Dia</p>
-        <h1>Ola, {user.name}</h1>
-      </section>
 
       <section className="launchpad-form-grid">
         <aside className="prototype-upload-column">
@@ -72,7 +67,7 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
         <article className="panel prototype-form-card">
           <div className="prototype-section-title">
             <AppIcon className="app-icon" name="receipt" />
-            <h2>Cadastrar Despesa</h2>
+            <h2>Cadastrar despesa</h2>
           </div>
           <ExpenseForm
             draft={draft}

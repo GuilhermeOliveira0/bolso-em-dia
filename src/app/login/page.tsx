@@ -9,8 +9,8 @@ export default function LoginPage() {
   return (
     <AuthPageShell
       eyebrow="Acesso seguro"
-      title="Entre para ver seus gastos."
-      description="A área financeira é privada. Faça login para cadastrar e listar apenas os seus gastos."
+      title="Acesse sua conta"
+      description="Seu controle financeiro inteligente, privado e rápido."
     >
       <Suspense>
         <AuthForm

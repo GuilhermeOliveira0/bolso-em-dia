@@ -9,8 +9,8 @@ export default function SignupPage() {
   return (
     <AuthPageShell
       eyebrow="Nova conta"
-      title="Crie sua conta financeira."
-      description="Informe seu nome, e-mail e senha para manter seus lançamentos separados dos dados de outras pessoas."
+      title="Crie sua conta"
+      description="Cadastre-se para acompanhar seus gastos com segurança, rapidez e dados separados por usuário."
     >
       <Suspense>
         <AuthForm

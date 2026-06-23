@@ -24,7 +24,7 @@ export function ReceiptUploadForm() {
       } catch {
         actionResult = {
           ok: false,
-          message: "Nao foi possivel enviar o comprovante. Tente novamente.",
+          message: "Não foi possível enviar o comprovante. Tente novamente.",
         };
       }
 
@@ -51,7 +51,7 @@ export function ReceiptUploadForm() {
       >
         <div className="receipt-dropzone">
           <AppIcon className="app-icon upload-icon" name="receipt" />
-          <h2 id="receipt-upload-title">Anexar Comprovante</h2>
+          <h2 id="receipt-upload-title">Anexar comprovante</h2>
           <p>Arraste e solte seu comprovante Pix aqui ou clique para selecionar o arquivo.</p>
           <label className="field">
             <span>Imagem do comprovante</span>
@@ -60,8 +60,8 @@ export function ReceiptUploadForm() {
         </div>
 
         <p className="info-message">
-          <strong>Leitura Inteligente:</strong> OCR ainda nao esta ativo. PNG, JPG, JPEG ou WEBP
-          ate {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
+          <strong>Leitura inteligente:</strong> OCR ainda não está ativo. PNG, JPG, JPEG ou WEBP
+          até {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
         </p>
 
         {result ? (

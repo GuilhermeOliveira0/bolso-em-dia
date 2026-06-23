@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { loginAction, signupAction, type AuthActionState } from "@/app/auth-actions";
+import { AppIcon } from "@/components/ui/AppIcon";
 
 type AuthMode = "login" | "signup";
 
@@ -38,43 +39,52 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
       ) : null}
 
       {!isLogin ? (
-        <label className="field" htmlFor="name">
+        <label className="field auth-field" htmlFor="name">
           <span>Nome</span>
-          <input
-            autoComplete="name"
-            id="name"
-            maxLength={80}
-            name="name"
-            placeholder="Como você quer ser chamado"
-            type="text"
-            required
-          />
+          <div className="auth-input-wrapper">
+            <AppIcon name="user" />
+            <input
+              autoComplete="name"
+              id="name"
+              maxLength={80}
+              name="name"
+              placeholder="Como você quer ser chamado"
+              type="text"
+              required
+            />
+          </div>
         </label>
       ) : null}
 
-      <label className="field" htmlFor="email">
+      <label className="field auth-field" htmlFor="email">
         <span>E-mail</span>
-        <input
-          autoComplete="email"
-          id="email"
-          name="email"
-          placeholder="voce@email.com"
-          type="email"
-          required
-        />
+        <div className="auth-input-wrapper">
+          <AppIcon name="envelope" />
+          <input
+            autoComplete="email"
+            id="email"
+            name="email"
+            placeholder="voce@email.com"
+            type="email"
+            required
+          />
+        </div>
       </label>
 
-      <label className="field" htmlFor="password">
+      <label className="field auth-field" htmlFor="password">
         <span>Senha</span>
-        <input
-          autoComplete={isLogin ? "current-password" : "new-password"}
-          id="password"
-          minLength={6}
-          name="password"
-          placeholder="Mínimo de 6 caracteres"
-          type="password"
-          required
-        />
+        <div className="auth-input-wrapper">
+          <AppIcon name="lock" />
+          <input
+            autoComplete={isLogin ? "current-password" : "new-password"}
+            id="password"
+            minLength={6}
+            name="password"
+            placeholder="Mínimo de 6 caracteres"
+            type="password"
+            required
+          />
+        </div>
       </label>
 
       {state.error || (!isConfigured && configMessage) ? (
@@ -89,14 +99,15 @@ export function AuthForm({ mode, isConfigured, configMessage }: AuthFormProps) {
         </p>
       ) : null}
 
-      <button className="primary-action" disabled={isSubmitting || !isConfigured} type="submit">
-        {isSubmitting ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}
+      <button className="primary-action auth-submit" disabled={isSubmitting || !isConfigured} type="submit">
+        <span>{isSubmitting ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}</span>
+        <AppIcon name={isLogin ? "arrow-right" : "check"} />
       </button>
 
       <p className="auth-switch">
         {isLogin ? "Ainda não tem conta?" : "Já tem conta?"}{" "}
         <Link href={isLogin ? "/cadastro" : "/login"}>
-          {isLogin ? "Criar conta" : "Entrar"}
+          {isLogin ? "Cadastre-se" : "Faça login"}
         </Link>
       </p>
     </form>

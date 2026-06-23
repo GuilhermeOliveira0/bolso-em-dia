@@ -34,10 +34,10 @@ export default async function ReceiptsPage() {
               Envie apenas imagens nesta fatia. O arquivo fica privado, o OCR ainda não
               está ativo e nenhum gasto é criado automaticamente.
             </p>
-            <div className="quick-actions" aria-label="Garantias desta area">
+            <div className="quick-actions" aria-label="Garantias desta área">
               <span className="quick-pill">Bucket privado</span>
-              <span className="quick-pill">Imagem ate 5 MB</span>
-              <span className="quick-pill">Sem gasto automatico</span>
+              <span className="quick-pill">Imagem até 5 MB</span>
+              <span className="quick-pill">Sem gasto automático</span>
             </div>
           </div>
           <Link className="primary-link" href="/lancamentos">

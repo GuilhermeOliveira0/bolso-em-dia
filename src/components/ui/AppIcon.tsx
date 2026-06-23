@@ -1,13 +1,18 @@
+import type { ReactNode } from "react";
+
 type AppIconName =
+  | "arrow-right"
   | "bell"
   | "car"
   | "chart"
   | "check"
+  | "envelope"
   | "faders"
   | "hamburger"
   | "home"
   | "lightbulb"
   | "list"
+  | "lock"
   | "martini"
   | "monitor"
   | "pill"
@@ -17,6 +22,7 @@ type AppIconName =
   | "shopping-bag"
   | "shopping-cart"
   | "squares"
+  | "user"
   | "wallet";
 
 type AppIconProps = {
@@ -41,6 +47,12 @@ export function AppIcon({ name, className, title }: AppIconProps) {
 }
 
 const icons: Record<AppIconName, ReactNode> = {
+  "arrow-right": (
+    <>
+      <path d="M5 12h14" />
+      <path d="m13 6 6 6-6 6" />
+    </>
+  ),
   bell: (
     <>
       <path d="M7 10.5a5 5 0 0 1 10 0v3.7l1.3 2.1H5.7L7 14.2v-3.7Z" />
@@ -63,6 +75,12 @@ const icons: Record<AppIconName, ReactNode> = {
   check: (
     <>
       <path d="M20 6 9 17l-5-5" />
+    </>
+  ),
+  envelope: (
+    <>
+      <path d="M4.5 6.5h15v11h-15z" />
+      <path d="m5 7 7 6 7-6" />
     </>
   ),
   faders: (
@@ -95,6 +113,13 @@ const icons: Record<AppIconName, ReactNode> = {
     <>
       <path d="M8 6h12M8 12h12M8 18h12" />
       <path d="M4 6h.1M4 12h.1M4 18h.1" />
+    </>
+  ),
+  lock: (
+    <>
+      <path d="M7 10V8a5 5 0 0 1 10 0v2" />
+      <path d="M6 10h12v10H6z" />
+      <path d="M12 14.5v2" />
     </>
   ),
   martini: (
@@ -149,6 +174,12 @@ const icons: Record<AppIconName, ReactNode> = {
       <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
     </>
   ),
+  user: (
+    <>
+      <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+      <path d="M4.8 20a7.2 7.2 0 0 1 14.4 0" />
+    </>
+  ),
   wallet: (
     <>
       <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v14H6.5A2.5 2.5 0 0 1 4 16.5v-9Z" />
@@ -156,4 +187,3 @@ const icons: Record<AppIconName, ReactNode> = {
     </>
   ),
 };
-import type { ReactNode } from "react";

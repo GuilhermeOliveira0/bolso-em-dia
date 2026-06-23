@@ -19,9 +19,9 @@ type StatementAppProps = {
 
 const filters: { id: StatementFilter; label: string }[] = [
   { id: "all", label: "Todos" },
-  { id: "necessario", label: "Necessarios" },
+  { id: "necessario", label: "Necessários" },
   { id: "lazer", label: "Lazer" },
-  { id: "superfluo", label: "Superfluos" },
+  { id: "superfluo", label: "Supérfluos" },
   { id: "pix", label: "Pix" },
 ];
 
@@ -60,8 +60,6 @@ export function StatementApp({ user, expenses }: StatementAppProps) {
       <PrivateHeader activePath="/extrato" email={user.email} name={user.name} />
 
       <section className="statement-mobile-head">
-        <p>Bolso em Dia</p>
-        <h1>Ola, {user.name}</h1>
         <span>Gastos em {currentMonthLabel()}</span>
         <strong>{formatCentsToCurrency(totalInCents)}</strong>
       </section>
@@ -69,8 +67,8 @@ export function StatementApp({ user, expenses }: StatementAppProps) {
       <section className="panel statement-panel">
         <div className="statement-header">
           <div>
-            <h1>Extrato de Gastos</h1>
-            <p>Acompanhe e filtre todas as suas movimentacoes.</p>
+            <h1>Extrato de gastos</h1>
+            <p>Acompanhe e filtre todas as suas movimentações.</p>
           </div>
 
           <div className="statement-search-area">
@@ -139,7 +137,7 @@ function StatementItem({ expense }: { expense: Expense }) {
         <div className="tx-info">
           <div className="tx-main">
             <h3>
-              {expense.description || "Gasto sem descricao"}
+              {expense.description || "Gasto sem descrição"}
               <span className="tag-tipo">{typeName}</span>
             </h3>
             <p>
