@@ -147,6 +147,7 @@ Regras:
 - Executar OCR apenas em comprovantes do usuário autenticado.
 - Criar despesa extraída somente após confirmação explícita.
 - Usar `user_id` da sessão no servidor, nunca valor enviado pelo frontend.
+- Manter sugestões por palavras-chave como lógica local e explicável, sem serviço externo e sem salvar gasto automaticamente.
 
 ## Assumptions
 

@@ -3150,6 +3150,27 @@ h3 {
   font-size: 1.1rem;
 }
 
+.ocr-classification-suggestion {
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 16px;
+  background: rgba(59, 130, 246, 0.08);
+  padding: 12px 14px;
+  color: var(--ink-muted);
+}
+
+.ocr-classification-suggestion[data-confidence="low"] {
+  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.ocr-classification-suggestion p {
+  margin: 0;
+}
+
+.ocr-classification-suggestion strong {
+  color: var(--ink);
+}
+
 .field[data-review="true"] input,
 .field[data-review="true"] select,
 .field[data-review="true"] .money-input {

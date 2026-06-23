@@ -214,7 +214,8 @@ Ler comprovante Pix e extrair dados iniciais.
 - Extração de valor, data e recebedor.
 - Tratamento de baixa confiança.
 - Revisão manual antes de salvar despesa.
-- Categoria, tipo e forma de pagamento preenchidos manualmente.
+- Sugestão simples de categoria e tipo por palavras-chave.
+- Forma de pagamento preenchida manualmente.
 
 ### Arquivos prováveis
 
@@ -231,6 +232,7 @@ Ler comprovante Pix e extrair dados iniciais.
 - Campos incertos são marcados como `precisa revisar`.
 - Erros de leitura não salvam gasto.
 - Usuário recebe feedback claro.
+- Categoria e tipo podem aparecer sugeridos, mas continuam editáveis.
 - Despesa só é criada após confirmação explícita.
 
 ### Critérios de verificação
@@ -251,7 +253,7 @@ Ler comprovante Pix e extrair dados iniciais.
 - Não salvar gasto sem confirmação.
 - Não criar aprendizado por histórico ainda.
 - Não implementar PDF.
-- Não implementar sugestão automática avançada de categoria ou tipo.
+- Não implementar IA externa, PDF, histórico ou aprendizado por correção.
 
 ## Fatia 5: Confirmação do gasto extraído
 
@@ -321,6 +323,11 @@ Reduzir esforço de classificação do gasto.
 - Sistema sugere tipo do gasto.
 - Usuário pode corrigir ambos.
 - Correções influenciam próximas sugestões do mesmo usuário.
+
+### Status
+
+- Regras iniciais por palavras-chave foram antecipadas para apoiar a revisão OCR.
+- Histórico do usuário e aprendizado por correção permanecem fora do escopo atual.
 
 ### Critérios de verificação
 

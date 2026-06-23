@@ -6,6 +6,10 @@ import { formatCentsToCurrency } from "@/lib/expenses/money";
 import { getAuthenticatedUser } from "@/lib/auth/session";
 import { RECEIPT_BUCKET } from "@/lib/receipts/receipt-file-schema";
 import { runReceiptImageOcr } from "@/lib/receipts/receipt-ocr-service";
+import {
+  classifyExpense,
+  type ExpenseClassificationConfidence,
+} from "@/lib/expenses/expense-classifier";
 import { createServerExpenseRepository } from "@/lib/expenses/server-expense-repository";
 import { createServerReceiptRepository } from "@/lib/receipts/server-receipt-repository";
 import { createClient } from "@/lib/supabase/server";
@@ -16,9 +20,16 @@ export type ReceiptOcrReviewDraft = ExpenseDraft & {
   recipient: string;
 };
 
+export type ReceiptClassificationSuggestion = {
+  confidence: ExpenseClassificationConfidence;
+  matchedKeyword: string;
+  reason: string;
+};
+
 export type ReceiptOcrReview = ReceiptOcrReviewDraft & {
   confidence: number;
   fieldsNeedReview: Array<"amount" | "date" | "recipient">;
+  classificationSuggestion: ReceiptClassificationSuggestion;
 };
 
 export type ProcessReceiptOcrResult =
@@ -37,6 +48,11 @@ function createEmptyReview(receiptId: string): ReceiptOcrReview {
     paymentMethod: "",
     confidence: 0,
     fieldsNeedReview: ["amount", "date", "recipient"],
+    classificationSuggestion: {
+      confidence: "low",
+      matchedKeyword: "",
+      reason: "Não encontramos uma palavra-chave confiável. Revise manualmente.",
+    },
   };
 }
 
@@ -47,15 +63,31 @@ function buildReviewFromOcr(
   recipient: string | null,
   confidence: number | null,
   fieldsNeedReview: ReceiptOcrReview["fieldsNeedReview"],
+  ocrText: string,
 ): ReceiptOcrReview {
+  const description = recipient ? `Pix para ${recipient}` : "";
+  const classification = classifyExpense({
+    recipient,
+    description,
+    ocrText,
+  });
+  const hasReliableSuggestion = classification.confidence !== "low";
+
   return {
     ...createEmptyReview(receiptId),
     amount: amountInCents ? formatCentsToCurrency(amountInCents).replace("R$", "").trim() : "",
     date: date || new Date().toISOString().slice(0, 10),
     recipient: recipient || "",
-    description: recipient ? `Pix para ${recipient}` : "",
+    description,
+    categoryId: hasReliableSuggestion ? classification.suggestedCategory : "",
+    expenseTypeId: hasReliableSuggestion ? classification.suggestedType : "",
     confidence: confidence ?? 0,
     fieldsNeedReview,
+    classificationSuggestion: {
+      confidence: classification.confidence,
+      matchedKeyword: classification.matchedKeyword,
+      reason: classification.reason,
+    },
   };
 }
 
@@ -163,6 +195,7 @@ export async function processReceiptOcrAction(
       parsed.recipient || null,
       parsed.confidence,
       parsed.fieldsNeedReview,
+      parsed.normalizedText,
     ),
   };
 }

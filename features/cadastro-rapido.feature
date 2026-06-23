@@ -40,6 +40,13 @@ Funcionalidade: Cadastro rápido de gastos
     Quando seleciono o tipo do gasto
     Então o sistema deve associar o tipo ao gasto
 
+  Cenário: Manter classificação manual no cadastro rápido
+    Dado que estou autenticado no sistema
+    E estou cadastrando um gasto manualmente
+    Quando digito a descrição do gasto
+    Então categoria e tipo do gasto devem continuar sob meu controle
+    E nenhuma classificação deve salvar despesa automaticamente
+
   Cenário: Salvar gasto vinculado ao usuário autenticado
     Dado que estou autenticado no sistema
     E preenchi os dados obrigatórios do gasto

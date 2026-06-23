@@ -31,9 +31,10 @@ Nesta fatia, o sistema deve permitir upload de imagem de comprovante Pix e leitu
 5. O usuário clica em "Ler comprovante".
 6. O OCR tenta ler valor, data e recebedor.
 7. O sistema mostra uma etapa de revisão com campos editáveis.
-8. O usuário informa categoria, tipo do gasto e forma de pagamento manualmente.
-9. Só depois da confirmação o gasto é salvo.
-10. Se possível, o comprovante é vinculado à despesa criada.
+8. O sistema pode sugerir categoria e tipo por palavras-chave, mantendo os campos editáveis.
+9. O usuário informa ou ajusta categoria, tipo do gasto e forma de pagamento manualmente.
+10. Só depois da confirmação o gasto é salvo.
+11. Se possível, o comprovante é vinculado à despesa criada.
 
 ## Formatos aceitos
 
@@ -50,7 +51,7 @@ Extrair quando possível:
 - data;
 - recebedor;
 
-Banco, forma de pagamento, categoria e tipo ficam manuais nesta fatia. Sugestão automática avançada fica para a próxima fatia.
+Banco e forma de pagamento ficam manuais nesta fatia. Categoria e tipo podem receber sugestão simples por palavras-chave, sempre editável e sem salvamento automático.
 
 ## Erro de leitura
 
@@ -82,7 +83,18 @@ Exemplos de baixa confiança:
 
 ## Sugestão de categoria
 
-Fora do escopo desta fatia. A revisão deve mostrar os campos de categoria e tipo como editáveis e manuais.
+Nesta fatia, a revisão pode sugerir categoria e tipo do gasto com base em palavras-chave do recebedor, da descrição sugerida e do texto OCR. A sugestão não usa IA externa, não consulta histórico do usuário e não salva despesa sozinha.
+
+Quando houver confiança suficiente:
+
+- preencher categoria e tipo no formulário de revisão;
+- mostrar a palavra-chave usada;
+- permitir que o usuário altere os campos antes de confirmar.
+
+Quando não houver regra confiável:
+
+- manter categoria e tipo para revisão manual;
+- informar que a sugestão não foi segura.
 
 ### Futuro
 

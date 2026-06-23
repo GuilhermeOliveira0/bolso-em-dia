@@ -65,6 +65,22 @@ Funcionalidade: Upload de imagem de comprovante Pix
     Então devo poder editar valor, data, recebedor, descrição, categoria, tipo do gasto e forma de pagamento
     E campos ausentes ou de baixa confiança devem ficar claros para revisão manual
 
+  Cenário: Sugerir categoria e tipo por palavra-chave na revisão
+    Dado que o sistema leu uma imagem de comprovante Pix com recebedor "iFood"
+    Quando a revisão é exibida
+    Então o sistema deve sugerir categoria "Alimentação"
+    E deve sugerir tipo do gasto "Lazer"
+    E deve explicar a palavra-chave usada na sugestão
+    E devo poder alterar categoria e tipo antes de salvar
+    E nenhuma despesa deve ser criada antes da minha confirmação
+
+  Cenário: Manter revisão manual quando não houver sugestão confiável
+    Dado que o sistema leu uma imagem de comprovante Pix sem palavra-chave conhecida
+    Quando a revisão é exibida
+    Então o sistema deve indicar que não conseguiu sugerir com segurança
+    E categoria e tipo do gasto devem continuar editáveis
+    E nenhuma despesa deve ser criada automaticamente
+
   Cenário: Confirmar despesa criada a partir de comprovante
     Dado que estou revisando dados extraídos de um comprovante meu
     Quando confirmo os campos obrigatórios

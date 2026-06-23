@@ -22,6 +22,14 @@ function needsReview(review: ReceiptOcrReview, field: "amount" | "date" | "recip
   return review.fieldsNeedReview.includes(field);
 }
 
+function getCategoryName(categoryId: string) {
+  return DEFAULT_CATEGORIES.find((category) => category.id === categoryId)?.name ?? "categoria";
+}
+
+function getExpenseTypeName(expenseTypeId: string) {
+  return DEFAULT_EXPENSE_TYPES.find((expenseType) => expenseType.id === expenseTypeId)?.name ?? "tipo";
+}
+
 export function ReceiptOcrReviewForm({
   review,
   errors,
@@ -48,6 +56,23 @@ export function ReceiptOcrReviewForm({
       <div className="ocr-confidence-row">
         <span>Confiança da leitura</span>
         <strong>{Math.round(review.confidence * 100)}%</strong>
+      </div>
+
+      <div
+        className="ocr-classification-suggestion"
+        data-confidence={review.classificationSuggestion.confidence}
+      >
+        {review.classificationSuggestion.confidence === "low" ? (
+          <p>{review.classificationSuggestion.reason}</p>
+        ) : (
+          <p>
+            Sugestão automática:{" "}
+            <strong>
+              {getCategoryName(review.categoryId)} / {getExpenseTypeName(review.expenseTypeId)}
+            </strong>{" "}
+            com base em "{review.classificationSuggestion.matchedKeyword}".
+          </p>
+        )}
       </div>
 
       <form className="expense-form" onSubmit={handleSubmit} noValidate>
@@ -131,7 +156,12 @@ export function ReceiptOcrReviewForm({
           {errors.description ? <small>{errors.description}</small> : null}
         </label>
 
-        <label className="field" data-invalid={Boolean(errors.categoryId)} htmlFor="ocrCategoryId">
+        <label
+          className="field"
+          data-invalid={Boolean(errors.categoryId)}
+          data-review={review.classificationSuggestion.confidence === "low" || undefined}
+          htmlFor="ocrCategoryId"
+        >
           <span>Categoria</span>
           <select
             aria-invalid={Boolean(errors.categoryId)}
@@ -148,11 +178,15 @@ export function ReceiptOcrReviewForm({
             ))}
           </select>
           {errors.categoryId ? <small>{errors.categoryId}</small> : null}
+          {review.classificationSuggestion.confidence === "low" ? (
+            <small aria-hidden="true">Precisa revisar</small>
+          ) : null}
         </label>
 
         <label
           className="field"
           data-invalid={Boolean(errors.expenseTypeId)}
+          data-review={review.classificationSuggestion.confidence === "low" || undefined}
           htmlFor="ocrExpenseTypeId"
         >
           <span>Tipo do gasto</span>
@@ -171,6 +205,9 @@ export function ReceiptOcrReviewForm({
             ))}
           </select>
           {errors.expenseTypeId ? <small>{errors.expenseTypeId}</small> : null}
+          {review.classificationSuggestion.confidence === "low" ? (
+            <small aria-hidden="true">Precisa revisar</small>
+          ) : null}
         </label>
 
         <label

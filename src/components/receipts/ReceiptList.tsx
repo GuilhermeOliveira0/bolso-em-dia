@@ -80,14 +80,20 @@ export function ReceiptList({ receipts, onReadReceipt, readingReceiptId }: Recei
                 </div>
               </dl>
               {onReadReceipt ? (
-                <button
-                  className="receipt-read-button"
-                  disabled={readingReceiptId === receipt.id || Boolean(receipt.expenseId)}
-                  type="button"
-                  onClick={() => onReadReceipt(receipt.id)}
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    onReadReceipt(receipt.id);
+                  }}
                 >
-                  {readingReceiptId === receipt.id ? "Lendo..." : "Ler comprovante"}
-                </button>
+                  <button
+                    className="receipt-read-button"
+                    disabled={readingReceiptId === receipt.id || Boolean(receipt.expenseId)}
+                    type="submit"
+                  >
+                    {readingReceiptId === receipt.id ? "Lendo..." : "Ler comprovante"}
+                  </button>
+                </form>
               ) : null}
             </div>
           </li>
