@@ -6,35 +6,39 @@ Permitir que o usuário envie comprovante Pix por imagem ou PDF, leia os dados a
 
 ## Upload do comprovante Pix
 
-### Fatia atual: upload seguro de imagem
+### Fatia atual: OCR básico de imagem com revisão
 
-Nesta fatia, o sistema deve permitir apenas upload de imagem de comprovante Pix, sem OCR e sem criação automática de gasto.
+Nesta fatia, o sistema deve permitir upload de imagem de comprovante Pix e leitura OCR acionada pelo usuário. A leitura tenta extrair apenas valor, data e recebedor. O usuário sempre revisa e confirma os campos antes de qualquer despesa ser criada.
 
 - formatos aceitos: PNG, JPG/JPEG e WEBP;
 - limite: 5 MB por imagem;
 - PDF fica para uma fatia futura;
-- OCR fica para a próxima fatia;
+- OCR é feito somente para imagem;
+- OCR é acionado pelo usuário, não automaticamente em todo upload;
 - arquivo deve ficar em bucket privado;
 - o caminho deve ser organizado por `user_id`;
 - o sistema deve salvar metadados do comprovante com status `uploaded`;
-- o comprovante pode se vincular a um gasto no futuro, mas `expense_id` é opcional agora;
+- resultado inicial pode preencher `extracted_amount`, `extracted_date`, `extracted_recipient`, `ocr_status`, `ocr_confidence` e `processed_at`;
+- o comprovante pode se vincular ao gasto confirmado por `expense_id`;
 - nenhum gasto deve ser criado automaticamente.
 
-### Fluxo completo futuro com OCR
+### Fluxo de OCR e revisão
 
 1. O usuário escolhe um arquivo.
 2. O sistema valida tipo e tamanho.
 3. O arquivo é enviado para armazenamento privado.
-4. O sistema cria um registro de comprovante com status de processamento.
-5. O OCR tenta ler os dados.
-6. O sistema mostra uma etapa de revisão.
-7. O usuário confirma ou corrige os dados.
-8. Só depois da confirmação o gasto é salvo.
+4. O sistema cria um registro de comprovante com status `uploaded`.
+5. O usuário clica em "Ler comprovante".
+6. O OCR tenta ler valor, data e recebedor.
+7. O sistema mostra uma etapa de revisão com campos editáveis.
+8. O usuário informa categoria, tipo do gasto e forma de pagamento manualmente.
+9. Só depois da confirmação o gasto é salvo.
+10. Se possível, o comprovante é vinculado à despesa criada.
 
 ## Formatos aceitos
 
 - Imagens: PNG, JPG, JPEG e WEBP.
-- PDF: arquivo PDF com comprovante legível.
+- PDF: fora do escopo desta fatia.
 
 Formatos e limites finais devem ser revisados na implementação de segurança.
 
@@ -45,9 +49,8 @@ Extrair quando possível:
 - valor;
 - data;
 - recebedor;
-- banco;
-- forma de pagamento;
-- descrição.
+
+Banco, forma de pagamento, categoria e tipo ficam manuais nesta fatia. Sugestão automática avançada fica para a próxima fatia.
 
 ## Erro de leitura
 
@@ -78,6 +81,10 @@ Exemplos de baixa confiança:
 - PDF sem texto legível.
 
 ## Sugestão de categoria
+
+Fora do escopo desta fatia. A revisão deve mostrar os campos de categoria e tipo como editáveis e manuais.
+
+### Futuro
 
 A categoria deve ser sugerida com base em:
 

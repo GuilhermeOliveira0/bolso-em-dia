@@ -38,7 +38,11 @@ export class LegacyLocalExpenseRepository implements ExpenseRepository {
     );
   }
 
-  async createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult> {
+  private async create(
+    userId: string,
+    draft: ExpenseDraft,
+    source: Expense["source"],
+  ): Promise<CreateExpenseResult> {
     const validation = validateExpenseDraft(draft);
     if (!validation.ok) return { ok: false, errors: validation.errors };
     if (!userId) {
@@ -55,12 +59,28 @@ export class LegacyLocalExpenseRepository implements ExpenseRepository {
       categoryId: validation.data.categoryId,
       expenseTypeId: validation.data.expenseTypeId,
       paymentMethod: validation.data.paymentMethod,
-      source: "manual",
+      source,
       createdAt: now,
       updatedAt: now,
     };
 
     writeExpenses([...readExpenses(), expense]);
     return { ok: true, expense };
+  }
+
+  async createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult> {
+    return this.create(userId, draft, "manual");
+  }
+
+  async createFromReceipt(
+    userId: string,
+    draft: ExpenseDraft,
+    receiptId: string,
+  ): Promise<CreateExpenseResult> {
+    if (!receiptId.trim()) {
+      return { ok: false, errors: { amount: "Selecione um comprovante antes de salvar." } };
+    }
+
+    return this.create(userId, draft, "ocr");
   }
 }

@@ -12,7 +12,7 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 4. Upload de comprovante Pix.
 5. Extração OCR.
 6. Tela ou etapa de confirmação do gasto extraído.
-7. Sugestão de categoria e tipo.
+7. Categoria, tipo e forma de pagamento manuais na revisão inicial.
 8. Filtros básicos.
 9. Autenticação e isolamento de dados por usuário.
 10. Proteção básica de comprovantes enviados.
@@ -39,10 +39,9 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 ## Não será feito agora
 
 - Deploy.
-- Integração real com serviço de OCR.
+- Integração real com serviço externo de OCR.
 - PDF no upload de comprovantes.
-- OCR no fluxo unificado de lançamentos.
-- Sugestão automática de categoria no fluxo unificado de lançamentos.
+- Sugestão automática avançada de categoria no fluxo unificado de lançamentos.
 - Aplicativo nativo.
 - Cobrança ou assinatura.
 - Dashboard avançada.
@@ -70,7 +69,7 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 - Sistema extrai pelo menos valor, data e recebedor quando possível.
 - Sistema exibe etapa de confirmação antes de salvar gasto extraído.
 - Usuário consegue corrigir dados extraídos.
-- Sistema sugere categoria e tipo de gasto.
+- Sistema permite preencher categoria, tipo e forma de pagamento antes de confirmar o gasto extraído.
 - Dashboard mostra total do mês e filtros básicos.
 - Usuário não consegue acessar dados de outro usuário.
 - Comprovante privado não fica público.

@@ -1,5 +1,6 @@
-export type ExpenseSource = "manual";
-export type ReceiptStatus = "uploaded";
+export type ExpenseSource = "manual" | "ocr";
+export type ReceiptStatus = "uploaded" | "processing" | "processed" | "failed" | "reviewed";
+export type ReceiptOcrStatus = "pending" | "processing" | "processed" | "failed";
 
 export type User = {
   id: string;
@@ -61,6 +62,13 @@ export type Receipt = {
   fileType: "image/png" | "image/jpeg" | "image/webp";
   fileSize: number;
   status: ReceiptStatus;
+  ocrText?: string | null;
+  extractedAmountInCents?: number | null;
+  extractedDate?: string | null;
+  extractedRecipient?: string | null;
+  ocrStatus?: ReceiptOcrStatus | null;
+  ocrConfidence?: number | null;
+  processedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 };

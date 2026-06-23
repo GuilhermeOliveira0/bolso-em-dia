@@ -193,14 +193,14 @@ Unificar visualmente o cadastro manual, o upload de comprovante e a listagem de 
 - Nova despesa continua salvando com `user_id` autenticado.
 - Novo comprovante continua aceitando somente PNG, JPG/JPEG e WEBP até 5 MB.
 - Extrato lista somente gastos do usuário autenticado.
-- OCR, PDF e sugestão automática continuam fora do escopo.
+- OCR básico de imagem passa para a Fatia 4; PDF e sugestão automática avançada continuam fora do escopo.
 - Interface funciona sem overflow horizontal em 390px e 1280px.
 
 ### Não fazer nesta fatia
 
 - Não alterar regras de RLS.
 - Não criar gasto automaticamente a partir de comprovante.
-- Não implementar OCR, PDF ou classificação automática.
+- Não implementar PDF ou classificação automática avançada.
 
 ## Fatia 4: OCR e extração
 
@@ -213,12 +213,16 @@ Ler comprovante Pix e extrair dados iniciais.
 - Leitura do comprovante.
 - Extração de valor, data e recebedor.
 - Tratamento de baixa confiança.
+- Revisão manual antes de salvar despesa.
+- Categoria, tipo e forma de pagamento preenchidos manualmente.
 
 ### Arquivos prováveis
 
 - Serviço de OCR.
 - Parser de texto Pix.
 - Modelo de resultado extraído.
+- Action de revisão e confirmação.
+- Vinculação segura entre comprovante e despesa.
 - Testes com exemplos controlados.
 
 ### Critérios de aceite
@@ -227,12 +231,14 @@ Ler comprovante Pix e extrair dados iniciais.
 - Campos incertos são marcados como `precisa revisar`.
 - Erros de leitura não salvam gasto.
 - Usuário recebe feedback claro.
+- Despesa só é criada após confirmação explícita.
 
 ### Critérios de verificação
 
 - Testes com texto de comprovante simulado.
 - Testes de baixa confiança.
 - Testes de erro de leitura.
+- Testes de confirmação antes de salvar.
 
 ### Riscos
 
@@ -244,6 +250,8 @@ Ler comprovante Pix e extrair dados iniciais.
 
 - Não salvar gasto sem confirmação.
 - Não criar aprendizado por histórico ainda.
+- Não implementar PDF.
+- Não implementar sugestão automática avançada de categoria ou tipo.
 
 ## Fatia 5: Confirmação do gasto extraído
 

@@ -127,6 +127,7 @@ Regras:
 - Logs vazarem dados financeiros.
 - Upload aceitar arquivo malicioso.
 - OCR externo receber dados sem decisão clara.
+- OCR criar despesa automaticamente sem revisão do usuário.
 - Dashboard agregar dados de usuários diferentes por erro de filtro.
 - Cache ou storage local vazar dados entre contas no mesmo navegador.
 
@@ -143,6 +144,9 @@ Regras:
 - Logs minimizados.
 - Revisão de segurança sempre que alterar banco, autenticação ou upload.
 - Não considerar armazenamento local temporário como solução segura multiusuário.
+- Executar OCR apenas em comprovantes do usuário autenticado.
+- Criar despesa extraída somente após confirmação explícita.
+- Usar `user_id` da sessão no servidor, nunca valor enviado pelo frontend.
 
 ## Assumptions
 

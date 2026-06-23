@@ -60,8 +60,8 @@ export function ReceiptUploadForm() {
         </div>
 
         <p className="info-message">
-          <strong>Leitura inteligente:</strong> OCR ainda não está ativo. PNG, JPG, JPEG ou WEBP
-          até {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
+          <strong>Leitura inteligente:</strong> após enviar, clique em "Ler comprovante" para
+          revisar. PNG, JPG, JPEG ou WEBP até {MAX_RECEIPT_FILE_SIZE_BYTES / 1024 / 1024} MB.
         </p>
 
         {result ? (

@@ -213,6 +213,9 @@ Representar o comprovante enviado pelo usuário. Na fatia atual, guarda apenas i
 - PDF e OCR ficam para fatias futuras.
 - Campos de baixa confiança devem ser revisados.
 - OCR com erro deve permitir correção manual ou novo envio.
+- Nesta fatia, OCR em comprovante tenta preencher apenas valor, data e recebedor.
+- Categoria, tipo e forma de pagamento são informados manualmente na revisão.
+- PDF e sugestão automática avançada ficam fora do escopo desta fatia.
 
 ### Segurança
 

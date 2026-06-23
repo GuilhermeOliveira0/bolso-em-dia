@@ -1,8 +1,12 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import type { ReceiptWithPreview } from "@/types/finance";
 
 type ReceiptListProps = {
   receipts: ReceiptWithPreview[];
+  onReadReceipt?: (receiptId: string) => void;
+  readingReceiptId?: string;
 };
 
 const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
@@ -18,7 +22,7 @@ function formatFileSize(sizeInBytes: number): string {
   return `${(sizeInBytes / 1024 / 1024).toFixed(1).replace(".", ",")} MB`;
 }
 
-export function ReceiptList({ receipts }: ReceiptListProps) {
+export function ReceiptList({ receipts, onReadReceipt, readingReceiptId }: ReceiptListProps) {
   if (receipts.length === 0) {
     return (
       <section className="panel receipt-list-panel" aria-labelledby="receipt-list-title">
@@ -75,6 +79,16 @@ export function ReceiptList({ receipts }: ReceiptListProps) {
                   <dd>{dateFormatter.format(new Date(receipt.createdAt))}</dd>
                 </div>
               </dl>
+              {onReadReceipt ? (
+                <button
+                  className="receipt-read-button"
+                  disabled={readingReceiptId === receipt.id || Boolean(receipt.expenseId)}
+                  type="button"
+                  onClick={() => onReadReceipt(receipt.id)}
+                >
+                  {readingReceiptId === receipt.id ? "Lendo..." : "Ler comprovante"}
+                </button>
+              ) : null}
             </div>
           </li>
         ))}

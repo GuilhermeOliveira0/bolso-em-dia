@@ -11,6 +11,11 @@ export interface ExpenseRepository {
   listByUser(userId: string): Promise<Expense[]>;
   listByUserInDateRange(userId: string, startDate: string, endDate: string): Promise<Expense[]>;
   createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult>;
+  createFromReceipt(
+    userId: string,
+    draft: ExpenseDraft,
+    receiptId: string,
+  ): Promise<CreateExpenseResult>;
 }
 
 const EXPENSE_COLUMNS =
@@ -87,7 +92,11 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
     return (data ?? []).map(mapExpenseRow);
   }
 
-  async createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult> {
+  private async create(
+    userId: string,
+    draft: ExpenseDraft,
+    source: Expense["source"],
+  ): Promise<CreateExpenseResult> {
     const validation = validateExpenseDraft(draft);
 
     if (!validation.ok) {
@@ -110,7 +119,7 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
         category: validation.data.categoryId,
         expense_type: validation.data.expenseTypeId,
         payment_method: validation.data.paymentMethod,
-        source: "manual",
+        source,
         created_at: now,
         updated_at: now,
       })
@@ -125,5 +134,21 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
     }
 
     return { ok: true, expense: mapExpenseRow(data) };
+  }
+
+  async createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult> {
+    return this.create(userId, draft, "manual");
+  }
+
+  async createFromReceipt(
+    userId: string,
+    draft: ExpenseDraft,
+    receiptId: string,
+  ): Promise<CreateExpenseResult> {
+    if (!receiptId) {
+      return { ok: false, errors: { amount: "Selecione um comprovante antes de salvar." } };
+    }
+
+    return this.create(userId, draft, "ocr");
   }
 }
