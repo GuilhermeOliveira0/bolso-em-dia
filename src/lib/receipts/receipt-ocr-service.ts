@@ -16,10 +16,19 @@ type RunReceiptImageOcrOptions = {
   createWorker?: TesseractModule["createWorker"];
 };
 
-function createTimeoutPromise(timeoutMs: number): Promise<never> {
-  return new Promise((_, reject) => {
-    setTimeout(() => reject(new Error("RECEIPT_OCR_TIMEOUT")), timeoutMs);
+function createOcrTimeout(timeoutMs: number, onTimeout: () => void) {
+  let timeout: ReturnType<typeof setTimeout>;
+  const promise = new Promise<never>((_, reject) => {
+    timeout = setTimeout(() => {
+      onTimeout();
+      reject(new Error("RECEIPT_OCR_TIMEOUT"));
+    }, timeoutMs);
   });
+
+  return {
+    clear: () => clearTimeout(timeout),
+    promise,
+  };
 }
 
 function isOcrTimeoutError(error: unknown): boolean {
@@ -31,33 +40,45 @@ export async function runReceiptImageOcr(
   options: RunReceiptImageOcrOptions = {},
 ): Promise<ReceiptOcrExecutionResult> {
   let worker: TesseractWorker | null = null;
+  let timedOut = false;
+  const timeout = createOcrTimeout(options.timeoutMs ?? RECEIPT_OCR_TIMEOUT_MS, () => {
+    timedOut = true;
+  });
+  timeout.promise.catch(() => undefined);
 
   try {
     const tesseract = (await import("tesseract.js")) as TesseractModule;
     const createWorker = options.createWorker ?? tesseract.createWorker;
-    const timeoutMs = options.timeoutMs ?? RECEIPT_OCR_TIMEOUT_MS;
 
-    worker = await createWorker("por+eng");
-    const recognitionPromise = worker.recognize(imageBuffer);
-    recognitionPromise.catch(() => undefined);
+    const ocrExecution = (async (): Promise<ReceiptOcrExecutionResult> => {
+      const workerPromise = createWorker("por+eng");
+      workerPromise
+        .then((createdWorker) => {
+          if (timedOut && worker !== createdWorker) {
+            void createdWorker.terminate().catch(() => undefined);
+          }
+        })
+        .catch(() => undefined);
 
-    const recognition = await Promise.race([
-      recognitionPromise,
-      createTimeoutPromise(timeoutMs),
-    ]);
-    const rawText = recognition.data.text ?? "";
+      worker = await workerPromise;
+      const recognition = await worker.recognize(imageBuffer);
+      const rawText = recognition.data.text ?? "";
 
-    if (!rawText.trim()) {
+      if (!rawText.trim()) {
+        return {
+          ok: false,
+          message: "Não foi possível ler dados do comprovante. Preencha a revisão manualmente.",
+        };
+      }
+
       return {
-        ok: false,
-        message: "Não foi possível ler dados do comprovante. Preencha a revisão manualmente.",
+        ok: true,
+        result: parseReceiptOcrText(rawText, (recognition.data.confidence ?? 0) / 100),
       };
-    }
+    })();
+    ocrExecution.catch(() => undefined);
 
-    return {
-      ok: true,
-      result: parseReceiptOcrText(rawText, (recognition.data.confidence ?? 0) / 100),
-    };
+    return await Promise.race([ocrExecution, timeout.promise]);
   } catch (error) {
     if (isOcrTimeoutError(error)) {
       return {
@@ -71,8 +92,12 @@ export async function runReceiptImageOcr(
       message: "A leitura automática falhou. Você ainda pode preencher os dados manualmente.",
     };
   } finally {
-    if (worker) {
-      await worker.terminate().catch(() => undefined);
+    timeout.clear();
+
+    const activeWorker = worker as TesseractWorker | null;
+
+    if (activeWorker) {
+      await activeWorker.terminate().catch(() => undefined);
     }
   }
 }

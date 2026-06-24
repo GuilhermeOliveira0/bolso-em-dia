@@ -23,6 +23,23 @@ function createWorkerMock(overrides: {
 }
 
 describe("runReceiptImageOcr", () => {
+  it("retorna timeout quando a criacao do worker fica pendente", async () => {
+    const resultOrHang = await Promise.race([
+      runReceiptImageOcr(Buffer.from("image"), {
+        createWorker: vi.fn(() => new Promise(() => undefined)) as unknown as TesseractCreateWorker,
+        timeoutMs: 1,
+      }),
+      new Promise((resolve) => {
+        setTimeout(() => resolve("hung"), 20);
+      }),
+    ]);
+
+    expect(resultOrHang).toEqual({
+      ok: false,
+      message: RECEIPT_OCR_TIMEOUT_MESSAGE,
+    });
+  });
+
   it("retorna erro amigavel e encerra o worker quando o OCR expira", async () => {
     const { createWorker, terminate } = createWorkerMock({
       recognize: vi.fn(() => new Promise(() => undefined)),

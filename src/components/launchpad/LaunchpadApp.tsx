@@ -6,6 +6,7 @@ import { createManualExpenseAction } from "@/app/gastos/actions";
 import {
   confirmReceiptExpenseAction,
   processReceiptOcrAction,
+  type ProcessReceiptOcrResult,
   type ReceiptOcrReview,
   type ReceiptOcrReviewDraft,
 } from "@/app/lancamentos/actions";
@@ -39,6 +40,25 @@ type OcrMessageTone = "info" | "success" | "error";
 
 const OCR_FAILURE_MESSAGE =
   "Não conseguimos ler o comprovante agora. Você pode preencher manualmente.";
+const OCR_CLIENT_TIMEOUT_MS = 65_000;
+
+function processReceiptWithClientTimeout(receiptId: string): Promise<ProcessReceiptOcrResult> {
+  let timeoutId: number | undefined;
+  const timeoutResult = new Promise<ProcessReceiptOcrResult>((resolve) => {
+    timeoutId = window.setTimeout(() => {
+      resolve({
+        ok: false,
+        message: OCR_FAILURE_MESSAGE,
+      });
+    }, OCR_CLIENT_TIMEOUT_MS);
+  });
+
+  return Promise.race([processReceiptOcrAction(receiptId), timeoutResult]).finally(() => {
+    if (timeoutId) {
+      window.clearTimeout(timeoutId);
+    }
+  });
+}
 
 export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
   const router = useRouter();
@@ -100,7 +120,7 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
     }, 5000);
 
     try {
-      const result = await processReceiptOcrAction(receiptId);
+      const result = await processReceiptWithClientTimeout(receiptId);
 
       if (!result.ok) {
         setOcrReview(null);

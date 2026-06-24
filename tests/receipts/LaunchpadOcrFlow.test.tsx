@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   confirmReceiptExpenseAction,
   processReceiptOcrAction,
@@ -117,6 +117,10 @@ describe("LaunchpadApp OCR flow", () => {
     });
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("abre revisao manual quando o OCR retorna falha controlada", async () => {
     vi.mocked(processReceiptOcrAction).mockResolvedValueOnce({
       ok: true,
@@ -151,5 +155,25 @@ describe("LaunchpadApp OCR flow", () => {
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Ler comprovante" })).toBeEnabled();
     });
+  });
+
+  it("finaliza o loading quando a action fica pendente", async () => {
+    vi.useFakeTimers();
+    vi.mocked(processReceiptOcrAction).mockReturnValueOnce(new Promise(() => undefined));
+
+    renderLaunchpad();
+
+    fireEvent.click(screen.getByRole("button", { name: "Ler comprovante" }));
+
+    expect(screen.getByRole("button", { name: "Lendo..." })).toBeDisabled();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(65_000);
+    });
+
+    expect(
+      screen.getByText("Não conseguimos ler o comprovante agora. Você pode preencher manualmente."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ler comprovante" })).toBeEnabled();
   });
 });
