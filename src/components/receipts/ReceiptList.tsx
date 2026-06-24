@@ -88,7 +88,7 @@ export function ReceiptList({ receipts, onReadReceipt, readingReceiptId }: Recei
                 >
                   <button
                     className="receipt-read-button"
-                    disabled={readingReceiptId === receipt.id || Boolean(receipt.expenseId)}
+                    disabled={Boolean(readingReceiptId) || Boolean(receipt.expenseId)}
                     type="submit"
                   >
                     {readingReceiptId === receipt.id ? "Lendo..." : "Ler comprovante"}

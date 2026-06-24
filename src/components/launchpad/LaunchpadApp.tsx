@@ -35,6 +35,11 @@ type LaunchpadAppProps = {
   receipts: ReceiptWithPreview[];
 };
 
+type OcrMessageTone = "info" | "success" | "error";
+
+const OCR_FAILURE_MESSAGE =
+  "Não conseguimos ler o comprovante agora. Você pode preencher manualmente.";
+
 export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
   const router = useRouter();
   const [draft, setDraft] = useState<ExpenseDraft>(EMPTY_DRAFT);
@@ -44,6 +49,7 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
   const [ocrReview, setOcrReview] = useState<ReceiptOcrReview | null>(null);
   const [ocrErrors, setOcrErrors] = useState<ReceiptOcrReviewErrors>({});
   const [ocrMessage, setOcrMessage] = useState("");
+  const [ocrMessageTone, setOcrMessageTone] = useState<OcrMessageTone>("info");
   const [readingReceiptId, setReadingReceiptId] = useState("");
   const [isConfirmingOcr, setIsConfirmingOcr] = useState(false);
 
@@ -80,22 +86,40 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
   }
 
   async function handleReadReceipt(receiptId: string) {
-    setReadingReceiptId(receiptId);
-    setOcrMessage("Lendo comprovante...");
-    setOcrErrors({});
-
-    const result = await processReceiptOcrAction(receiptId);
-
-    if (!result.ok) {
-      setOcrReview(null);
-      setOcrMessage(result.message);
-      setReadingReceiptId("");
+    if (readingReceiptId) {
       return;
     }
 
-    setOcrReview(result.review);
-    setOcrMessage(result.message);
-    setReadingReceiptId("");
+    setReadingReceiptId(receiptId);
+    setOcrMessage("Lendo comprovante...");
+    setOcrMessageTone("info");
+    setOcrErrors({});
+
+    const slowReadTimer = window.setTimeout(() => {
+      setOcrMessage("Lendo comprovante... Isso pode levar um pouco na primeira leitura.");
+    }, 5000);
+
+    try {
+      const result = await processReceiptOcrAction(receiptId);
+
+      if (!result.ok) {
+        setOcrReview(null);
+        setOcrMessage(result.message);
+        setOcrMessageTone("error");
+        return;
+      }
+
+      setOcrReview(result.review);
+      setOcrMessage(result.message);
+      setOcrMessageTone(result.review.confidence > 0 ? "success" : "error");
+    } catch {
+      setOcrReview(null);
+      setOcrMessage(OCR_FAILURE_MESSAGE);
+      setOcrMessageTone("error");
+    } finally {
+      window.clearTimeout(slowReadTimer);
+      setReadingReceiptId("");
+    }
   }
 
   async function handleConfirmOcrExpense() {
@@ -117,9 +141,17 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
     setOcrReview(null);
     setOcrErrors({});
     setOcrMessage("Despesa criada a partir do comprovante. Ela já aparece no extrato.");
+    setOcrMessageTone("success");
     setIsConfirmingOcr(false);
     router.refresh();
   }
+
+  const ocrMessageClassName =
+    ocrMessageTone === "error"
+      ? "error-message"
+      : ocrMessageTone === "success"
+        ? "success-message"
+        : "info-message";
 
   return (
     <main className="app-shell launchpad-shell">
@@ -137,7 +169,10 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
 
         <div className="launchpad-main-column">
           {ocrMessage ? (
-            <p className={ocrReview ? "success-message" : "info-message"} role="status">
+            <p
+              className={ocrMessageClassName}
+              role={ocrMessageTone === "error" ? "alert" : "status"}
+            >
               {ocrMessage}
             </p>
           ) : null}
@@ -151,6 +186,7 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
                 setOcrReview(null);
                 setOcrErrors({});
                 setOcrMessage("");
+                setOcrMessageTone("info");
               }}
               onChange={handleOcrReviewChange}
               onSubmit={handleConfirmOcrExpense}
