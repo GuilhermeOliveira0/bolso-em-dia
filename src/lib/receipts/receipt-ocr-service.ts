@@ -1,3 +1,5 @@
+import { mkdirSync } from "node:fs";
+import path from "node:path";
 import { parseReceiptOcrText, type ReceiptOcrParseResult } from "./receipt-ocr-parser";
 
 export const RECEIPT_OCR_TIMEOUT_MS = 60_000;
@@ -15,6 +17,16 @@ type RunReceiptImageOcrOptions = {
   timeoutMs?: number;
   createWorker?: TesseractModule["createWorker"];
 };
+
+export function resolveTesseractWorkerOptions(): Partial<Tesseract.WorkerOptions> {
+  const cachePath = path.join(process.cwd(), ".next", "cache", "tesseract");
+  mkdirSync(cachePath, { recursive: true });
+
+  return {
+    cachePath,
+    workerPath: require.resolve("tesseract.js/src/worker-script/node/index.js"),
+  };
+}
 
 function createOcrTimeout(timeoutMs: number, onTimeout: () => void) {
   let timeout: ReturnType<typeof setTimeout>;
@@ -49,9 +61,10 @@ export async function runReceiptImageOcr(
   try {
     const tesseract = (await import("tesseract.js")) as TesseractModule;
     const createWorker = options.createWorker ?? tesseract.createWorker;
+    const workerOptions = resolveTesseractWorkerOptions();
 
     const ocrExecution = (async (): Promise<ReceiptOcrExecutionResult> => {
-      const workerPromise = createWorker("por+eng");
+      const workerPromise = createWorker("por+eng", undefined, workerOptions);
       workerPromise
         .then((createdWorker) => {
           if (timedOut && worker !== createdWorker) {

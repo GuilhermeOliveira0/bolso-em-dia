@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   RECEIPT_OCR_TIMEOUT_MESSAGE,
+  resolveTesseractWorkerOptions,
   runReceiptImageOcr,
 } from "@/lib/receipts/receipt-ocr-service";
 
@@ -23,6 +24,39 @@ function createWorkerMock(overrides: {
 }
 
 describe("runReceiptImageOcr", () => {
+  it("configura o worker local do tesseract para o runtime do Next", async () => {
+    const options = resolveTesseractWorkerOptions();
+
+    expect(options.workerPath).toContain("node_modules");
+    expect(options.workerPath).toContain("tesseract.js");
+    expect(options.workerPath).toContain("worker-script");
+    expect(options.workerPath).not.toContain("C:\\ROOT");
+    expect(options.cachePath).toContain(".next");
+    expect(options.cachePath).toContain("tesseract");
+  });
+
+  it("passa a configuracao local do worker para o tesseract", async () => {
+    const { createWorker } = createWorkerMock({
+      recognize: vi.fn(async () => ({
+        data: {
+          text: "Valor R$ 10,00\nData 19/06/2026\nRecebedor:\nPadaria",
+          confidence: 80,
+        },
+      })),
+    });
+
+    await runReceiptImageOcr(Buffer.from("image"), { createWorker });
+
+    expect(createWorker).toHaveBeenCalledWith(
+      "por+eng",
+      undefined,
+      expect.objectContaining({
+        cachePath: expect.stringContaining("tesseract"),
+        workerPath: expect.stringContaining("worker-script"),
+      }),
+    );
+  });
+
   it("retorna timeout quando a criacao do worker fica pendente", async () => {
     const resultOrHang = await Promise.race([
       runReceiptImageOcr(Buffer.from("image"), {
