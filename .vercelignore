@@ -1,0 +1,11 @@
+.next
+.vercel
+node_modules
+logs
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+Mobile.html
+dasktop.html
+video.mp4
