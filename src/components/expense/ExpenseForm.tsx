@@ -1,7 +1,7 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { DEFAULT_CATEGORIES } from "@/lib/categories/default-categories";
+import { getExpenseCategoryOptions } from "@/lib/categories/default-categories";
 import { DEFAULT_EXPENSE_TYPES } from "@/lib/expense-types/default-expense-types";
 import { DEFAULT_PAYMENT_METHODS } from "@/lib/payment-methods/default-payment-methods";
 import type { ExpenseDraft, ExpenseFormErrors } from "@/types/finance";
@@ -84,7 +84,7 @@ export function ExpenseForm({
           onChange={(event) => onChange("categoryId", event.target.value)}
         >
           <option value="">Escolha uma categoria</option>
-          {DEFAULT_CATEGORIES.map((category) => (
+          {getExpenseCategoryOptions(draft.categoryId).map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>

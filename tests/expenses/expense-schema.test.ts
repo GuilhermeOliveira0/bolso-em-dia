@@ -62,4 +62,20 @@ describe("validateExpenseDraft", () => {
       expect(result.errors.paymentMethod).toBe("Escolha a forma de pagamento.");
     }
   });
+
+  it("accepts the new default categories and A Receber expense type", () => {
+    const result = validateExpenseDraft({
+      ...validDraft,
+      categoryId: "mecanica",
+      expenseTypeId: "a_receber",
+    });
+
+    expect(result.ok).toBe(true);
+  });
+
+  it("keeps legacy Transporte data valid for existing expenses", () => {
+    const result = validateExpenseDraft({ ...validDraft, categoryId: "transporte" });
+
+    expect(result.ok).toBe(true);
+  });
 });

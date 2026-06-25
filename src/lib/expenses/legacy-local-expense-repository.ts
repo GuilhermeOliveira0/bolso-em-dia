@@ -1,4 +1,9 @@
-import type { CreateExpenseResult, ExpenseRepository } from "./expense-repository";
+import type {
+  CreateExpenseResult,
+  DeleteExpenseResult,
+  ExpenseRepository,
+  UpdateExpenseResult,
+} from "./expense-repository";
 import { validateExpenseDraft } from "./expense-schema";
 import type { Expense, ExpenseDraft } from "@/types/finance";
 
@@ -82,5 +87,67 @@ export class LegacyLocalExpenseRepository implements ExpenseRepository {
     }
 
     return this.create(userId, draft, "ocr");
+  }
+
+  async updateManual(
+    userId: string,
+    expenseId: string,
+    draft: ExpenseDraft,
+  ): Promise<UpdateExpenseResult> {
+    const validation = validateExpenseDraft(draft);
+    if (!validation.ok) return { ok: false, errors: validation.errors };
+
+    const expenses = readExpenses();
+    const expenseIndex = expenses.findIndex(
+      (expense) => expense.id === expenseId && expense.userId === userId,
+    );
+
+    if (expenseIndex < 0) {
+      return {
+        ok: false,
+        errors: {},
+        message: "Não foi possível localizar essa despesa para edição.",
+      };
+    }
+
+    const currentExpense = expenses[expenseIndex];
+
+    if (!currentExpense) {
+      return {
+        ok: false,
+        errors: {},
+        message: "Não foi possível localizar essa despesa para edição.",
+      };
+    }
+
+    const updatedExpense: Expense = {
+      ...currentExpense,
+      amountInCents: validation.amountInCents,
+      description: validation.data.description,
+      date: validation.data.date,
+      categoryId: validation.data.categoryId,
+      expenseTypeId: validation.data.expenseTypeId,
+      paymentMethod: validation.data.paymentMethod,
+      updatedAt: new Date().toISOString(),
+    };
+
+    expenses[expenseIndex] = updatedExpense;
+    writeExpenses(expenses);
+
+    return { ok: true, expense: updatedExpense };
+  }
+
+  async deleteByUser(userId: string, expenseId: string): Promise<DeleteExpenseResult> {
+    const expenses = readExpenses();
+    const nextExpenses = expenses.filter(
+      (expense) => !(expense.id === expenseId && expense.userId === userId),
+    );
+
+    if (nextExpenses.length === expenses.length) {
+      return { ok: false, message: "Não foi possível localizar essa despesa para exclusão." };
+    }
+
+    writeExpenses(nextExpenses);
+    return { ok: true };
   }
 }

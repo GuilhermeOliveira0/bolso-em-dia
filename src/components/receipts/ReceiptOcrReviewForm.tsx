@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import type { ReceiptOcrReview, ReceiptOcrReviewDraft } from "@/app/lancamentos/actions";
 import { AppIcon } from "@/components/ui/AppIcon";
-import { DEFAULT_CATEGORIES } from "@/lib/categories/default-categories";
+import { getCategoryName, getExpenseCategoryOptions } from "@/lib/categories/default-categories";
 import { DEFAULT_EXPENSE_TYPES } from "@/lib/expense-types/default-expense-types";
 import { DEFAULT_PAYMENT_METHODS } from "@/lib/payment-methods/default-payment-methods";
 
@@ -20,10 +20,6 @@ type ReceiptOcrReviewFormProps = {
 
 function needsReview(review: ReceiptOcrReview, field: "amount" | "date" | "recipient") {
   return review.fieldsNeedReview.includes(field);
-}
-
-function getCategoryName(categoryId: string) {
-  return DEFAULT_CATEGORIES.find((category) => category.id === categoryId)?.name ?? "categoria";
 }
 
 function getExpenseTypeName(expenseTypeId: string) {
@@ -171,7 +167,7 @@ export function ReceiptOcrReviewForm({
             onChange={(event) => onChange("categoryId", event.target.value)}
           >
             <option value="">Escolha uma categoria</option>
-            {DEFAULT_CATEGORIES.map((category) => (
+            {getExpenseCategoryOptions(review.categoryId).map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>

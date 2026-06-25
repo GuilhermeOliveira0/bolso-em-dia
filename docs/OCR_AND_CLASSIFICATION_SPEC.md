@@ -85,6 +85,11 @@ Exemplos de baixa confiança:
 
 Nesta fatia, a revisão pode sugerir categoria e tipo do gasto com base em palavras-chave do recebedor, da descrição sugerida e do texto OCR. A sugestão não usa IA externa, não consulta histórico do usuário e não salva despesa sozinha.
 
+Regras atuais de palavra-chave:
+
+- `combustivel`, `gasolina`, `etanol`, `diesel` e `posto` sugerem Combustível / Necessário.
+- `mecanica`, `oficina`, `manutencao`, `troca de oleo` e `pneu` sugerem Mecânica / Importante.
+
 Quando houver confiança suficiente:
 
 - preencher categoria e tipo no formulário de revisão;

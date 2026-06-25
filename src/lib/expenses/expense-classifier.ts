@@ -22,9 +22,14 @@ type ExpenseClassificationRule = {
 
 const EXPENSE_CLASSIFICATION_RULES: ExpenseClassificationRule[] = [
   {
-    categoryId: "transporte",
+    categoryId: "combustivel",
     expenseTypeId: "necessario",
-    keywords: ["uber", "99", "taxi", "combustivel", "gasolina", "posto", "onibus", "transporte"],
+    keywords: ["combustivel", "gasolina", "etanol", "diesel", "posto"],
+  },
+  {
+    categoryId: "mecanica",
+    expenseTypeId: "importante",
+    keywords: ["mecanica", "oficina", "manutencao", "troca de oleo", "pneu"],
   },
   {
     categoryId: "alimentacao",

@@ -144,7 +144,8 @@ Categorias iniciais:
 
 - Alimentação.
 - Mercado.
-- Transporte.
+- Mecânica.
+- Combustível.
 - Lazer.
 - Saúde.
 - Educação.
@@ -152,7 +153,10 @@ Categorias iniciais:
 - Contas.
 - Compras.
 - Assinaturas.
+- Sítio.
 - Outros.
+
+Observação: `Transporte` permanece apenas para exibir registros antigos.
 
 Regras:
 
@@ -172,6 +176,7 @@ Tipos iniciais obrigatórios:
 - Supérfluo.
 - Investimento.
 - Dívida.
+- A receber.
 
 Regras:
 

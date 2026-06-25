@@ -37,6 +37,12 @@ export const DEFAULT_EXPENSE_TYPES: ExpenseType[] = [
     description: "Pagamento de dívida, parcela, juros ou financiamento.",
     sortOrder: 6,
   },
+  {
+    id: "a_receber",
+    name: "A receber",
+    description: "Valor lançado para acompanhamento manual de algo que será recebido.",
+    sortOrder: 7,
+  },
 ];
 
 export function getExpenseTypeName(expenseTypeId: string): string {

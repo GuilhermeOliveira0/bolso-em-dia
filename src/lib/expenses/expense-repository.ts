@@ -7,6 +7,14 @@ export type CreateExpenseResult =
   | { ok: true; expense: Expense }
   | { ok: false; errors: ExpenseFormErrors };
 
+export type UpdateExpenseResult =
+  | { ok: true; expense: Expense }
+  | { ok: false; errors: ExpenseFormErrors; message?: string };
+
+export type DeleteExpenseResult =
+  | { ok: true }
+  | { ok: false; message: string };
+
 export interface ExpenseRepository {
   listByUser(userId: string): Promise<Expense[]>;
   listByUserInDateRange(userId: string, startDate: string, endDate: string): Promise<Expense[]>;
@@ -16,6 +24,8 @@ export interface ExpenseRepository {
     draft: ExpenseDraft,
     receiptId: string,
   ): Promise<CreateExpenseResult>;
+  updateManual(userId: string, expenseId: string, draft: ExpenseDraft): Promise<UpdateExpenseResult>;
+  deleteByUser(userId: string, expenseId: string): Promise<DeleteExpenseResult>;
 }
 
 const EXPENSE_COLUMNS =
@@ -150,5 +160,73 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
     }
 
     return this.create(userId, draft, "ocr");
+  }
+
+  async updateManual(
+    userId: string,
+    expenseId: string,
+    draft: ExpenseDraft,
+  ): Promise<UpdateExpenseResult> {
+    const validation = validateExpenseDraft(draft);
+
+    if (!validation.ok) {
+      return { ok: false, errors: validation.errors };
+    }
+
+    if (!userId || !expenseId) {
+      return {
+        ok: false,
+        errors: {},
+        message: "Não foi possível localizar essa despesa para edição.",
+      };
+    }
+
+    const { data, error } = await this.supabase
+      .from("expenses")
+      .update({
+        amount: validation.amountInCents,
+        description: validation.data.description,
+        date: validation.data.date,
+        category: validation.data.categoryId,
+        expense_type: validation.data.expenseTypeId,
+        payment_method: validation.data.paymentMethod,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", expenseId)
+      .eq("user_id", userId)
+      .select(EXPENSE_COLUMNS)
+      .single();
+
+    if (error || !data) {
+      return {
+        ok: false,
+        errors: {},
+        message: "Não foi possível editar essa despesa. Verifique se ela ainda existe.",
+      };
+    }
+
+    return { ok: true, expense: mapExpenseRow(data) };
+  }
+
+  async deleteByUser(userId: string, expenseId: string): Promise<DeleteExpenseResult> {
+    if (!userId || !expenseId) {
+      return { ok: false, message: "Não foi possível localizar essa despesa para exclusão." };
+    }
+
+    const { data, error } = await this.supabase
+      .from("expenses")
+      .delete()
+      .eq("id", expenseId)
+      .eq("user_id", userId)
+      .select("id");
+
+    if (error || !data?.length) {
+      return {
+        ok: false,
+        message: "Não foi possível excluir essa despesa. Tente novamente em instantes.",
+      };
+    }
+
+    return { ok: true };
   }
 }

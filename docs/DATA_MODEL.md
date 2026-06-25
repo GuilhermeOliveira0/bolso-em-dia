@@ -133,6 +133,23 @@ Classificar gastos por tema, como mercado, transporte, saúde ou alimentação.
 - Usada para agrupamento de gastos por categoria.
 - Usada para ranking de categorias com maior aumento.
 
+### Categorias padrão atuais
+
+- Alimentação.
+- Mercado.
+- Mecânica.
+- Combustível.
+- Saúde.
+- Educação.
+- Moradia.
+- Contas.
+- Compras.
+- Assinaturas.
+- Sítio.
+- Outros.
+
+`Transporte` permanece reconhecida apenas para exibição de gastos antigos e compatibilidade de histórico.
+
 ## ExpenseType
 
 ### Objetivo
@@ -154,6 +171,7 @@ Classificar o tipo de gasto para ajudar o usuário a entender prioridade e compo
 - Supérfluo.
 - Investimento.
 - Dívida.
+- A receber.
 
 ### Relacionamentos
 
@@ -163,6 +181,7 @@ Classificar o tipo de gasto para ajudar o usuário a entender prioridade e compo
 
 - A lista inicial deve ser simples e estável.
 - Alterações futuras devem preservar histórico de gastos.
+- "A receber" é uma classificação manual nesta fatia; não cria ciclo de cobrança, baixa ou contas a receber.
 
 ### Segurança
 

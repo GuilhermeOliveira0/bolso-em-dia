@@ -2548,6 +2548,59 @@ h3 {
   color: var(--ink);
 }
 
+.statement-total-chip {
+  display: inline-flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0 18px;
+  color: var(--ink);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.statement-period-filter {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(150px, 0.75fr) minmax(150px, 0.75fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin: 0 0 20px;
+}
+
+.statement-period-filter label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.statement-period-filter label span {
+  color: var(--ink-muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.statement-period-filter input,
+.statement-period-filter select {
+  min-height: 50px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+  padding: 0 14px;
+}
+
+.statement-period-filter option {
+  background: #11131a;
+  color: #f8fafc;
+}
+
 .statement-pills {
   display: flex;
   gap: 12px;
@@ -2678,6 +2731,113 @@ h3 {
   color: var(--ink);
   font-size: 1.18rem;
   font-variant-numeric: tabular-nums;
+}
+
+.tx-right {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.tx-actions {
+  display: inline-flex;
+  gap: 8px;
+  opacity: 0.78;
+}
+
+.tx-actions button,
+.icon-action {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-muted);
+  transition: 160ms ease;
+}
+
+.tx-actions button:hover,
+.icon-action:hover {
+  border-color: var(--brand);
+  color: var(--ink);
+}
+
+.statement-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  background: rgba(2, 6, 23, 0.72);
+  padding: 20px;
+  backdrop-filter: blur(18px);
+}
+
+.statement-dialog {
+  width: min(720px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+    #11131a;
+  padding: 24px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+}
+
+.statement-confirm-dialog {
+  width: min(520px, 100%);
+}
+
+.statement-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.statement-dialog-header span {
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statement-dialog-header h2 {
+  margin: 4px 0 0;
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.statement-dialog p {
+  color: var(--ink-muted);
+}
+
+.statement-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.danger-action {
+  min-height: 48px;
+  border: 1px solid rgba(239, 68, 68, 0.42);
+  border-radius: 14px;
+  background: rgba(239, 68, 68, 0.14);
+  color: #fecaca;
+  padding: 0 18px;
+  font-weight: 900;
+}
+
+.danger-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
 }
 
 @media (max-width: 879px) {
@@ -2896,15 +3056,21 @@ h3 {
 
   .statement-search-area {
     width: 100%;
+    gap: 10px;
   }
 
   .statement-search {
     min-height: 48px;
   }
 
-  .statement-filter-button {
-    width: 48px;
-    min-width: 48px;
+  .statement-total-chip {
+    display: none;
+  }
+
+  .statement-period-filter {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
   }
 
   .statement-mobile-head span {
@@ -2937,6 +3103,7 @@ h3 {
   }
 
   .transaction-item {
+    align-items: flex-start;
     padding: 14px;
   }
 
@@ -2963,6 +3130,39 @@ h3 {
 
   .tx-amount {
     font-size: 1rem;
+  }
+
+  .tx-right {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tx-actions {
+    opacity: 1;
+  }
+
+  .tx-actions button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .statement-dialog-backdrop {
+    align-items: start;
+    padding: 12px;
+  }
+
+  .statement-dialog {
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .statement-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .statement-dialog-actions button {
+    width: 100%;
   }
 }
 

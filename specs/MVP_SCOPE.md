@@ -15,11 +15,13 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 7. Categoria e tipo sugeridos por palavras-chave na revisão inicial, sempre editáveis.
 8. Forma de pagamento manual na revisão inicial.
 9. Filtros básicos.
-10. Autenticação e isolamento de dados por usuário.
-11. Proteção básica de comprovantes enviados.
-12. Layout responsivo para celular e computador.
-13. Telas de login, cadastro de conta e logout.
-14. Área unificada de lançamentos com nova despesa, novo comprovante e extrato.
+10. Filtro de período no extrato.
+11. Edição e exclusão confirmada de despesas.
+12. Autenticação e isolamento de dados por usuário.
+13. Proteção básica de comprovantes enviados.
+14. Layout responsivo para celular e computador.
+15. Telas de login, cadastro de conta e logout.
+16. Área unificada de lançamentos com nova despesa, novo comprovante e extrato.
 
 ## Fica para depois
 
@@ -65,6 +67,7 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 
 - Usuário autenticado consegue cadastrar gasto manual.
 - Usuário autenticado consegue listar os próprios gastos.
+- Usuário autenticado consegue editar e excluir somente os próprios gastos.
 - Usuário consegue criar conta, entrar e sair.
 - Usuário não autenticado não consegue acessar cadastro/listagem de gastos.
 - Usuário consegue enviar comprovante Pix válido.
@@ -74,6 +77,7 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 - Sistema permite preencher categoria, tipo e forma de pagamento antes de confirmar o gasto extraído.
 - Sistema pode sugerir categoria e tipo por palavra-chave, sem impedir correção manual.
 - Dashboard mostra total do mês e filtros básicos.
+- Extrato filtra por período e recalcula o total exibido.
 - Usuário não consegue acessar dados de outro usuário.
 - Comprovante privado não fica público.
 - Fluxo principal funciona bem no celular.

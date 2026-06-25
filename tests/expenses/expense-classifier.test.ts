@@ -2,12 +2,21 @@ import { describe, expect, it } from "vitest";
 import { classifyExpense } from "@/lib/expenses/expense-classifier";
 
 describe("classifyExpense", () => {
-  it("sugere Transporte / Necessário para Uber", () => {
-    expect(classifyExpense({ recipient: "Uber Viagem" })).toMatchObject({
-      suggestedCategory: "transporte",
+  it("sugere Combustível / Necessário para posto ou combustível", () => {
+    expect(classifyExpense({ description: "Posto gasolina aditivada" })).toMatchObject({
+      suggestedCategory: "combustivel",
       suggestedType: "necessario",
       confidence: "high",
-      matchedKeyword: "uber",
+      matchedKeyword: "gasolina",
+    });
+  });
+
+  it("sugere Mecânica / Importante para oficina e manutenção", () => {
+    expect(classifyExpense({ recipient: "Oficina troca de oleo" })).toMatchObject({
+      suggestedCategory: "mecanica",
+      suggestedType: "importante",
+      confidence: "high",
+      matchedKeyword: "oficina",
     });
   });
 
@@ -67,7 +76,7 @@ describe("classifyExpense", () => {
 
   it("funciona com acentos e maiúsculas", () => {
     expect(classifyExpense({ description: "PAGAMENTO DE COMBUSTÍVEL" })).toMatchObject({
-      suggestedCategory: "transporte",
+      suggestedCategory: "combustivel",
       suggestedType: "necessario",
       confidence: "high",
       matchedKeyword: "combustivel",
@@ -77,13 +86,13 @@ describe("classifyExpense", () => {
   it("prioriza recebedor sobre texto OCR genérico", () => {
     expect(
       classifyExpense({
-        recipient: "Uber",
+        recipient: "Posto",
         ocrText: "Comprovante Pix com palavra mercado no rodapé",
       }),
     ).toMatchObject({
-      suggestedCategory: "transporte",
+      suggestedCategory: "combustivel",
       suggestedType: "necessario",
-      matchedKeyword: "uber",
+      matchedKeyword: "posto",
     });
   });
 

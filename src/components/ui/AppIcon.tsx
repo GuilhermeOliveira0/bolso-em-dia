@@ -8,13 +8,16 @@ type AppIconName =
   | "check"
   | "envelope"
   | "faders"
+  | "fuel"
   | "hamburger"
   | "home"
+  | "leaf"
   | "lightbulb"
   | "list"
   | "lock"
   | "martini"
   | "monitor"
+  | "pencil"
   | "pill"
   | "plus"
   | "receipt"
@@ -22,8 +25,10 @@ type AppIconName =
   | "shopping-bag"
   | "shopping-cart"
   | "squares"
+  | "trash"
   | "user"
-  | "wallet";
+  | "wallet"
+  | "wrench";
 
 type AppIconProps = {
   name: AppIconName;
@@ -89,6 +94,14 @@ const icons: Record<AppIconName, ReactNode> = {
       <path d="M3.2 8.5h3.6M10.2 15.5h3.6M17.2 10.5h3.6" />
     </>
   ),
+  fuel: (
+    <>
+      <path d="M6.5 4.5h8v15h-8z" />
+      <path d="M8.5 8h4" />
+      <path d="M14.5 7.5h1.8l2.2 2.2v6.8a1.8 1.8 0 0 1-3.6 0v-3.2" />
+      <path d="m16.3 7.5 1.2-1.2" />
+    </>
+  ),
   hamburger: (
     <>
       <path d="M5 12.2h14a5.4 5.4 0 0 0-14 0Z" />
@@ -101,6 +114,12 @@ const icons: Record<AppIconName, ReactNode> = {
       <path d="m4 11 8-7 8 7" />
       <path d="M6.5 10v9h11v-9" />
       <path d="M10 19v-5h4v5" />
+    </>
+  ),
+  leaf: (
+    <>
+      <path d="M5 19c7.5.2 12.8-4.6 14-14-9.4 1.2-14.2 6.5-14 14Z" />
+      <path d="M5 19 15 9" />
     </>
   ),
   lightbulb: (
@@ -132,6 +151,12 @@ const icons: Record<AppIconName, ReactNode> = {
     <>
       <path d="M4 5.5h16v10H4z" />
       <path d="m10 9 4 2-4 2V9ZM9 19h6M12 15.5V19" />
+    </>
+  ),
+  pencil: (
+    <>
+      <path d="m4 17.5-.5 3 3-.5L18.7 7.8l-2.5-2.5L4 17.5Z" />
+      <path d="m14.8 6.7 2.5 2.5" />
     </>
   ),
   pill: (
@@ -174,6 +199,14 @@ const icons: Record<AppIconName, ReactNode> = {
       <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
     </>
   ),
+  trash: (
+    <>
+      <path d="M5 7h14" />
+      <path d="M9 7V5h6v2" />
+      <path d="m7 7 .8 13h8.4L17 7" />
+      <path d="M10.5 11v5M13.5 11v5" />
+    </>
+  ),
   user: (
     <>
       <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
@@ -184,6 +217,12 @@ const icons: Record<AppIconName, ReactNode> = {
     <>
       <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v14H6.5A2.5 2.5 0 0 1 4 16.5v-9Z" />
       <path d="M15 11h5v4h-5a2 2 0 0 1 0-4Z" />
+    </>
+  ),
+  wrench: (
+    <>
+      <path d="M14.5 5.5a4.5 4.5 0 0 0 4 6.9l-7.1 7.1a2.4 2.4 0 0 1-3.4-3.4l7.1-7.1a4.5 4.5 0 0 0-.6-3.5Z" />
+      <path d="M7.8 17.2h.1" />
     </>
   ),
 };

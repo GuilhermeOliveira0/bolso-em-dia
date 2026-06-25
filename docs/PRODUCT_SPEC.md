@@ -20,6 +20,8 @@ Muitas pessoas deixam de controlar gastos porque o cadastro manual é lento, os 
 - Autenticação com conta individual por usuário.
 - Cadastro manual rápido de gasto.
 - Listagem simples de gastos.
+- Edição de gastos confirmados.
+- Exclusão de gastos confirmados com confirmação.
 - Upload de comprovante Pix por imagem ou PDF.
 - OCR para extrair dados do comprovante.
 - Revisão dos dados extraídos antes de salvar.
@@ -67,13 +69,15 @@ O MVP será considerado a primeira versão utilizável do produto. Ele deve incl
 - OCR inicial;
 - etapa de confirmação antes de salvar gasto extraído;
 - sugestão de categoria e tipo;
-- filtros básicos.
+- filtros básicos;
+- filtro de período no extrato.
 
 ## Critérios de sucesso
 
 - O usuário consegue registrar um gasto manual em poucos passos.
 - O usuário consegue criar conta, entrar e sair.
 - O usuário só visualiza os próprios gastos.
+- O usuário consegue editar e excluir apenas os próprios gastos.
 - O usuário consegue enviar comprovante Pix e revisar dados extraídos.
 - Nenhum gasto extraído de comprovante é salvo sem confirmação.
 - A dashboard ajuda o usuário a identificar maiores gastos, gastos supérfluos e economia possível.

@@ -1,11 +1,10 @@
 import { z } from "zod";
-import { DEFAULT_CATEGORIES } from "@/lib/categories/default-categories";
+import { isKnownCategoryId } from "@/lib/categories/default-categories";
 import { DEFAULT_EXPENSE_TYPES } from "@/lib/expense-types/default-expense-types";
 import { DEFAULT_PAYMENT_METHODS } from "@/lib/payment-methods/default-payment-methods";
 import type { ExpenseDraft, ExpenseFormErrors } from "@/types/finance";
 import { parseCurrencyToCents } from "./money";
 
-const categoryIds = new Set(DEFAULT_CATEGORIES.map((category) => category.id));
 const expenseTypeIds = new Set(DEFAULT_EXPENSE_TYPES.map((type) => type.id));
 const paymentMethodIds = new Set(DEFAULT_PAYMENT_METHODS.map((method) => method.id));
 
@@ -43,7 +42,7 @@ export const expenseDraftSchema = z
       });
     }
 
-    if (draft.categoryId && !categoryIds.has(draft.categoryId)) {
+    if (draft.categoryId && !isKnownCategoryId(draft.categoryId)) {
       ctx.addIssue({
         code: "custom",
         path: ["categoryId"],
