@@ -1,6 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { getFriendlyAuthError } from "@/lib/auth/auth-errors";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthActionState = {
@@ -23,6 +25,26 @@ function getRedirectPath(formData: FormData): string {
   return redirectTo;
 }
 
+async function getEmailRedirectUrl(): Promise<string | undefined> {
+  const requestHeaders = await headers();
+  const origin = requestHeaders.get("origin");
+
+  if (!origin) {
+    return undefined;
+  }
+
+  try {
+    const url = new URL("/login", origin);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return undefined;
+    }
+
+    return url.toString();
+  } catch {
+    return undefined;
+  }
+}
+
 export async function loginAction(
   _previousState: AuthActionState,
   formData: FormData,
@@ -38,7 +60,7 @@ export async function loginAction(
   const result = await supabase.auth.signInWithPassword({ email, password });
 
   if (result.error) {
-    return { error: result.error.message, message: "" };
+    return { error: getFriendlyAuthError(result.error), message: "" };
   }
 
   redirect(getRedirectPath(formData));
@@ -57,20 +79,25 @@ export async function signupAction(
   }
 
   const supabase = await createClient();
+  const emailRedirectTo = await getEmailRedirectUrl();
   const result = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { name } },
+    options: {
+      data: { name },
+      emailRedirectTo,
+    },
   });
 
   if (result.error) {
-    return { error: result.error.message, message: "" };
+    return { error: getFriendlyAuthError(result.error), message: "" };
   }
 
   if (!result.data.session) {
     return {
       error: "",
-      message: "Conta criada. Confirme seu e-mail se o Supabase exigir confirmação.",
+      message:
+        "Conta criada no Supabase. Confirme seu e-mail para entrar ou desative a confirmacao de e-mail no Supabase Auth para liberar acesso imediato.",
     };
   }
 
