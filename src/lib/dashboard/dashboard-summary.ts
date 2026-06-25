@@ -1,4 +1,5 @@
 import { getCategoryName } from "@/lib/categories/default-categories";
+import { calculatePossibleSavingsInCents } from "@/lib/dashboard/savings-calculation";
 import { getExpenseTypeName } from "@/lib/expense-types/default-expense-types";
 import type { Expense } from "@/types/finance";
 
@@ -32,8 +33,12 @@ export type DashboardSummary = {
 };
 
 function isExpenseInPeriod(expense: Expense, period: DashboardPeriod): boolean {
+  if (!expense.date) {
+    return false;
+  }
+
   const [year, month] = expense.date.split("-").map(Number);
-  return year === period.year && month === period.month;
+  return Number.isInteger(year) && Number.isInteger(month) && year === period.year && month === period.month;
 }
 
 function groupExpenses(
@@ -77,7 +82,7 @@ export function buildDashboardSummary(
     necessaryInCents: totalForType("necessario"),
     leisureInCents: totalForType("lazer"),
     superfluousInCents,
-    possibleSavingsInCents: Math.round(superfluousInCents * 0.5),
+    possibleSavingsInCents: calculatePossibleSavingsInCents(periodExpenses),
     byCategory: groupExpenses(periodExpenses, (expense) => expense.categoryId, getCategoryName),
     byType: groupExpenses(periodExpenses, (expense) => expense.expenseTypeId, getExpenseTypeName),
     topExpenses: [...periodExpenses]

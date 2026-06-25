@@ -42,6 +42,13 @@ Funcionalidade: Responsividade
     Então o campo de imagem e o botão de envio devem ser fáceis de tocar
     E a listagem de comprovantes deve aparecer em cards sem rolagem horizontal
 
+  Cenário: Detalhes de comprovante funcionam no celular
+    Dado que estou autenticado no sistema
+    E tenho comprovantes enviados
+    Quando abro os detalhes de um comprovante em 390px de largura
+    Então o modal ou drawer deve caber na tela sem rolagem horizontal
+    E as ações devem continuar fáceis de tocar
+
   Cenário: Campos e botões não quebram em telas pequenas
     Dado que uso o sistema em largura reduzida
     Quando navego pelas telas principais da primeira fatia

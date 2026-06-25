@@ -54,6 +54,51 @@ describe("buildDashboardSummary", () => {
     expect(summary.possibleSavingsInCents).toBe(3000);
   });
 
+  it("calculates possible savings as 50 percent of Superfluo only", () => {
+    const summary = buildDashboardSummary(
+      [
+        expense({ id: "superfluous", amountInCents: 20000, expenseTypeId: "superfluo" }),
+        expense({ id: "necessary", amountInCents: 20000, expenseTypeId: "necessario" }),
+        expense({ id: "important", amountInCents: 20000, expenseTypeId: "importante" }),
+        expense({ id: "leisure", amountInCents: 20000, expenseTypeId: "lazer" }),
+        expense({ id: "investment", amountInCents: 20000, expenseTypeId: "investimento" }),
+        expense({ id: "debt", amountInCents: 20000, expenseTypeId: "divida" }),
+        expense({ id: "receivable", amountInCents: 20000, expenseTypeId: "a_receber" }),
+      ],
+      { month: 6, year: 2026 },
+    );
+
+    expect(summary.superfluousInCents).toBe(20000);
+    expect(summary.possibleSavingsInCents).toBe(10000);
+  });
+
+  it("sets possible savings to zero when there are no Superfluo expenses", () => {
+    const summary = buildDashboardSummary(
+      [
+        expense({ id: "necessary", amountInCents: 20000, expenseTypeId: "necessario" }),
+        expense({ id: "receivable", amountInCents: 20000, expenseTypeId: "a_receber" }),
+      ],
+      { month: 6, year: 2026 },
+    );
+
+    expect(summary.superfluousInCents).toBe(0);
+    expect(summary.possibleSavingsInCents).toBe(0);
+  });
+
+  it("ignores expenses without a valid date in the selected period", () => {
+    const summary = buildDashboardSummary(
+      [
+        expense({ id: "valid", amountInCents: 12000, date: "2026-06-10" }),
+        expense({ id: "empty-date", amountInCents: 5000, date: "" }),
+        expense({ id: "invalid-date", amountInCents: 7000, date: "sem-data" }),
+      ],
+      { month: 6, year: 2026 },
+    );
+
+    expect(summary.expenseCount).toBe(1);
+    expect(summary.totalInCents).toBe(12000);
+  });
+
   it("groups summaries and ranks the five largest expenses", () => {
     const expenses = Array.from({ length: 7 }, (_, index) =>
       expense({

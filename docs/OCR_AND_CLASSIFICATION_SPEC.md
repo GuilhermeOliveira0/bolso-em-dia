@@ -36,6 +36,18 @@ Nesta fatia, o sistema deve permitir upload de imagem de comprovante Pix e leitu
 10. Só depois da confirmação o gasto é salvo.
 11. Se possível, o comprovante é vinculado à despesa criada.
 
+### Listagem "Meus comprovantes"
+
+A listagem de comprovantes deve ser objetiva no card e progressiva nos detalhes:
+
+- o card mostra preview privado temporário, nome do arquivo, data de envio, status de OCR e a ação "Ler comprovante";
+- tamanho, tipo, data completa, valor extraído, data extraída, recebedor extraído e despesa vinculada ficam em modal ou drawer de detalhes;
+- o preview não deve usar URL pública permanente;
+- cada usuário deve ver somente os próprios comprovantes;
+- o botão "Ler comprovante" deve ficar desabilitado enquanto uma leitura estiver em andamento;
+- múltiplos cliques não podem iniciar leituras concorrentes para o mesmo fluxo;
+- se a leitura falhar, a revisão manual continua disponível.
+
 ## Formatos aceitos
 
 - Imagens: PNG, JPG, JPEG e WEBP.

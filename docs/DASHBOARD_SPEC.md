@@ -10,7 +10,7 @@ A versão básica entrega somente:
 
 - filtro por mês e ano;
 - total do período, necessário, lazer e supérfluo;
-- economia possível estimada em 50% do total supérfluo;
+- economia possível estimada em 50% do total Supérfluo do período selecionado;
 - resumos simples por categoria e tipo;
 - cinco últimos gastos e cinco maiores gastos;
 - estado vazio e acesso ao cadastro manual.
@@ -99,11 +99,13 @@ A dashboard deve responder perguntas como:
 
 ## Economia possível
 
-A economia possível pode começar com uma regra simples:
+A economia possível do MVP usa uma regra simples, discreta e explicada na interface:
 
-- considerar total de gastos supérfluos;
-- comparar com limite mensal, quando existir;
-- mostrar alerta quando o gasto mensal estiver perto ou acima do limite.
+- considerar somente gastos confirmados do tipo `Supérfluo`;
+- considerar somente gastos dentro do período selecionado;
+- calcular 50% do total Supérfluo como oportunidade de redução;
+- não incluir Necessário, Importante, Lazer, Investimento, Dívida ou A receber;
+- não mostrar gastos sem data válida no resumo do período.
 
 Essa regra deve ser explicada de forma simples para não parecer cálculo financeiro absoluto.
 

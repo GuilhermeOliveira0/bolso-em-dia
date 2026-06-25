@@ -22,6 +22,8 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 14. Layout responsivo para celular e computador.
 15. Telas de login, cadastro de conta e logout.
 16. Área unificada de lançamentos com nova despesa, novo comprovante e extrato.
+17. Listagem de comprovantes com card resumido e detalhes técnicos sob demanda.
+18. Economia possível calculada como 50% dos gastos Supérfluos do período selecionado.
 
 ## Fica para depois
 
@@ -71,12 +73,14 @@ Entregar uma primeira versão utilizável do Bolso em Dia, com autenticação, i
 - Usuário consegue criar conta, entrar e sair.
 - Usuário não autenticado não consegue acessar cadastro/listagem de gastos.
 - Usuário consegue enviar comprovante Pix válido.
+- Usuário consegue ver comprovantes em cards limpos e abrir detalhes sem expor URL pública permanente.
 - Sistema extrai pelo menos valor, data e recebedor quando possível.
 - Sistema exibe etapa de confirmação antes de salvar gasto extraído.
 - Usuário consegue corrigir dados extraídos.
 - Sistema permite preencher categoria, tipo e forma de pagamento antes de confirmar o gasto extraído.
 - Sistema pode sugerir categoria e tipo por palavra-chave, sem impedir correção manual.
 - Dashboard mostra total do mês e filtros básicos.
+- Dashboard explica que economia possível considera somente 50% dos gastos Supérfluos do período.
 - Extrato filtra por período e recalcula o total exibido.
 - Usuário não consegue acessar dados de outro usuário.
 - Comprovante privado não fica público.

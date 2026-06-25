@@ -35,7 +35,14 @@ Funcionalidade: Dashboard financeiro
     Dado que tenho gastos supérfluos no período selecionado
     Quando acesso a dashboard
     Então o sistema deve exibir como economia possível 50% do total supérfluo
+    E não deve incluir Necessário, Importante, Lazer, Investimento, Dívida ou A receber nesse cálculo
     E deve deixar claro que é uma sugestão de controle, não uma recomendação financeira profissional
+
+  Cenário: Ignorar gasto sem data válida no resumo do período
+    Dado que existe um gasto confirmado sem data válida
+    Quando acesso a dashboard filtrando por mês e ano
+    Então esse gasto não deve aparecer como "Sem data" no resumo do período
+    E não deve entrar no total, categorias, ranking ou economia possível
 
   Cenário: Visualizar estado vazio
     Dado que não tenho gastos no período selecionado

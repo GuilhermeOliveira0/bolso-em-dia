@@ -34,6 +34,18 @@ Funcionalidade: Upload de imagem de comprovante Pix
     Então o sistema deve mostrar um preview da imagem
     E o arquivo deve continuar em bucket privado
 
+  Cenário: Card de comprovante mostra somente dados essenciais
+    Dado que enviei uma imagem válida de comprovante Pix
+    Quando acesso a listagem de comprovantes
+    Então o card deve mostrar preview, nome do arquivo, data de envio, status de OCR e a ação "Ler comprovante"
+    E detalhes técnicos como tamanho e tipo não devem poluir o card
+
+  Cenário: Abrir detalhes do comprovante
+    Dado que enviei uma imagem válida de comprovante Pix
+    Quando abro os detalhes do comprovante
+    Então devo ver tamanho, tipo, data de envio, status de OCR, dados extraídos e despesa vinculada quando existir
+    E o preview deve continuar privado e autorizado somente para minha conta
+
   Cenário: Impedir acesso sem autenticação
     Dado que não estou autenticado
     Quando tento acessar a área de comprovantes
@@ -58,6 +70,7 @@ Funcionalidade: Upload de imagem de comprovante Pix
     Quando clico em "Ler comprovante"
     Então o sistema deve tentar extrair valor, data e recebedor
     E deve mostrar uma etapa de revisão antes de salvar qualquer despesa
+    E o botão de leitura deve ficar desabilitado enquanto o OCR estiver processando
 
   Cenário: Revisar dados extraídos antes de salvar despesa
     Dado que o sistema leu uma imagem de comprovante Pix

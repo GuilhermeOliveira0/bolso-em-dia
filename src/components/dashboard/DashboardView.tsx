@@ -171,6 +171,11 @@ function AlertCard({ savingsInCents }: { savingsInCents: number }) {
             Reduzindo parte dos gastos não essenciais, você pode economizar até{" "}
             {formatCentsToCurrency(savingsInCents)} neste período.
           </p>
+          <small>
+            Estimamos a economia possível como 50% dos gastos marcados como Supérfluo no
+            período. Necessário, Importante, Lazer, Investimento, Dívida e A receber não entram
+            nesse cálculo.
+          </small>
         </div>
       </div>
     </article>

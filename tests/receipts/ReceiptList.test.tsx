@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ReceiptList } from "@/components/receipts/ReceiptList";
 import type { ReceiptWithPreview } from "@/types/finance";
@@ -27,6 +27,26 @@ function createReceipt(id: string): ReceiptWithPreview {
 }
 
 describe("ReceiptList", () => {
+  it("mostra apenas informacoes essenciais no card e detalhes tecnicos no modal", () => {
+    render(<ReceiptList onReadReceipt={vi.fn()} receipts={[createReceipt("receipt-1")]} />);
+
+    expect(screen.getByText("receipt-1.jpg")).toBeInTheDocument();
+    expect(screen.getByText(/Enviado em/)).toBeInTheDocument();
+    expect(screen.getByText("Aguardando leitura")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ler comprovante" })).toBeInTheDocument();
+    expect(screen.queryByText("Tamanho")).not.toBeInTheDocument();
+    expect(screen.queryByText("Tipo")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /receipt-1.jpg/i }));
+
+    const dialog = screen.getByRole("dialog", { name: /receipt-1.jpg/i });
+    expect(within(dialog).getByText("Tamanho")).toBeInTheDocument();
+    expect(within(dialog).getByText("65 KB")).toBeInTheDocument();
+    expect(within(dialog).getByText("Tipo")).toBeInTheDocument();
+    expect(within(dialog).getByText("JPEG")).toBeInTheDocument();
+    expect(within(dialog).getByText("Status OCR")).toBeInTheDocument();
+  });
+
   it("desabilita todos os botoes de leitura enquanto um OCR esta em andamento", () => {
     render(
       <ReceiptList
