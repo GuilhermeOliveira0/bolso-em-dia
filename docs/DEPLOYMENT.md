@@ -4,6 +4,12 @@
 
 Projeto Vercel: `bolso-em-dia`.
 
+URL de produção atual:
+
+- `https://bolso-em-dia-eosin.vercel.app`
+
+O deploy inicial de produção foi feito via Vercel CLI. A conexão GitHub no painel pode precisar ser revisada se a Vercel não listar o repositório `GuilhermeOliveira0/bolso-em-dia` no fluxo de importação.
+
 Configuração esperada:
 
 - Framework: Next.js.
@@ -11,6 +17,12 @@ Configuração esperada:
 - Build command: padrão da Vercel para Next.js, equivalente a `npm run build`.
 - Output directory: padrão Next.js.
 - Install command: padrão da Vercel.
+
+Comando usado para deploy local pela CLI:
+
+```bash
+npx vercel@latest deploy --prod --yes
+```
 
 Variáveis necessárias na Vercel:
 
