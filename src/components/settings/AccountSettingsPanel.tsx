@@ -9,6 +9,7 @@ import {
   updateAccountPasswordAction,
   updateUserSettingOptionAction,
 } from "@/app/settings-actions";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 import { AppIcon } from "@/components/ui/AppIcon";
 import {
   DEFAULT_FINANCE_OPTIONS,
@@ -25,8 +26,20 @@ type AccountSettingsPanelProps = {
 };
 
 type EditableKind = "category" | "expenseType" | "paymentMethod";
+type SettingsSection = "account" | EditableKind;
 type SettingsOption = Category | ExpenseType | PaymentMethod;
 type EditingTarget = { id: string; kind: EditableKind; originalName: string } | null;
+
+const SETTINGS_NAV: Array<{
+  id: SettingsSection;
+  label: string;
+  icon: "user" | "shopping-bag" | "squares" | "wallet";
+}> = [
+  { id: "account", label: "Dados da Conta", icon: "user" },
+  { id: "category", label: "Categorias", icon: "shopping-bag" },
+  { id: "expenseType", label: "Tipos de Gasto", icon: "squares" },
+  { id: "paymentMethod", label: "Formas de Pagamento", icon: "wallet" },
+];
 
 const LABELS: Record<EditableKind, string> = {
   category: "Categoria",
@@ -36,25 +49,28 @@ const LABELS: Record<EditableKind, string> = {
 
 const LIST_META: Record<
   EditableKind,
-  { description: string; icon: "shopping-bag" | "squares" | "wallet"; placeholder: string; title: string }
+  { description: string; icon: "shopping-bag" | "squares" | "wallet"; placeholder: string; title: string; tag: string }
 > = {
   category: {
-    description: "Agrupe seus gastos por assunto, como Mercado, Saúde ou Assinaturas.",
+    description: "Agrupe seus lançamentos por assunto. Ex: Alimentação, Moradia, Transporte.",
     icon: "shopping-bag",
-    placeholder: "Nova categoria...",
+    placeholder: "Digite o nome da nova categoria...",
+    tag: "Organização",
     title: "Categorias",
   },
   expenseType: {
-    description: "Defina a importância e o contexto da despesa.",
+    description: "Classifique a importância de cada despesa para entender onde você pode economizar.",
     icon: "squares",
-    placeholder: "Novo tipo...",
+    placeholder: "Novo tipo (ex: Fixo, Variável, Emergência)...",
+    tag: "Análise Inteligente",
     title: "Tipos de gasto",
   },
   paymentMethod: {
-    description: "Cadastre Pix, cartões, dinheiro ou contas específicas.",
+    description: "Gerencie quais métodos você utiliza para pagar suas contas.",
     icon: "wallet",
-    placeholder: "Nova forma...",
-    title: "Pagamentos",
+    placeholder: "Adicionar método (ex: Vale Refeição, Boleto)...",
+    tag: "Gestão de Carteira",
+    title: "Formas de pagamento",
   },
 };
 
@@ -66,6 +82,7 @@ export function AccountSettingsPanel({
   settingsMessage = "",
 }: AccountSettingsPanelProps) {
   const router = useRouter();
+  const [activeSection, setActiveSection] = useState<SettingsSection>("account");
   const [localOptions, setLocalOptions] = useState(financeOptions);
   const [profileName, setProfileName] = useState(name);
   const [password, setPassword] = useState("");
@@ -84,6 +101,13 @@ export function AccountSettingsPanel({
   useEffect(() => {
     setLocalOptions(financeOptions);
   }, [financeOptions]);
+
+  function selectSection(section: SettingsSection) {
+    setActiveSection(section);
+    setMessage("");
+    setConfirmingDelete(null);
+    setEditingTarget(null);
+  }
 
   function run(
     label: string,
@@ -242,37 +266,35 @@ export function AccountSettingsPanel({
 
   const isErrorMessage = /Não|Nao|inválid|invalid|Informe|Use uma senha/i.test(message);
   const isBusy = isPending || Boolean(pendingLabel);
+  const settingsDisabled = Boolean(settingsMessage);
 
   return (
     <section className="settings-page-grid" aria-label="Configurações da conta">
-      <aside className="settings-hero">
-        <span className="settings-kicker">Conta</span>
-        <h1>Configurações</h1>
-        <p>
-          Ajuste seu perfil e mantenha categorias, tipos de gasto e formas de pagamento
-          organizados para seus lançamentos.
-        </p>
+      <aside className="settings-sidebar">
+        <span className="settings-kicker">Menu</span>
+        <h1>Ajustes</h1>
         <div className="settings-email-card">
           <AppIcon className="app-icon" name="envelope" />
           <strong>{email}</strong>
         </div>
-        <nav className="settings-section-nav" aria-label="Seções de configurações">
-          <a href="#settings-account">
-            <AppIcon className="app-icon" name="user" />
-            Conta
-          </a>
-          <a href="#settings-categories">
-            <AppIcon className="app-icon" name="shopping-bag" />
-            Categorias
-          </a>
-          <a href="#settings-types">
-            <AppIcon className="app-icon" name="squares" />
-            Tipos
-          </a>
-          <a href="#settings-payments">
-            <AppIcon className="app-icon" name="wallet" />
-            Pagamentos
-          </a>
+        <nav className="settings-section-nav" aria-label="Menu de configurações">
+          {SETTINGS_NAV.map((item) => (
+            <button
+              aria-current={activeSection === item.id ? "page" : undefined}
+              className="settings-nav-button"
+              key={item.id}
+              type="button"
+              onClick={() => selectSection(item.id)}
+            >
+              <AppIcon className="app-icon" name={item.icon} />
+              {item.label}
+            </button>
+          ))}
+          <span className="settings-nav-divider" aria-hidden="true" />
+          <div className="settings-logout-action">
+            <AppIcon className="app-icon" name="sign-out" />
+            <LogoutButton label="Encerrar Sessão" />
+          </div>
         </nav>
       </aside>
 
@@ -287,10 +309,16 @@ export function AccountSettingsPanel({
 
       <div className="settings-content">
         <nav className="settings-mobile-tabs" aria-label="Seções de configurações">
-          <a href="#settings-account">Conta</a>
-          <a href="#settings-categories">Categorias</a>
-          <a href="#settings-types">Tipos</a>
-          <a href="#settings-payments">Pagamentos</a>
+          {SETTINGS_NAV.map((item) => (
+            <button
+              aria-current={activeSection === item.id ? "page" : undefined}
+              key={item.id}
+              type="button"
+              onClick={() => selectSection(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
         </nav>
 
         {settingsMessage ? <p className="settings-alert-message">{settingsMessage}</p> : null}
@@ -305,80 +333,97 @@ export function AccountSettingsPanel({
           </p>
         ) : null}
 
-        <section className="settings-glass-card settings-profile-card" id="settings-account">
-          <SettingsHeader icon="user" tag="Perfil" title="Dados da conta" />
-          <div className="settings-profile-grid">
-            <div className="settings-field-group">
-              <label htmlFor="settings-name">Nome</label>
-              <div className="settings-input-inline">
-                <input
-                  id="settings-name"
-                  maxLength={80}
-                  placeholder="Seu nome completo"
-                  value={profileName}
-                  onChange={(event) => setProfileName(event.target.value)}
-                />
-                <button
-                  className="settings-secondary-button"
-                  disabled={isBusy}
-                  type="button"
-                  onClick={() => run("Salvando nome...", () => updateAccountNameAction(profileName))}
-                >
-                  Salvar
-                </button>
+        {activeSection === "account" ? (
+          <section className="settings-glass-card settings-profile-card" id="settings-account">
+            <SettingsHeader
+              description="Mantenha seu nome e senha atualizados para proteger sua conta."
+              icon="user"
+              tag="Acesso e Segurança"
+              title="Dados da conta"
+            />
+            <div className="settings-profile-grid">
+              <div className="settings-field-group">
+                <label htmlFor="settings-name">Nome Completo</label>
+                <div className="settings-input-inline">
+                  <input
+                    id="settings-name"
+                    maxLength={80}
+                    placeholder="Seu nome completo"
+                    value={profileName}
+                    onChange={(event) => setProfileName(event.target.value)}
+                  />
+                  <button
+                    className="settings-secondary-button"
+                    disabled={isBusy}
+                    type="button"
+                    onClick={() => run("Salvando nome...", () => updateAccountNameAction(profileName))}
+                  >
+                    <AppIcon className="app-icon" name="check" />
+                    Salvar nome
+                  </button>
+                </div>
+              </div>
+
+              <div className="settings-field-group">
+                <label htmlFor="settings-email">E-mail</label>
+                <input className="settings-readonly-input" id="settings-email" readOnly value={email} />
+              </div>
+
+              <div className="settings-field-group">
+                <label htmlFor="settings-password">Nova Senha</label>
+                <div className="settings-input-inline">
+                  <input
+                    autoComplete="new-password"
+                    id="settings-password"
+                    minLength={6}
+                    placeholder="Mínimo de 6 caracteres"
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                  <button
+                    className="settings-secondary-button"
+                    disabled={isBusy}
+                    type="button"
+                    onClick={() => run("Atualizando senha...", () => updateAccountPasswordAction(password))}
+                  >
+                    <AppIcon className="app-icon" name="lock" />
+                    Trocar senha
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="settings-field-group">
-              <label htmlFor="settings-password">Nova senha</label>
-              <div className="settings-input-inline">
-                <input
-                  autoComplete="new-password"
-                  id="settings-password"
-                  minLength={6}
-                  placeholder="Mínimo de 6 caracteres"
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                />
-                <button
-                  className="settings-secondary-button"
-                  disabled={isBusy}
-                  type="button"
-                  onClick={() => run("Atualizando senha...", () => updateAccountPasswordAction(password))}
-                >
-                  Trocar
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
-        <SettingsList
-          confirmingDelete={confirmingDelete}
-          editingTarget={editingTarget}
-          kind="category"
-          newName={newNames.category}
-          options={localOptions.categories}
-          pending={isBusy}
-          onCancelDelete={() => setConfirmingDelete(null)}
-          onCancelEdit={cancelEditing}
-          onConfirmDelete={(id) => deleteOption("category", id)}
-          onCreate={() => createOption("category")}
-          onEditName={(id, value) => setEditingNames((current) => ({ ...current, [id]: value }))}
-          onNewName={(value) => setNewNames((current) => ({ ...current, category: value }))}
-          onRequestDelete={(id) => setConfirmingDelete(id)}
-          onStartEdit={(option) => startEditing("category", option)}
-          onUpdate={(id, currentName) => updateOption("category", id, currentName)}
-        />
+        {activeSection === "category" ? (
+          <SettingsList
+            confirmingDelete={confirmingDelete}
+            editingTarget={editingTarget}
+            kind="category"
+            newName={newNames.category}
+            options={localOptions.categories}
+            pending={isBusy || settingsDisabled}
+            onCancelDelete={() => setConfirmingDelete(null)}
+            onCancelEdit={cancelEditing}
+            onConfirmDelete={(id) => deleteOption("category", id)}
+            onCreate={() => createOption("category")}
+            onEditName={(id, value) => setEditingNames((current) => ({ ...current, [id]: value }))}
+            onNewName={(value) => setNewNames((current) => ({ ...current, category: value }))}
+            onRequestDelete={(id) => setConfirmingDelete(id)}
+            onStartEdit={(option) => startEditing("category", option)}
+            onUpdate={(id, currentName) => updateOption("category", id, currentName)}
+          />
+        ) : null}
 
-        <div className="settings-split-grid">
+        {activeSection === "expenseType" ? (
           <SettingsList
             confirmingDelete={confirmingDelete}
             editingTarget={editingTarget}
             kind="expenseType"
             newName={newNames.expenseType}
             options={localOptions.expenseTypes}
-            pending={isBusy}
+            pending={isBusy || settingsDisabled}
             onCancelDelete={() => setConfirmingDelete(null)}
             onCancelEdit={cancelEditing}
             onConfirmDelete={(id) => deleteOption("expenseType", id)}
@@ -389,13 +434,16 @@ export function AccountSettingsPanel({
             onStartEdit={(option) => startEditing("expenseType", option)}
             onUpdate={(id, currentName) => updateOption("expenseType", id, currentName)}
           />
+        ) : null}
+
+        {activeSection === "paymentMethod" ? (
           <SettingsList
             confirmingDelete={confirmingDelete}
             editingTarget={editingTarget}
             kind="paymentMethod"
             newName={newNames.paymentMethod}
             options={localOptions.paymentMethods}
-            pending={isBusy}
+            pending={isBusy || settingsDisabled}
             onCancelDelete={() => setConfirmingDelete(null)}
             onCancelEdit={cancelEditing}
             onConfirmDelete={(id) => deleteOption("paymentMethod", id)}
@@ -406,7 +454,7 @@ export function AccountSettingsPanel({
             onStartEdit={(option) => startEditing("paymentMethod", option)}
             onUpdate={(id, currentName) => updateOption("paymentMethod", id, currentName)}
           />
-        </div>
+        ) : null}
       </div>
     </section>
   );
@@ -476,7 +524,7 @@ function SettingsList({
         <SettingsHeader
           description={meta.description}
           icon={meta.icon}
-          tag="Organização"
+          tag={meta.tag}
           title={meta.title}
         />
         <span className="settings-item-count">{options.length} itens</span>

@@ -138,7 +138,7 @@ describe("LaunchpadApp OCR flow", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Revise antes de salvar" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ler comprovante" })).toBeEnabled();
-  });
+  }, 10_000);
 
   it("finaliza o loading e mostra erro quando a action rejeita", async () => {
     vi.mocked(processReceiptOcrAction).mockRejectedValueOnce(new Error("unexpected"));

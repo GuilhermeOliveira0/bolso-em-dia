@@ -24,6 +24,7 @@ type AppIconName =
   | "search"
   | "shopping-bag"
   | "shopping-cart"
+  | "sign-out"
   | "squares"
   | "trash"
   | "user"
@@ -192,6 +193,13 @@ const icons: Record<AppIconName, ReactNode> = {
     <>
       <path d="M4 5h2l1.4 9.2a2 2 0 0 0 2 1.7H17a2 2 0 0 0 1.9-1.4L20 9H7" />
       <path d="M9.5 20h.1M17 20h.1" />
+    </>
+  ),
+  "sign-out": (
+    <>
+      <path d="M10 6H6.5A2.5 2.5 0 0 0 4 8.5v7A2.5 2.5 0 0 0 6.5 18H10" />
+      <path d="M14 8l4 4-4 4" />
+      <path d="M8.5 12H18" />
     </>
   ),
   squares: (

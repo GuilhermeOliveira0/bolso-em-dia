@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export function LogoutButton() {
+type LogoutButtonProps = {
+  label?: string;
+};
+
+export function LogoutButton({ label = "Sair" }: LogoutButtonProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -18,7 +22,7 @@ export function LogoutButton() {
 
   return (
     <button className="secondary-action" disabled={isSubmitting} onClick={handleLogout} type="button">
-      {isSubmitting ? "Saindo..." : "Sair"}
+      {isSubmitting ? "Saindo..." : label}
     </button>
   );
 }
