@@ -28,6 +28,27 @@ create table if not exists public.user_payment_methods (
   updated_at timestamptz not null default now()
 );
 
+alter table public.user_categories
+  alter column is_active set default true;
+
+alter table public.user_expense_types
+  alter column is_active set default true;
+
+alter table public.user_payment_methods
+  alter column is_active set default true;
+
+update public.user_categories
+set is_active = true
+where is_active is null;
+
+update public.user_expense_types
+set is_active = true
+where is_active is null;
+
+update public.user_payment_methods
+set is_active = true
+where is_active is null;
+
 create unique index if not exists user_categories_user_name_active_idx
   on public.user_categories (user_id, lower(trim(name)))
   where is_active;

@@ -8,11 +8,9 @@ type AccountSettingsButtonProps = {
 export function AccountSettingsButton({ email, initial }: AccountSettingsButtonProps) {
   return (
     <Link
-      aria-label="Abrir configurações da conta em nova aba"
+      aria-label="Abrir configurações da conta"
       className="avatar-chip avatar-button"
       href="/configuracoes"
-      rel="noopener noreferrer"
-      target="_blank"
       title={`Configurações de ${email}`}
     >
       {initial}

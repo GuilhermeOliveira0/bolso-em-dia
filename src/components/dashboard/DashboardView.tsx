@@ -71,6 +71,10 @@ export function DashboardView({
       </section>
 
       <section className="dashboard-intro">
+        <div className="dashboard-filter-heading">
+          <span>Filtros</span>
+          <strong>Filtrar período</strong>
+        </div>
         <form className="period-filter dashboard-period-filter" method="get">
           <label>
             <span>Período</span>

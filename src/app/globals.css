@@ -3821,3 +3821,692 @@ h3 {
     width: 100%;
   }
 }
+
+.dashboard-shell .dashboard-intro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: end;
+  justify-content: stretch;
+  margin: 0 0 22px;
+  padding: 0;
+}
+
+.dashboard-filter-heading {
+  display: grid;
+  gap: 4px;
+  min-width: 152px;
+  padding: 0 0 10px;
+}
+
+.dashboard-filter-heading span {
+  color: var(--ink-muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-filter-heading strong {
+  color: var(--ink);
+  font-size: 1.12rem;
+  letter-spacing: -0.03em;
+}
+
+.dashboard-shell .period-filter {
+  width: 100%;
+  margin: 0;
+}
+
+.dashboard-shell .dashboard-period-filter {
+  display: grid;
+  grid-template-columns:
+    minmax(136px, 1.05fr)
+    minmax(120px, 0.9fr)
+    minmax(116px, 0.75fr)
+    minmax(142px, 1fr)
+    minmax(142px, 1fr)
+    minmax(96px, auto);
+  gap: 10px;
+  align-items: end;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(59, 130, 246, 0.035)),
+    rgba(18, 20, 28, 0.84);
+  padding: 12px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+}
+
+.dashboard-shell .dashboard-period-filter label {
+  min-width: 0;
+}
+
+.dashboard-shell .dashboard-period-filter select,
+.dashboard-shell .dashboard-period-filter input {
+  min-height: 46px;
+  border-radius: 12px;
+}
+
+.dashboard-shell .dashboard-period-filter .primary-action {
+  width: 100%;
+  min-height: 46px;
+  border-radius: 12px;
+  padding-inline: 18px;
+}
+
+.dashboard-shell .metric-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dashboard-shell .metric-card {
+  min-width: 0;
+  overflow: hidden;
+  padding: 26px 22px;
+}
+
+.dashboard-shell .metric-card strong {
+  display: block;
+  max-width: 100%;
+  color: inherit;
+  font-size: clamp(1.45rem, 1.85vw, 2.32rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+.dashboard-shell .metric-card.is-primary strong {
+  font-size: clamp(1.7rem, 2vw, 2.45rem);
+}
+
+@media (max-width: 1180px) {
+  .dashboard-shell .dashboard-intro {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .dashboard-filter-heading {
+    padding: 0;
+  }
+
+  .dashboard-shell .dashboard-period-filter {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dashboard-shell .dashboard-period-filter .primary-action {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 820px) {
+  .dashboard-shell .dashboard-period-filter {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-shell .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-shell .metric-card.is-primary {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .dashboard-shell .dashboard-intro {
+    display: grid;
+    margin: 0 0 18px;
+  }
+
+  .dashboard-filter-heading {
+    min-width: 0;
+  }
+
+  .dashboard-shell .dashboard-period-filter {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    border-radius: 20px;
+    padding: 12px;
+  }
+
+  .dashboard-shell .mobile-total-card strong {
+    font-size: clamp(2rem, 10vw, 2.55rem);
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  .dashboard-shell .metric-card strong {
+    font-size: clamp(1.18rem, 6vw, 1.42rem);
+  }
+}
+
+.settings-page-shell {
+  isolation: isolate;
+}
+
+.settings-page-shell::before {
+  content: "";
+  position: fixed;
+  top: -220px;
+  left: -120px;
+  z-index: -1;
+  width: 560px;
+  height: 560px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.14), rgba(9, 10, 15, 0) 70%);
+  filter: blur(44px);
+  pointer-events: none;
+}
+
+.settings-page-shell::after {
+  content: "";
+  position: fixed;
+  right: -140px;
+  bottom: -130px;
+  z-index: -1;
+  width: 480px;
+  height: 480px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1), rgba(9, 10, 15, 0) 70%);
+  filter: blur(48px);
+  pointer-events: none;
+}
+
+.settings-page-shell .settings-page-grid {
+  display: grid;
+  grid-template-columns: minmax(286px, 320px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.settings-page-shell .settings-hero,
+.settings-page-shell .settings-glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: none;
+  backdrop-filter: blur(24px);
+}
+
+.settings-page-shell .settings-hero {
+  position: sticky;
+  top: 132px;
+  display: grid;
+  gap: 14px;
+  border-radius: 24px;
+  padding: 32px;
+}
+
+.settings-page-shell .settings-kicker,
+.settings-page-shell .settings-section-heading > span {
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-page-shell .settings-hero h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.settings-page-shell .settings-hero p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.settings-email-card {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+}
+
+.settings-email-card .app-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--brand-strong);
+  flex: 0 0 auto;
+}
+
+.settings-email-card strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-mobile-profile {
+  display: none;
+}
+
+.settings-page-shell .settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  backdrop-filter: none;
+}
+
+.settings-page-shell .settings-glass-card {
+  display: grid;
+  gap: 24px;
+  border-radius: 24px;
+  padding: 32px;
+}
+
+.settings-section-heading {
+  display: grid;
+  gap: 5px;
+}
+
+.settings-section-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+}
+
+.settings-section-heading h2 .app-icon {
+  display: none;
+}
+
+.settings-section-heading p {
+  margin: 2px 0 0;
+  color: var(--ink-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.settings-field-group {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-field-group label {
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.settings-input-inline {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.settings-input-inline input,
+.settings-option-list input {
+  flex: 1;
+  min-width: 0;
+  min-height: 54px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--ink);
+  font: inherit;
+  padding: 0 18px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-input-inline input:focus,
+.settings-option-list input:focus {
+  border-color: rgba(59, 130, 246, 0.86);
+  background: rgba(59, 130, 246, 0.035);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.settings-primary-button,
+.settings-secondary-button {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-radius: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-primary-button {
+  border: 0;
+  background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+  color: #fff;
+  padding: 0 24px;
+  box-shadow: 0 16px 36px rgba(59, 130, 246, 0.2);
+}
+
+.settings-secondary-button {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+  padding: 0 22px;
+}
+
+.settings-primary-button:hover:not(:disabled),
+.settings-secondary-button:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.settings-primary-button:disabled,
+.settings-secondary-button:disabled,
+.settings-icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.settings-primary-button .app-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.settings-split-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.settings-page-shell .settings-create-row {
+  margin-bottom: 0;
+}
+
+.settings-page-shell .settings-option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-page-shell .settings-option-list li {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 16px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-page-shell .settings-option-list li:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.settings-option-name {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.settings-page-shell .settings-option-list small {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-muted);
+  padding: 6px 10px;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.settings-item-actions,
+.settings-confirm-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-icon-button {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.settings-icon-button .app-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.settings-icon-button.edit:hover {
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--brand);
+}
+
+.settings-icon-button.delete:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.settings-confirm-delete,
+.settings-cancel-delete {
+  min-height: 36px;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 0.78rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.settings-confirm-delete {
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+}
+
+.settings-cancel-delete {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+}
+
+.settings-page-shell .settings-option-list li.is-confirming-delete {
+  border-color: rgba(239, 68, 68, 0.28);
+  background: rgba(239, 68, 68, 0.075);
+}
+
+@media (max-width: 1024px) {
+  .settings-page-shell .settings-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-page-shell .settings-hero {
+    position: static;
+  }
+
+  .settings-split-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .settings-page-shell {
+    padding-inline: 16px;
+    padding-bottom: calc(156px + env(safe-area-inset-bottom));
+    scroll-padding-bottom: calc(156px + env(safe-area-inset-bottom));
+  }
+
+  .settings-page-shell .private-topbar {
+    margin-bottom: 18px;
+  }
+
+  .settings-page-shell .settings-hero {
+    display: none;
+  }
+
+  .settings-mobile-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    margin: 4px 0 20px;
+    text-align: center;
+  }
+
+  .settings-avatar-large {
+    display: grid;
+    width: 70px;
+    height: 70px;
+    place-items: center;
+    border: 3px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  .settings-mobile-profile h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.2rem;
+    letter-spacing: -0.04em;
+  }
+
+  .settings-mobile-profile p {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 0;
+    overflow: hidden;
+    color: var(--ink-muted);
+    font-size: 0.85rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .settings-mobile-profile .app-icon {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+  }
+
+  .settings-page-shell .settings-content {
+    gap: 20px;
+  }
+
+  .settings-page-shell .settings-glass-card {
+    gap: 18px;
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  .settings-section-heading h2 .app-icon {
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+  }
+
+  .settings-input-inline {
+    gap: 8px;
+  }
+
+  .settings-field-group .settings-input-inline {
+    flex-direction: column;
+  }
+
+  .settings-input-inline input,
+  .settings-option-list input {
+    min-height: 48px;
+    padding-inline: 14px;
+  }
+
+  .settings-primary-button,
+  .settings-secondary-button {
+    min-height: 48px;
+  }
+
+  .settings-create-row .settings-primary-button {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 0 16px;
+  }
+
+  .settings-page-shell .settings-option-list li {
+    padding: 11px 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .settings-page-shell {
+    padding-inline: 14px;
+  }
+
+  .settings-page-shell {
+    padding-bottom: calc(172px + env(safe-area-inset-bottom));
+    scroll-padding-bottom: calc(172px + env(safe-area-inset-bottom));
+  }
+
+  .settings-create-row {
+    flex-direction: column;
+  }
+
+  .settings-create-row .settings-primary-button {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .settings-page-shell .settings-glass-card {
+    padding: 18px;
+  }
+
+  .settings-page-shell .settings-option-list li {
+    align-items: stretch;
+  }
+
+  .settings-page-shell .settings-option-list li.is-confirming-delete {
+    flex-direction: column;
+  }
+
+  .settings-confirm-actions {
+    width: 100%;
+  }
+
+  .settings-confirm-delete,
+  .settings-cancel-delete {
+    flex: 1;
+  }
+}

@@ -8,7 +8,7 @@ export type UserSettingsResult =
   | { ok: true; options: FinanceOptions; settingsAvailable: false; message: string };
 
 export type SettingsMutationResult =
-  | { ok: true }
+  | { ok: true; option?: Category | ExpenseType | PaymentMethod }
   | { ok: false; message: string };
 
 export type SettingsKind = "category" | "expenseType" | "paymentMethod";
@@ -111,32 +111,75 @@ export class SupabaseUserSettingsRepository {
     }
 
     const now = new Date().toISOString();
-    const result =
-      kind === "category"
-        ? await this.supabase.from("user_categories").insert({
-            user_id: userId,
-            name: safeName,
-            color: "#8b5cf6",
-            created_at: now,
-            updated_at: now,
-          })
-        : kind === "expenseType"
-          ? await this.supabase.from("user_expense_types").insert({
-              user_id: userId,
+    const id = crypto.randomUUID();
+
+    if (kind === "category") {
+      const result = await this.supabase.from("user_categories").insert({
+        id,
+        user_id: userId,
+        name: safeName,
+        color: "#8b5cf6",
+        is_active: true,
+        created_at: now,
+        updated_at: now,
+      });
+
+      return result.error
+        ? { ok: false, message: MUTATION_ERROR_MESSAGE }
+        : {
+            ok: true,
+            option: {
+              id,
+              name: safeName,
+              color: "#8b5cf6",
+              isDefault: false,
+            },
+          };
+    }
+
+    if (kind === "expenseType") {
+      const result = await this.supabase.from("user_expense_types").insert({
+        id,
+        user_id: userId,
+        name: safeName,
+        description: "",
+        sort_order: 100,
+        is_active: true,
+        created_at: now,
+        updated_at: now,
+      });
+
+      return result.error
+        ? { ok: false, message: MUTATION_ERROR_MESSAGE }
+        : {
+            ok: true,
+            option: {
+              id,
               name: safeName,
               description: "",
-              sort_order: 100,
-              created_at: now,
-              updated_at: now,
-            })
-          : await this.supabase.from("user_payment_methods").insert({
-              user_id: userId,
-              name: safeName,
-              created_at: now,
-              updated_at: now,
-            });
+              sortOrder: 100,
+            },
+          };
+    }
 
-    return result.error ? { ok: false, message: MUTATION_ERROR_MESSAGE } : { ok: true };
+    const result = await this.supabase.from("user_payment_methods").insert({
+      id,
+      user_id: userId,
+      name: safeName,
+      is_active: true,
+      created_at: now,
+      updated_at: now,
+    });
+
+    return result.error
+      ? { ok: false, message: MUTATION_ERROR_MESSAGE }
+      : {
+          ok: true,
+          option: {
+            id,
+            name: safeName,
+          },
+        };
   }
 
   async updateOption(

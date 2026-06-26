@@ -12,6 +12,7 @@ export default async function SettingsPage() {
 
   const settingsRepository = await createServerUserSettingsRepository();
   const settings = await settingsRepository.listFinanceOptions(session.user.id);
+  const initial = (session.user.name || session.user.email || "B").slice(0, 1).toUpperCase();
 
   return (
     <main className="app-shell settings-page-shell">
@@ -23,6 +24,7 @@ export default async function SettingsPage() {
       <AccountSettingsPanel
         email={session.user.email}
         financeOptions={settings.options}
+        initial={initial}
         name={session.user.name}
         settingsMessage={settings.settingsAvailable ? "" : settings.message}
       />

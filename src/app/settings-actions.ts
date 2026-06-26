@@ -16,6 +16,7 @@ function revalidatePrivateViews() {
   revalidatePath("/extrato");
   revalidatePath("/lancamentos");
   revalidatePath("/gastos");
+  revalidatePath("/configuracoes");
 }
 
 function normalizeName(value: string): string {
