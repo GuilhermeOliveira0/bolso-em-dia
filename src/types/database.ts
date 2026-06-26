@@ -133,6 +133,8 @@ export type Database = {
           name: string;
           color: string;
           is_active: boolean;
+          default_option_id: string | null;
+          is_hidden: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -142,6 +144,8 @@ export type Database = {
           name: string;
           color?: string;
           is_active?: boolean;
+          default_option_id?: string | null;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -151,6 +155,8 @@ export type Database = {
           name?: string;
           color?: string;
           is_active?: boolean;
+          default_option_id?: string | null;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -172,6 +178,8 @@ export type Database = {
           description: string;
           sort_order: number;
           is_active: boolean;
+          default_option_id: string | null;
+          is_hidden: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -182,6 +190,8 @@ export type Database = {
           description?: string;
           sort_order?: number;
           is_active?: boolean;
+          default_option_id?: string | null;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -192,6 +202,8 @@ export type Database = {
           description?: string;
           sort_order?: number;
           is_active?: boolean;
+          default_option_id?: string | null;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -211,6 +223,8 @@ export type Database = {
           user_id: string;
           name: string;
           is_active: boolean;
+          default_option_id: string | null;
+          is_hidden: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -219,6 +233,8 @@ export type Database = {
           user_id: string;
           name: string;
           is_active?: boolean;
+          default_option_id?: string | null;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -227,6 +243,8 @@ export type Database = {
           user_id?: string;
           name?: string;
           is_active?: boolean;
+          default_option_id?: string | null;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };

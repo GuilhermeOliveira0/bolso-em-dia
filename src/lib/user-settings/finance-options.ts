@@ -21,13 +21,46 @@ export type FinanceOptionMaps = {
   paymentMethodNames: Map<string, string>;
 };
 
+type HiddenDefaultOptions = Partial<Record<keyof FinanceOptions, string[]>>;
+
+function mergeUserOptions<T extends { id: string }>(
+  defaults: T[],
+  userOptions: T[] = [],
+  hiddenDefaultIds: string[] = [],
+): T[] {
+  const hidden = new Set(hiddenDefaultIds);
+  const defaultIds = new Set(defaults.map((option) => option.id));
+  const overrides = new Map(userOptions.filter((option) => defaultIds.has(option.id)).map((option) => [option.id, option]));
+  const customOptions = userOptions.filter((option) => !defaultIds.has(option.id));
+
+  return [
+    ...defaults
+      .filter((option) => !hidden.has(option.id))
+      .map((option) => overrides.get(option.id) ?? option),
+    ...customOptions,
+  ];
+}
+
 export function buildFinanceOptions(
   customOptions: Partial<FinanceOptions> = {},
+  hiddenDefaultOptions: HiddenDefaultOptions = {},
 ): FinanceOptions {
   return {
-    categories: [...DEFAULT_CATEGORIES, ...(customOptions.categories ?? [])],
-    expenseTypes: [...DEFAULT_EXPENSE_TYPES, ...(customOptions.expenseTypes ?? [])],
-    paymentMethods: [...DEFAULT_PAYMENT_METHODS, ...(customOptions.paymentMethods ?? [])],
+    categories: mergeUserOptions(
+      DEFAULT_CATEGORIES,
+      customOptions.categories,
+      hiddenDefaultOptions.categories,
+    ),
+    expenseTypes: mergeUserOptions(
+      DEFAULT_EXPENSE_TYPES,
+      customOptions.expenseTypes,
+      hiddenDefaultOptions.expenseTypes,
+    ),
+    paymentMethods: mergeUserOptions(
+      DEFAULT_PAYMENT_METHODS,
+      customOptions.paymentMethods,
+      hiddenDefaultOptions.paymentMethods,
+    ),
   };
 }
 

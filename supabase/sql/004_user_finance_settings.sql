@@ -31,11 +31,23 @@ create table if not exists public.user_payment_methods (
 alter table public.user_categories
   alter column is_active set default true;
 
+alter table public.user_categories
+  add column if not exists default_option_id text,
+  add column if not exists is_hidden boolean not null default false;
+
 alter table public.user_expense_types
   alter column is_active set default true;
 
+alter table public.user_expense_types
+  add column if not exists default_option_id text,
+  add column if not exists is_hidden boolean not null default false;
+
 alter table public.user_payment_methods
   alter column is_active set default true;
+
+alter table public.user_payment_methods
+  add column if not exists default_option_id text,
+  add column if not exists is_hidden boolean not null default false;
 
 update public.user_categories
 set is_active = true
@@ -49,17 +61,41 @@ update public.user_payment_methods
 set is_active = true
 where is_active is null;
 
+update public.user_categories
+set is_hidden = false
+where is_hidden is null;
+
+update public.user_expense_types
+set is_hidden = false
+where is_hidden is null;
+
+update public.user_payment_methods
+set is_hidden = false
+where is_hidden is null;
+
 create unique index if not exists user_categories_user_name_active_idx
   on public.user_categories (user_id, lower(trim(name)))
-  where is_active;
+  where is_active and not is_hidden;
 
 create unique index if not exists user_expense_types_user_name_active_idx
   on public.user_expense_types (user_id, lower(trim(name)))
-  where is_active;
+  where is_active and not is_hidden;
 
 create unique index if not exists user_payment_methods_user_name_active_idx
   on public.user_payment_methods (user_id, lower(trim(name)))
-  where is_active;
+  where is_active and not is_hidden;
+
+create unique index if not exists user_categories_default_override_active_idx
+  on public.user_categories (user_id, default_option_id)
+  where is_active and default_option_id is not null;
+
+create unique index if not exists user_expense_types_default_override_active_idx
+  on public.user_expense_types (user_id, default_option_id)
+  where is_active and default_option_id is not null;
+
+create unique index if not exists user_payment_methods_default_override_active_idx
+  on public.user_payment_methods (user_id, default_option_id)
+  where is_active and default_option_id is not null;
 
 create index if not exists user_categories_user_id_idx on public.user_categories (user_id);
 create index if not exists user_expense_types_user_id_idx on public.user_expense_types (user_id);

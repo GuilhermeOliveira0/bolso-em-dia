@@ -424,60 +424,56 @@ function SettingsList({
 
           return (
             <li className={isConfirming ? "is-confirming-delete" : ""} key={option.id}>
-              {isDefault ? (
-                <>
-                  <span className="settings-option-name">{option.name}</span>
-                  <small>Sistema</small>
-                </>
+              <div className="settings-option-editor">
+                <input
+                  aria-label={`Editar ${option.name}`}
+                  defaultValue={option.name}
+                  onChange={(event) => onEditName(option.id, event.target.value)}
+                />
+                {isDefault ? <small>Sistema</small> : null}
+              </div>
+              {isConfirming ? (
+                <div className="settings-confirm-actions">
+                  <button
+                    className="settings-confirm-delete"
+                    disabled={pending}
+                    type="button"
+                    onClick={() => onConfirmDelete(option.id)}
+                  >
+                    Confirmar
+                  </button>
+                  <button
+                    className="settings-cancel-delete"
+                    disabled={pending}
+                    type="button"
+                    onClick={onCancelDelete}
+                  >
+                    Cancelar
+                  </button>
+                </div>
               ) : (
-                <>
-                  <input
-                    aria-label={`Editar ${option.name}`}
-                    defaultValue={option.name}
-                    onChange={(event) => onEditName(option.id, event.target.value)}
-                  />
-                  {isConfirming ? (
-                    <div className="settings-confirm-actions">
-                      <button
-                        className="settings-confirm-delete"
-                        disabled={pending}
-                        type="button"
-                        onClick={() => onConfirmDelete(option.id)}
-                      >
-                        Confirmar
-                      </button>
-                      <button
-                        className="settings-cancel-delete"
-                        disabled={pending}
-                        type="button"
-                        onClick={onCancelDelete}
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="settings-item-actions">
-                      <button
-                        aria-label={`Salvar ${option.name}`}
-                        className="settings-icon-button edit"
-                        disabled={pending}
-                        type="button"
-                        onClick={() => onUpdate(option.id, option.name)}
-                      >
-                        <AppIcon className="app-icon" name="pencil" />
-                      </button>
-                      <button
-                        aria-label={`Excluir ${option.name}`}
-                        className="settings-icon-button delete"
-                        disabled={pending}
-                        type="button"
-                        onClick={() => onRequestDelete(option.id)}
-                      >
-                        <AppIcon className="app-icon" name="trash" />
-                      </button>
-                    </div>
-                  )}
-                </>
+                <div className="settings-item-actions">
+                  <button
+                    aria-label={`Salvar ${option.name}`}
+                    className="settings-icon-button edit"
+                    disabled={pending}
+                    type="button"
+                    onClick={() => onUpdate(option.id, option.name)}
+                  >
+                    <AppIcon className="app-icon" name="pencil" />
+                    <span>Editar</span>
+                  </button>
+                  <button
+                    aria-label={`Excluir ${option.name}`}
+                    className="settings-icon-button delete"
+                    disabled={pending}
+                    type="button"
+                    onClick={() => onRequestDelete(option.id)}
+                  >
+                    <AppIcon className="app-icon" name="trash" />
+                    <span>Excluir</span>
+                  </button>
+                </div>
               )}
             </li>
           );

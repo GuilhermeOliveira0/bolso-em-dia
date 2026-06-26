@@ -4283,6 +4283,15 @@ h3 {
   font-weight: 800;
 }
 
+.settings-option-editor {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
 .settings-item-actions,
 .settings-confirm-actions {
   display: flex;
@@ -4292,10 +4301,11 @@ h3 {
 
 .settings-icon-button {
   display: inline-flex;
-  width: 38px;
-  height: 38px;
+  min-width: 96px;
+  min-height: 38px;
   align-items: center;
   justify-content: center;
+  gap: 7px;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -4305,8 +4315,13 @@ h3 {
 }
 
 .settings-icon-button .app-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+}
+
+.settings-icon-button span {
+  font-size: 0.78rem;
+  font-weight: 850;
 }
 
 .settings-icon-button.edit:hover {
@@ -4468,6 +4483,22 @@ h3 {
   .settings-page-shell .settings-option-list li {
     padding: 11px 12px;
   }
+
+  .settings-option-editor {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .settings-item-actions,
+  .settings-confirm-actions {
+    width: 100%;
+  }
+
+  .settings-icon-button,
+  .settings-confirm-delete,
+  .settings-cancel-delete {
+    flex: 1;
+  }
 }
 
 @media (max-width: 420px) {
@@ -4495,6 +4526,7 @@ h3 {
 
   .settings-page-shell .settings-option-list li {
     align-items: stretch;
+    flex-direction: column;
   }
 
   .settings-page-shell .settings-option-list li.is-confirming-delete {
