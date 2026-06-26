@@ -4542,3 +4542,334 @@ h3 {
     flex: 1;
   }
 }
+
+/* Compact profile settings layout */
+.settings-page-shell .settings-page-grid {
+  max-width: 1180px;
+  margin-inline: auto;
+  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.settings-page-shell .settings-hero {
+  top: 116px;
+  gap: 16px;
+  border-radius: 22px;
+  padding: 22px;
+}
+
+.settings-page-shell .settings-hero h1 {
+  font-size: clamp(1.45rem, 2.2vw, 1.8rem);
+}
+
+.settings-section-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-section-nav a,
+.settings-mobile-tabs a {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.settings-section-nav a {
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.settings-section-nav a:hover,
+.settings-mobile-tabs a:hover {
+  border-color: rgba(139, 92, 246, 0.32);
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--ink);
+}
+
+.settings-section-nav .app-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--brand-strong);
+  flex: 0 0 auto;
+}
+
+.settings-mobile-tabs {
+  display: none;
+}
+
+.settings-page-shell .settings-content {
+  gap: 18px;
+}
+
+.settings-alert-message {
+  margin: 0;
+  border: 1px solid rgba(139, 92, 246, 0.24);
+  border-radius: 14px;
+  background: rgba(139, 92, 246, 0.09);
+  color: #d8c8ff;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  padding: 12px 14px;
+}
+
+.settings-page-shell .settings-glass-card {
+  gap: 16px;
+  scroll-margin-top: 116px;
+  border-radius: 20px;
+  padding: 22px;
+}
+
+.settings-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.settings-list-heading {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.settings-item-count {
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+  padding: 6px 10px;
+}
+
+.settings-page-shell .settings-create-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.settings-page-shell .settings-create-row .settings-primary-button {
+  min-width: 132px;
+  padding-inline: 16px;
+}
+
+.settings-option-summary {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-page-shell .settings-option-list {
+  gap: 8px;
+}
+
+.settings-page-shell .settings-option-list li {
+  min-height: 54px;
+  padding: 9px 10px 9px 14px;
+}
+
+.settings-option-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-page-shell .settings-option-list small {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  font-size: 0.68rem;
+}
+
+.settings-option-editor {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.settings-option-editor input {
+  width: 100%;
+}
+
+.settings-item-actions,
+.settings-edit-actions,
+.settings-confirm-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.settings-confirm-actions > span {
+  color: #fecaca;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.settings-icon-button {
+  width: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+.settings-icon-button.edit {
+  color: #93c5fd;
+}
+
+.settings-icon-button.delete {
+  color: #fca5a5;
+}
+
+.settings-confirm-edit,
+.settings-cancel-edit,
+.settings-confirm-delete,
+.settings-cancel-delete {
+  min-height: 34px;
+  border-radius: 10px;
+  padding: 0 11px;
+  font-size: 0.76rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.settings-confirm-edit {
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  background: rgba(16, 185, 129, 0.12);
+  color: #a7f3d0;
+}
+
+.settings-cancel-edit {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+}
+
+@media (max-width: 1024px) {
+  .settings-page-shell .settings-page-grid {
+    max-width: 760px;
+    grid-template-columns: 1fr;
+  }
+
+  .settings-page-shell .settings-hero {
+    display: none;
+  }
+
+  .settings-mobile-profile {
+    display: flex;
+  }
+
+  .settings-mobile-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin: -2px -4px 0;
+    padding: 2px 4px 8px;
+    scrollbar-width: none;
+  }
+
+  .settings-mobile-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .settings-mobile-tabs a {
+    min-height: 38px;
+    flex: 0 0 auto;
+    padding: 0 13px;
+  }
+
+  .settings-profile-grid,
+  .settings-split-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  .settings-page-shell .settings-glass-card {
+    gap: 15px;
+    padding: 18px;
+  }
+
+  .settings-page-shell .settings-create-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .settings-page-shell .settings-create-row .settings-primary-button {
+    min-width: 48px;
+    padding-inline: 14px;
+  }
+
+  .settings-page-shell .settings-create-row .settings-primary-button span {
+    display: none;
+  }
+
+  .settings-page-shell .settings-option-list li {
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .settings-option-summary {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .settings-item-actions {
+    width: auto;
+  }
+
+  .settings-icon-button {
+    flex: 0 0 36px;
+  }
+
+  .settings-confirm-actions,
+  .settings-edit-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .settings-page-shell .settings-glass-card {
+    padding: 16px;
+  }
+
+  .settings-list-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .settings-page-shell .settings-option-list li.is-editing,
+  .settings-page-shell .settings-option-list li.is-confirming-delete {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .settings-page-shell .settings-option-list li.is-editing .settings-edit-actions,
+  .settings-page-shell .settings-option-list li.is-confirming-delete .settings-confirm-actions {
+    justify-content: stretch;
+  }
+
+  .settings-confirm-edit,
+  .settings-cancel-edit,
+  .settings-confirm-delete,
+  .settings-cancel-delete {
+    flex: 1;
+  }
+}
