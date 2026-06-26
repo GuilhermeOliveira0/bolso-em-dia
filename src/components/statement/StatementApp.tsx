@@ -136,9 +136,7 @@ export function StatementApp({
       <PrivateHeader
         activePath="/extrato"
         email={user.email}
-        financeOptions={financeOptions}
         name={user.name}
-        settingsMessage={settingsMessage}
       />
 
       <section className="statement-mobile-head">

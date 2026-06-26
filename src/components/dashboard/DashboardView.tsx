@@ -39,7 +39,6 @@ type DashboardViewProps = {
   summary: DashboardSummary;
   availableYears: number[];
   financeOptions: FinanceOptions;
-  settingsMessage: string;
 };
 
 export function DashboardView({
@@ -49,7 +48,6 @@ export function DashboardView({
   summary,
   availableYears,
   financeOptions,
-  settingsMessage,
 }: DashboardViewProps) {
   const latestExpenses = summary.expenses.slice(0, 3);
   const emptyLabel = period.mode === "all" ? "no histórico" : `em ${period.label}`;
@@ -60,9 +58,7 @@ export function DashboardView({
       <PrivateHeader
         activePath="/dashboard"
         email={email}
-        financeOptions={financeOptions}
         name={name}
-        settingsMessage={settingsMessage}
       />
 
       <section className="mobile-total-card">

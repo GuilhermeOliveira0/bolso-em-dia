@@ -3,14 +3,11 @@ import { LogoutButton } from "@/components/auth/LogoutButton";
 import { AccountSettingsButton } from "@/components/settings/AccountSettingsButton";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { BrandLogo } from "@/components/ui/BrandLogo";
-import type { FinanceOptions } from "@/lib/user-settings/finance-options";
 
 type PrivateHeaderProps = {
   email: string;
   name: string;
-  activePath: "/dashboard" | "/lancamentos" | "/extrato" | "/comprovantes";
-  financeOptions?: FinanceOptions;
-  settingsMessage?: string;
+  activePath: "/dashboard" | "/lancamentos" | "/extrato" | "/comprovantes" | "/configuracoes";
 };
 
 const navItems = [
@@ -46,8 +43,6 @@ export function PrivateHeader({
   email,
   name,
   activePath,
-  financeOptions,
-  settingsMessage = "",
 }: PrivateHeaderProps) {
   const initial = (name || email || "B").slice(0, 1).toUpperCase();
 
@@ -72,10 +67,7 @@ export function PrivateHeader({
         <div className="profile-area">
           <AccountSettingsButton
             email={email}
-            financeOptions={financeOptions}
             initial={initial}
-            name={name}
-            settingsMessage={settingsMessage}
           />
           <LogoutButton />
         </div>

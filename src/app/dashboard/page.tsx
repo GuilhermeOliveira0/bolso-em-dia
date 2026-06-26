@@ -44,7 +44,6 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         financeOptions={settings.options}
         name={session.user.name}
         period={period}
-        settingsMessage={settings.settingsAvailable ? "" : settings.message}
         summary={summary}
       />
     );

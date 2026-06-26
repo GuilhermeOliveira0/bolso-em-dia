@@ -189,9 +189,7 @@ export function LaunchpadApp({
       <PrivateHeader
         activePath="/lancamentos"
         email={user.email}
-        financeOptions={financeOptions}
         name={user.name}
-        settingsMessage={settingsMessage}
       />
 
       <section className="launchpad-form-grid">
