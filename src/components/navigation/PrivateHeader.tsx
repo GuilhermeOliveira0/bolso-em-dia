@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { LogoutButton } from "@/components/auth/LogoutButton";
+import { AccountSettingsButton } from "@/components/settings/AccountSettingsButton";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import type { FinanceOptions } from "@/lib/user-settings/finance-options";
 
 type PrivateHeaderProps = {
   email: string;
   name: string;
   activePath: "/dashboard" | "/lancamentos" | "/extrato" | "/comprovantes";
+  financeOptions?: FinanceOptions;
+  settingsMessage?: string;
 };
 
 const navItems = [
@@ -38,7 +42,13 @@ function PrivateNavigation({
   );
 }
 
-export function PrivateHeader({ email, name, activePath }: PrivateHeaderProps) {
+export function PrivateHeader({
+  email,
+  name,
+  activePath,
+  financeOptions,
+  settingsMessage = "",
+}: PrivateHeaderProps) {
   const initial = (name || email || "B").slice(0, 1).toUpperCase();
 
   return (
@@ -60,9 +70,13 @@ export function PrivateHeader({ email, name, activePath }: PrivateHeaderProps) {
         />
 
         <div className="profile-area">
-          <span className="avatar-chip" title={email}>
-            {initial}
-          </span>
+          <AccountSettingsButton
+            email={email}
+            financeOptions={financeOptions}
+            initial={initial}
+            name={name}
+            settingsMessage={settingsMessage}
+          />
           <LogoutButton />
         </div>
       </header>

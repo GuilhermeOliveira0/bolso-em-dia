@@ -2,8 +2,7 @@ export type StatementPeriodPreset =
   | "current-month"
   | "last-month"
   | "last-7-days"
-  | "last-30-days"
-  | "custom";
+  | "last-30-days";
 
 export type StatementPeriod = {
   preset: StatementPeriodPreset;
@@ -19,7 +18,6 @@ export const STATEMENT_PERIOD_OPTIONS: Array<{ id: StatementPeriodPreset; label:
   { id: "last-month", label: "Mês passado" },
   { id: "last-7-days", label: "Últimos 7 dias" },
   { id: "last-30-days", label: "Últimos 30 dias" },
-  { id: "custom", label: "Personalizado" },
 ];
 
 function toDateInput(date: Date): string {
@@ -61,10 +59,42 @@ function parsePreset(value: string | string[] | undefined): StatementPeriodPrese
     : "current-month";
 }
 
+function buildCustomPeriod(
+  query: Record<string, string | string[] | undefined>,
+): StatementPeriod | null {
+  const customStartDate = parseDateInput(query.startDate);
+  const customEndDate = parseDateInput(query.endDate);
+
+  if (!customStartDate && !customEndDate) {
+    return null;
+  }
+
+  const startDate = customStartDate || customEndDate;
+  const endDateInput = customEndDate || customStartDate;
+
+  if (!startDate || !endDateInput || startDate > endDateInput) {
+    return null;
+  }
+
+  return {
+    preset: "current-month",
+    startDate,
+    endDate: toDateInput(addDays(new Date(`${endDateInput}T00:00:00`), 1)),
+    customStartDate,
+    customEndDate,
+    label: startDate === endDateInput ? startDate : "Período selecionado",
+  };
+}
+
 export function parseStatementPeriod(
   query: Record<string, string | string[] | undefined>,
   now = new Date(),
 ): StatementPeriod {
+  const customPeriod = buildCustomPeriod(query);
+  if (customPeriod) {
+    return customPeriod;
+  }
+
   const preset = parsePreset(query.period);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const tomorrow = addDays(today, 1);
@@ -95,22 +125,6 @@ export function parseStatementPeriod(
       customEndDate: "",
       label: preset === "last-7-days" ? "Últimos 7 dias" : "Últimos 30 dias",
     };
-  }
-
-  if (preset === "custom") {
-    const startDate = parseDateInput(query.startDate);
-    const customEndDate = parseDateInput(query.endDate);
-
-    if (startDate && customEndDate && startDate <= customEndDate) {
-      return {
-        preset,
-        startDate,
-        endDate: toDateInput(addDays(new Date(`${customEndDate}T00:00:00`), 1)),
-        customStartDate: startDate,
-        customEndDate,
-        label: "Período personalizado",
-      };
-    }
   }
 
   const start = startOfMonth(today);

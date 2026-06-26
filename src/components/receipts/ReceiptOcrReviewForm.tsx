@@ -3,15 +3,20 @@
 import type { FormEvent } from "react";
 import type { ReceiptOcrReview, ReceiptOcrReviewDraft } from "@/app/lancamentos/actions";
 import { AppIcon } from "@/components/ui/AppIcon";
-import { getCategoryName, getExpenseCategoryOptions } from "@/lib/categories/default-categories";
-import { DEFAULT_EXPENSE_TYPES } from "@/lib/expense-types/default-expense-types";
-import { DEFAULT_PAYMENT_METHODS } from "@/lib/payment-methods/default-payment-methods";
+import { getExpenseCategoryOptions } from "@/lib/categories/default-categories";
+import {
+  buildFinanceOptionMaps,
+  DEFAULT_FINANCE_OPTIONS,
+  getOptionName,
+  type FinanceOptions,
+} from "@/lib/user-settings/finance-options";
 
 export type ReceiptOcrReviewErrors = Partial<Record<keyof ReceiptOcrReviewDraft, string>>;
 
 type ReceiptOcrReviewFormProps = {
   review: ReceiptOcrReview;
   errors: ReceiptOcrReviewErrors;
+  financeOptions?: FinanceOptions;
   isSubmitting: boolean;
   onCancel: () => void;
   onChange: (field: keyof ReceiptOcrReviewDraft, value: string) => void;
@@ -22,18 +27,16 @@ function needsReview(review: ReceiptOcrReview, field: "amount" | "date" | "recip
   return review.fieldsNeedReview.includes(field);
 }
 
-function getExpenseTypeName(expenseTypeId: string) {
-  return DEFAULT_EXPENSE_TYPES.find((expenseType) => expenseType.id === expenseTypeId)?.name ?? "tipo";
-}
-
 export function ReceiptOcrReviewForm({
   review,
   errors,
+  financeOptions = DEFAULT_FINANCE_OPTIONS,
   isSubmitting,
   onCancel,
   onChange,
   onSubmit,
 }: ReceiptOcrReviewFormProps) {
+  const names = buildFinanceOptionMaps(financeOptions);
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onSubmit();
@@ -64,7 +67,8 @@ export function ReceiptOcrReviewForm({
           <p>
             Sugestão automática:{" "}
             <strong>
-              {getCategoryName(review.categoryId)} / {getExpenseTypeName(review.expenseTypeId)}
+              {getOptionName(names.categoryNames, review.categoryId, "Categoria")} /{" "}
+              {getOptionName(names.expenseTypeNames, review.expenseTypeId, "tipo")}
             </strong>{" "}
             com base em "{review.classificationSuggestion.matchedKeyword}".
           </p>
@@ -167,7 +171,7 @@ export function ReceiptOcrReviewForm({
             onChange={(event) => onChange("categoryId", event.target.value)}
           >
             <option value="">Escolha uma categoria</option>
-            {getExpenseCategoryOptions(review.categoryId).map((category) => (
+            {getExpenseCategoryOptions(review.categoryId, financeOptions.categories).map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
@@ -194,7 +198,7 @@ export function ReceiptOcrReviewForm({
             onChange={(event) => onChange("expenseTypeId", event.target.value)}
           >
             <option value="">Escolha um tipo</option>
-            {DEFAULT_EXPENSE_TYPES.map((expenseType) => (
+            {financeOptions.expenseTypes.map((expenseType) => (
               <option key={expenseType.id} value={expenseType.id}>
                 {expenseType.name}
               </option>
@@ -220,7 +224,7 @@ export function ReceiptOcrReviewForm({
             onChange={(event) => onChange("paymentMethod", event.target.value)}
           >
             <option value="">Escolha a forma</option>
-            {DEFAULT_PAYMENT_METHODS.map((paymentMethod) => (
+            {financeOptions.paymentMethods.map((paymentMethod) => (
               <option key={paymentMethod.id} value={paymentMethod.id}>
                 {paymentMethod.name}
               </option>

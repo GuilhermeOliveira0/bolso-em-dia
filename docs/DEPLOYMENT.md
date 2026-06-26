@@ -62,6 +62,7 @@ O projeto depende das migrations em `supabase/sql/`:
 - `001_expenses_rls.sql`
 - `002_receipts_storage.sql`
 - `003_receipts_ocr.sql`
+- `004_user_finance_settings.sql`
 
 A migration `003_receipts_ocr.sql` precisa estar aplicada para o fluxo atual de comprovantes e OCR, porque a aplicação seleciona e atualiza as colunas:
 
@@ -75,6 +76,14 @@ A migration `003_receipts_ocr.sql` precisa estar aplicada para o fluxo atual de 
 - `expense_id`
 
 Se a SQL 003 não estiver aplicada, a listagem ou leitura de comprovantes pode falhar em produção.
+
+A migration `004_user_finance_settings.sql` habilita configurações financeiras por usuário:
+
+- categorias personalizadas;
+- tipos do gasto personalizados;
+- formas de pagamento personalizadas.
+
+Se a SQL 004 não estiver aplicada, a aplicação continua usando as opções padrão do sistema e mostra um aviso seguro nas telas privadas, mas criação/edição/exclusão de opções personalizadas não ficará disponível.
 
 Checklist Supabase:
 

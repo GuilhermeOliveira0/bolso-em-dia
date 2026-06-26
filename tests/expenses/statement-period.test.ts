@@ -28,14 +28,13 @@ describe("parseStatementPeriod", () => {
     });
   });
 
-  it("uses a valid custom inclusive date range with an exclusive end", () => {
+  it("uses direct date fields as an inclusive range with an exclusive end", () => {
     expect(
       parseStatementPeriod(
-        { period: "custom", startDate: "2026-06-10", endDate: "2026-06-12" },
+        { startDate: "2026-06-10", endDate: "2026-06-12" },
         now,
       ),
     ).toMatchObject({
-      preset: "custom",
       startDate: "2026-06-10",
       endDate: "2026-06-13",
       customStartDate: "2026-06-10",
@@ -46,7 +45,7 @@ describe("parseStatementPeriod", () => {
   it("falls back safely when a custom range is invalid", () => {
     expect(
       parseStatementPeriod(
-        { period: "custom", startDate: "2026-06-12", endDate: "2026-06-10" },
+        { startDate: "2026-06-12", endDate: "2026-06-10" },
         now,
       ),
     ).toMatchObject({

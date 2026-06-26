@@ -3,6 +3,7 @@
 import type { CreateExpenseResult } from "@/lib/expenses/expense-repository";
 import { createServerExpenseRepository } from "@/lib/expenses/server-expense-repository";
 import { getAuthenticatedUser } from "@/lib/auth/session";
+import { createServerUserSettingsRepository } from "@/lib/user-settings/server-user-settings-repository";
 import type { Expense, ExpenseDraft } from "@/types/finance";
 
 export type ListExpensesResult =
@@ -31,7 +32,11 @@ export async function createManualExpenseAction(
     return { ok: false, errors: { amount: session.message } };
   }
 
-  const repository = await createServerExpenseRepository();
+  const [repository, settingsRepository] = await Promise.all([
+    createServerExpenseRepository(),
+    createServerUserSettingsRepository(),
+  ]);
+  const settings = await settingsRepository.listFinanceOptions(session.user.id);
 
-  return repository.createManual(session.user.id, draft);
+  return repository.createManual(session.user.id, draft, settings.options);
 }

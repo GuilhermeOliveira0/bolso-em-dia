@@ -10,6 +10,7 @@ import {
   parseDashboardPeriod,
 } from "@/lib/dashboard/dashboard-summary";
 import { createServerExpenseRepository } from "@/lib/expenses/server-expense-repository";
+import { createServerUserSettingsRepository } from "@/lib/user-settings/server-user-settings-repository";
 
 export const dynamic = "force-dynamic";
 
@@ -20,19 +21,33 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   if (!session.ok) redirect("/login");
 
   const query = await searchParams;
-  const period = parseDashboardPeriod(query.month, query.year);
+  const period = parseDashboardPeriod(query);
 
   try {
-    const repository = await createServerExpenseRepository();
-    const { startDate, endDate } = getDashboardDateRange(period);
-    const expenses = await repository.listByUserInDateRange(
-      session.user.id,
-      startDate,
-      endDate,
-    );
-    const summary = buildDashboardSummary(expenses, period);
+    const [repository, settingsRepository] = await Promise.all([
+      createServerExpenseRepository(),
+      createServerUserSettingsRepository(),
+    ]);
+    const dateRange = getDashboardDateRange(period);
+    const [expenses, settings] = await Promise.all([
+      dateRange
+        ? repository.listByUserInDateRange(session.user.id, dateRange.startDate, dateRange.endDate)
+        : repository.listByUser(session.user.id),
+      settingsRepository.listFinanceOptions(session.user.id),
+    ]);
+    const summary = buildDashboardSummary(expenses, period, settings.options);
     const availableYears = getDashboardYears(period.year);
-    return <DashboardView availableYears={availableYears} email={session.user.email} name={session.user.name} period={period} summary={summary} />;
+    return (
+      <DashboardView
+        availableYears={availableYears}
+        email={session.user.email}
+        financeOptions={settings.options}
+        name={session.user.name}
+        period={period}
+        settingsMessage={settings.settingsAvailable ? "" : settings.message}
+        summary={summary}
+      />
+    );
   } catch {
     return (
       <main className="app-shell dashboard-shell">

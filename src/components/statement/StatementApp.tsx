@@ -6,40 +6,43 @@ import { deleteExpenseAction, updateExpenseAction } from "@/app/extrato/actions"
 import { ExpenseForm } from "@/components/expense/ExpenseForm";
 import { PrivateHeader } from "@/components/navigation/PrivateHeader";
 import { AppIcon } from "@/components/ui/AppIcon";
-import { getCategoryName } from "@/lib/categories/default-categories";
-import { getExpenseTypeName } from "@/lib/expense-types/default-expense-types";
+import { getExpenseCategoryOptions } from "@/lib/categories/default-categories";
 import { formatCentsToCurrency } from "@/lib/expenses/money";
+import {
+  filterStatementExpenses,
+  type StatementFilters,
+} from "@/lib/expenses/statement-filters";
 import {
   STATEMENT_PERIOD_OPTIONS,
   type StatementPeriod,
 } from "@/lib/expenses/statement-period";
-import { getPaymentMethodName } from "@/lib/payment-methods/default-payment-methods";
+import {
+  buildFinanceOptionMaps,
+  getOptionName,
+  type FinanceOptions,
+  type FinanceOptionMaps,
+} from "@/lib/user-settings/finance-options";
 import type { AuthenticatedUser } from "@/lib/users/current-user";
 import type { Expense, ExpenseDraft, ExpenseFormErrors } from "@/types/finance";
-
-type StatementFilter = "all" | `type:${string}` | `category:${string}` | `payment:${string}`;
 
 type StatementAppProps = {
   user: AuthenticatedUser;
   expenses: Expense[];
   period: StatementPeriod;
+  filters: StatementFilters;
+  financeOptions: FinanceOptions;
+  settingsMessage: string;
 };
 
-const filters: { id: StatementFilter; label: string }[] = [
-  { id: "all", label: "Todos" },
-  { id: "type:necessario", label: "Necessários" },
-  { id: "type:lazer", label: "Lazer" },
-  { id: "type:superfluo", label: "Supérfluos" },
-  { id: "payment:pix", label: "Pix" },
-  { id: "category:mercado", label: "Mercado" },
-  { id: "category:combustivel", label: "Combustível" },
-  { id: "category:mecanica", label: "Mecânica" },
-];
-
-export function StatementApp({ user, expenses, period }: StatementAppProps) {
+export function StatementApp({
+  user,
+  expenses,
+  period,
+  filters,
+  financeOptions,
+  settingsMessage,
+}: StatementAppProps) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<StatementFilter>("all");
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [editDraft, setEditDraft] = useState<ExpenseDraft | null>(null);
   const [editErrors, setEditErrors] = useState<ExpenseFormErrors>({});
@@ -49,26 +52,19 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
   const [deleteMessage, setDeleteMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const filteredExpenses = useMemo(() => {
-    const normalizedQuery = normalize(query);
-
-    return expenses.filter((expense) => {
-      const categoryName = getCategoryName(expense.categoryId);
-      const typeName = getExpenseTypeName(expense.expenseTypeId);
-      const paymentName = getPaymentMethodName(expense.paymentMethod);
-      const searchableText = normalize(
-        `${expense.description} ${categoryName} ${typeName} ${paymentName}`,
-      );
-      const matchesQuery = !normalizedQuery || searchableText.includes(normalizedQuery);
-      const matchesFilter =
-        activeFilter === "all" ||
-        activeFilter === `type:${expense.expenseTypeId}` ||
-        activeFilter === `category:${expense.categoryId}` ||
-        activeFilter === `payment:${expense.paymentMethod}`;
-
-      return matchesQuery && matchesFilter;
-    });
-  }, [activeFilter, expenses, query]);
+  const optionNames = useMemo(() => buildFinanceOptionMaps(financeOptions), [financeOptions]);
+  const filteredExpenses = useMemo(
+    () =>
+      filterStatementExpenses(expenses, filters, (expense) =>
+        [
+          expense.description,
+          getOptionName(optionNames.categoryNames, expense.categoryId, "Categoria"),
+          getOptionName(optionNames.expenseTypeNames, expense.expenseTypeId, "Tipo"),
+          getOptionName(optionNames.paymentMethodNames, expense.paymentMethod, "Forma de pagamento"),
+        ].join(" "),
+      ),
+    [expenses, filters, optionNames],
+  );
 
   const totalInCents = filteredExpenses.reduce(
     (total, expense) => total + expense.amountInCents,
@@ -137,7 +133,13 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
 
   return (
     <main className="app-shell statement-shell">
-      <PrivateHeader activePath="/extrato" email={user.email} name={user.name} />
+      <PrivateHeader
+        activePath="/extrato"
+        email={user.email}
+        financeOptions={financeOptions}
+        name={user.name}
+        settingsMessage={settingsMessage}
+      />
 
       <section className="statement-mobile-head">
         <span>{period.label}</span>
@@ -155,17 +157,18 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
             <label className="statement-search">
               <AppIcon className="app-icon" name="search" />
               <input
+                form="statementFilters"
+                name="q"
                 placeholder="Buscar despesa, categoria ou local..."
                 type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                defaultValue={filters.query}
               />
             </label>
             <span className="statement-total-chip">{formatCentsToCurrency(totalInCents)}</span>
           </div>
         </div>
 
-        <form className="statement-period-filter" method="get">
+        <form className="statement-period-filter statement-filter-form" id="statementFilters" method="get">
           <label>
             <span>Período</span>
             <select defaultValue={period.preset} name="period">
@@ -184,23 +187,45 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
             <span>Fim</span>
             <input defaultValue={period.customEndDate} name="endDate" type="date" />
           </label>
+          <label>
+            <span>Categoria</span>
+            <select defaultValue={filters.categoryId} name="categoryId">
+              <option value="">Todas</option>
+              {getExpenseCategoryOptions(filters.categoryId, financeOptions.categories).map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Tipo do gasto</span>
+            <select defaultValue={filters.expenseTypeId} name="expenseTypeId">
+              <option value="">Todos</option>
+              {financeOptions.expenseTypes.map((expenseType) => (
+                <option key={expenseType.id} value={expenseType.id}>
+                  {expenseType.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Forma de pagamento</span>
+            <select defaultValue={filters.paymentMethod} name="paymentMethod">
+              <option value="">Todas</option>
+              {financeOptions.paymentMethods.map((paymentMethod) => (
+                <option key={paymentMethod.id} value={paymentMethod.id}>
+                  {paymentMethod.name}
+                </option>
+              ))}
+            </select>
+          </label>
           <button className="primary-action" type="submit">
             Aplicar
           </button>
         </form>
 
-        <div className="statement-pills" aria-label="Filtros do extrato">
-          {filters.map((filter) => (
-            <button
-              aria-pressed={activeFilter === filter.id}
-              key={filter.id}
-              onClick={() => setActiveFilter(filter.id)}
-              type="button"
-            >
-              {filter.label}
-            </button>
-          ))}
-        </div>
+        {settingsMessage ? <p className="info-message">{settingsMessage}</p> : null}
 
         {filteredExpenses.length === 0 ? (
           <section className="empty-state">
@@ -216,6 +241,7 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
                   <StatementItem
                     expense={expense}
                     key={expense.id}
+                    optionNames={optionNames}
                     onDelete={() => {
                       setDeletingExpense(expense);
                       setDeleteMessage("");
@@ -248,7 +274,7 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
                 type="button"
                 onClick={() => setEditingExpense(null)}
               >
-                ×
+                x
               </button>
             </div>
             {editingMessage ? (
@@ -259,6 +285,7 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
             <ExpenseForm
               draft={editDraft}
               errors={editErrors}
+              financeOptions={financeOptions}
               isSubmitting={isEditing}
               onChange={handleEditChange}
               onSubmit={handleEditSubmit}
@@ -318,16 +345,22 @@ export function StatementApp({ user, expenses, period }: StatementAppProps) {
 
 function StatementItem({
   expense,
+  optionNames,
   onDelete,
   onEdit,
 }: {
   expense: Expense;
+  optionNames: FinanceOptionMaps;
   onDelete: () => void;
   onEdit: () => void;
 }) {
-  const categoryName = getCategoryName(expense.categoryId);
-  const typeName = getExpenseTypeName(expense.expenseTypeId);
-  const paymentName = getPaymentMethodName(expense.paymentMethod);
+  const categoryName = getOptionName(optionNames.categoryNames, expense.categoryId, "Categoria");
+  const typeName = getOptionName(optionNames.expenseTypeNames, expense.expenseTypeId, "Tipo");
+  const paymentName = getOptionName(
+    optionNames.paymentMethodNames,
+    expense.paymentMethod,
+    "Forma de pagamento",
+  );
 
   return (
     <article className="transaction-item">
@@ -342,7 +375,7 @@ function StatementItem({
               <span className="tag-tipo">{typeName}</span>
             </h3>
             <p>
-              {categoryName} • {paymentName}
+              {categoryName} - {paymentName}
             </p>
           </div>
         </div>
@@ -387,14 +420,6 @@ function groupExpensesByDate(expenses: Expense[]) {
     label,
     expenses: groupExpenses,
   }));
-}
-
-function normalize(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase()
-    .trim();
 }
 
 function expenseToDraft(expense: Expense): ExpenseDraft {

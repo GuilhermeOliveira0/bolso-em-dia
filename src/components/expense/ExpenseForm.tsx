@@ -2,13 +2,16 @@
 
 import type { FormEvent } from "react";
 import { getExpenseCategoryOptions } from "@/lib/categories/default-categories";
-import { DEFAULT_EXPENSE_TYPES } from "@/lib/expense-types/default-expense-types";
-import { DEFAULT_PAYMENT_METHODS } from "@/lib/payment-methods/default-payment-methods";
+import {
+  DEFAULT_FINANCE_OPTIONS,
+  type FinanceOptions,
+} from "@/lib/user-settings/finance-options";
 import type { ExpenseDraft, ExpenseFormErrors } from "@/types/finance";
 
 type ExpenseFormProps = {
   draft: ExpenseDraft;
   errors: ExpenseFormErrors;
+  financeOptions?: FinanceOptions;
   isSubmitting: boolean;
   onChange: (field: keyof ExpenseDraft, value: string) => void;
   onSubmit: () => void;
@@ -17,6 +20,7 @@ type ExpenseFormProps = {
 export function ExpenseForm({
   draft,
   errors,
+  financeOptions = DEFAULT_FINANCE_OPTIONS,
   isSubmitting,
   onChange,
   onSubmit,
@@ -84,7 +88,7 @@ export function ExpenseForm({
           onChange={(event) => onChange("categoryId", event.target.value)}
         >
           <option value="">Escolha uma categoria</option>
-          {getExpenseCategoryOptions(draft.categoryId).map((category) => (
+          {getExpenseCategoryOptions(draft.categoryId, financeOptions.categories).map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
@@ -103,7 +107,7 @@ export function ExpenseForm({
           onChange={(event) => onChange("expenseTypeId", event.target.value)}
         >
           <option value="">Escolha um tipo</option>
-          {DEFAULT_EXPENSE_TYPES.map((expenseType) => (
+          {financeOptions.expenseTypes.map((expenseType) => (
             <option key={expenseType.id} value={expenseType.id}>
               {expenseType.name}
             </option>
@@ -122,7 +126,7 @@ export function ExpenseForm({
           onChange={(event) => onChange("paymentMethod", event.target.value)}
         >
           <option value="">Escolha a forma</option>
-          {DEFAULT_PAYMENT_METHODS.map((paymentMethod) => (
+          {financeOptions.paymentMethods.map((paymentMethod) => (
             <option key={paymentMethod.id} value={paymentMethod.id}>
               {paymentMethod.name}
             </option>

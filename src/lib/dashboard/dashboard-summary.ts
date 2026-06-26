@@ -1,11 +1,23 @@
 import { getCategoryName } from "@/lib/categories/default-categories";
 import { calculatePossibleSavingsInCents } from "@/lib/dashboard/savings-calculation";
 import { getExpenseTypeName } from "@/lib/expense-types/default-expense-types";
+import {
+  buildFinanceOptionMaps,
+  DEFAULT_FINANCE_OPTIONS,
+  getOptionName,
+  type FinanceOptions,
+} from "@/lib/user-settings/finance-options";
 import type { Expense } from "@/types/finance";
 
+export type DashboardPeriodMode = "all" | "month" | "custom";
+
 export type DashboardPeriod = {
+  mode: DashboardPeriodMode;
   month: number;
   year: number;
+  startDate: string;
+  endDate: string;
+  label: string;
 };
 
 export type DashboardDateRange = {
@@ -32,13 +44,44 @@ export type DashboardSummary = {
   topExpenses: Expense[];
 };
 
+function toDateInput(date: Date): string {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function addDays(date: Date, days: number): Date {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + days);
+  return nextDate;
+}
+
+function parseSingle(value: string | string[] | undefined): string {
+  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+function parseDate(value: string | string[] | undefined): string {
+  const date = parseSingle(value);
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : "";
+}
+
+function formatMonthLabel(month: number, year: number): string {
+  const label = new Intl.DateTimeFormat("pt-BR", {
+    month: "long",
+    year: "numeric",
+  }).format(new Date(year, month - 1, 1));
+
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 function isExpenseInPeriod(expense: Expense, period: DashboardPeriod): boolean {
-  if (!expense.date) {
-    return false;
+  if (period.mode === "all") {
+    return Boolean(expense.date);
   }
 
-  const [year, month] = expense.date.split("-").map(Number);
-  return Number.isInteger(year) && Number.isInteger(month) && year === period.year && month === period.month;
+  return Boolean(expense.date) && expense.date >= period.startDate && expense.date < period.endDate;
 }
 
 function groupExpenses(
@@ -63,7 +106,9 @@ function groupExpenses(
 export function buildDashboardSummary(
   expenses: Expense[],
   period: DashboardPeriod,
+  financeOptions: FinanceOptions = DEFAULT_FINANCE_OPTIONS,
 ): DashboardSummary {
+  const optionNames = buildFinanceOptionMaps(financeOptions);
   const periodExpenses = expenses
     .filter((expense) => isExpenseInPeriod(expense, period))
     .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
@@ -83,8 +128,12 @@ export function buildDashboardSummary(
     leisureInCents: totalForType("lazer"),
     superfluousInCents,
     possibleSavingsInCents: calculatePossibleSavingsInCents(periodExpenses),
-    byCategory: groupExpenses(periodExpenses, (expense) => expense.categoryId, getCategoryName),
-    byType: groupExpenses(periodExpenses, (expense) => expense.expenseTypeId, getExpenseTypeName),
+    byCategory: groupExpenses(periodExpenses, (expense) => expense.categoryId, (id) =>
+      getOptionName(optionNames.categoryNames, id, getCategoryName(id)),
+    ),
+    byType: groupExpenses(periodExpenses, (expense) => expense.expenseTypeId, (id) =>
+      getOptionName(optionNames.expenseTypeNames, id, getExpenseTypeName(id)),
+    ),
     topExpenses: [...periodExpenses]
       .sort((a, b) => b.amountInCents - a.amountInCents || b.date.localeCompare(a.date))
       .slice(0, 5),
@@ -92,27 +141,67 @@ export function buildDashboardSummary(
 }
 
 export function parseDashboardPeriod(
-  monthValue: string | string[] | undefined,
-  yearValue: string | string[] | undefined,
+  query: Record<string, string | string[] | undefined>,
   now = new Date(),
 ): DashboardPeriod {
-  const month = Number(Array.isArray(monthValue) ? monthValue[0] : monthValue);
-  const year = Number(Array.isArray(yearValue) ? yearValue[0] : yearValue);
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+  const mode = parseSingle(query.dashboardPeriod);
+  const startDate = parseDate(query.startDate);
+  const endDateInput = parseDate(query.endDate);
+
+  if ((mode === "custom" || startDate || endDateInput) && (startDate || endDateInput)) {
+    const rangeStart = startDate || endDateInput;
+    const rangeEndInput = endDateInput || startDate;
+
+    if (rangeStart && rangeEndInput && rangeStart <= rangeEndInput) {
+      return {
+        mode: "custom",
+        month: currentMonth,
+        year: currentYear,
+        startDate: rangeStart,
+        endDate: toDateInput(addDays(new Date(`${rangeEndInput}T00:00:00`), 1)),
+        label: rangeStart === rangeEndInput ? rangeStart : "Período selecionado",
+      };
+    }
+  }
+
+  if (mode === "month") {
+    const month = Number(parseSingle(query.month));
+    const year = Number(parseSingle(query.year));
+    const safeMonth = Number.isInteger(month) && month >= 1 && month <= 12 ? month : currentMonth;
+    const safeYear = Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : currentYear;
+    const nextMonth = safeMonth === 12 ? 1 : safeMonth + 1;
+    const nextYear = safeMonth === 12 ? safeYear + 1 : safeYear;
+
+    return {
+      mode: "month",
+      month: safeMonth,
+      year: safeYear,
+      startDate: `${safeYear}-${String(safeMonth).padStart(2, "0")}-01`,
+      endDate: `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`,
+      label: formatMonthLabel(safeMonth, safeYear),
+    };
+  }
 
   return {
-    month: Number.isInteger(month) && month >= 1 && month <= 12 ? month : now.getMonth() + 1,
-    year: Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : now.getFullYear(),
+    mode: "all",
+    month: currentMonth,
+    year: currentYear,
+    startDate: "",
+    endDate: "",
+    label: "Todos os gastos",
   };
 }
 
-export function getDashboardDateRange(period: DashboardPeriod): DashboardDateRange {
-  const startDate = `${period.year}-${String(period.month).padStart(2, "0")}-01`;
-  const nextMonth = period.month === 12 ? 1 : period.month + 1;
-  const nextYear = period.month === 12 ? period.year + 1 : period.year;
+export function getDashboardDateRange(period: DashboardPeriod): DashboardDateRange | null {
+  if (period.mode === "all") {
+    return null;
+  }
 
   return {
-    startDate,
-    endDate: `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`,
+    startDate: period.startDate,
+    endDate: period.endDate,
   };
 }
 

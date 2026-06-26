@@ -22,10 +22,20 @@ export const LEGACY_CATEGORIES: Category[] = [
 
 export const ALL_KNOWN_CATEGORIES: Category[] = [...DEFAULT_CATEGORIES, ...LEGACY_CATEGORIES];
 
-export function getExpenseCategoryOptions(selectedCategoryId?: string): Category[] {
+export function getExpenseCategoryOptions(
+  selectedCategoryId?: string,
+  availableCategories: Category[] = DEFAULT_CATEGORIES,
+): Category[] {
   const legacySelection = LEGACY_CATEGORIES.find((category) => category.id === selectedCategoryId);
+  const hasSelectedCategory = availableCategories.some(
+    (category) => category.id === selectedCategoryId,
+  );
 
-  return legacySelection ? [...DEFAULT_CATEGORIES, legacySelection] : DEFAULT_CATEGORIES;
+  if (legacySelection && !hasSelectedCategory) {
+    return [...availableCategories, legacySelection];
+  }
+
+  return availableCategories;
 }
 
 export function isDefaultCategoryId(categoryId: string): boolean {

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { DEFAULT_FINANCE_OPTIONS, type FinanceOptions } from "@/lib/user-settings/finance-options";
 import type { Expense, ExpenseDraft, ExpenseFormErrors } from "@/types/finance";
 import type { Database } from "@/types/database";
 import { validateExpenseDraft } from "./expense-schema";
@@ -18,13 +19,19 @@ export type DeleteExpenseResult =
 export interface ExpenseRepository {
   listByUser(userId: string): Promise<Expense[]>;
   listByUserInDateRange(userId: string, startDate: string, endDate: string): Promise<Expense[]>;
-  createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult>;
+  createManual(userId: string, draft: ExpenseDraft, options?: FinanceOptions): Promise<CreateExpenseResult>;
   createFromReceipt(
     userId: string,
     draft: ExpenseDraft,
     receiptId: string,
+    options?: FinanceOptions,
   ): Promise<CreateExpenseResult>;
-  updateManual(userId: string, expenseId: string, draft: ExpenseDraft): Promise<UpdateExpenseResult>;
+  updateManual(
+    userId: string,
+    expenseId: string,
+    draft: ExpenseDraft,
+    options?: FinanceOptions,
+  ): Promise<UpdateExpenseResult>;
   deleteByUser(userId: string, expenseId: string): Promise<DeleteExpenseResult>;
 }
 
@@ -106,8 +113,9 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
     userId: string,
     draft: ExpenseDraft,
     source: Expense["source"],
+    options: FinanceOptions = DEFAULT_FINANCE_OPTIONS,
   ): Promise<CreateExpenseResult> {
-    const validation = validateExpenseDraft(draft);
+    const validation = validateExpenseDraft(draft, options);
 
     if (!validation.ok) {
       return { ok: false, errors: validation.errors };
@@ -146,28 +154,34 @@ export class SupabaseExpenseRepository implements ExpenseRepository {
     return { ok: true, expense: mapExpenseRow(data) };
   }
 
-  async createManual(userId: string, draft: ExpenseDraft): Promise<CreateExpenseResult> {
-    return this.create(userId, draft, "manual");
+  async createManual(
+    userId: string,
+    draft: ExpenseDraft,
+    options: FinanceOptions = DEFAULT_FINANCE_OPTIONS,
+  ): Promise<CreateExpenseResult> {
+    return this.create(userId, draft, "manual", options);
   }
 
   async createFromReceipt(
     userId: string,
     draft: ExpenseDraft,
     receiptId: string,
+    options: FinanceOptions = DEFAULT_FINANCE_OPTIONS,
   ): Promise<CreateExpenseResult> {
     if (!receiptId) {
       return { ok: false, errors: { amount: "Selecione um comprovante antes de salvar." } };
     }
 
-    return this.create(userId, draft, "ocr");
+    return this.create(userId, draft, "ocr", options);
   }
 
   async updateManual(
     userId: string,
     expenseId: string,
     draft: ExpenseDraft,
+    options: FinanceOptions = DEFAULT_FINANCE_OPTIONS,
   ): Promise<UpdateExpenseResult> {
-    const validation = validateExpenseDraft(draft);
+    const validation = validateExpenseDraft(draft, options);
 
     if (!validation.ok) {
       return { ok: false, errors: validation.errors };

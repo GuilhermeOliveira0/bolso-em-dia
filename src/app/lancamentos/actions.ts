@@ -13,6 +13,7 @@ import {
 import { createServerExpenseRepository } from "@/lib/expenses/server-expense-repository";
 import { createServerReceiptRepository } from "@/lib/receipts/server-receipt-repository";
 import { createClient } from "@/lib/supabase/server";
+import { createServerUserSettingsRepository } from "@/lib/user-settings/server-user-settings-repository";
 import type { ExpenseDraft } from "@/types/finance";
 
 export type ReceiptOcrReviewDraft = ExpenseDraft & {
@@ -232,7 +233,11 @@ export async function confirmReceiptExpenseAction(
     return { ok: false, errors: { amount: "Comprovante não encontrado para a sua conta." } };
   }
 
-  const expenseRepository = await createServerExpenseRepository();
+  const [expenseRepository, settingsRepository] = await Promise.all([
+    createServerExpenseRepository(),
+    createServerUserSettingsRepository(),
+  ]);
+  const settings = await settingsRepository.listFinanceOptions(session.user.id);
   const description = review.description.trim() || review.recipient.trim();
   const result = await expenseRepository.createFromReceipt(
     session.user.id,
@@ -245,6 +250,7 @@ export async function confirmReceiptExpenseAction(
       paymentMethod: review.paymentMethod,
     },
     receipt.id,
+    settings.options,
   );
 
   if (!result.ok) {

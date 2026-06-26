@@ -19,6 +19,10 @@ import {
 } from "@/components/receipts/ReceiptOcrReviewForm";
 import { ReceiptUploadForm } from "@/components/receipts/ReceiptUploadForm";
 import { AppIcon } from "@/components/ui/AppIcon";
+import {
+  DEFAULT_FINANCE_OPTIONS,
+  type FinanceOptions,
+} from "@/lib/user-settings/finance-options";
 import type { AuthenticatedUser } from "@/lib/users/current-user";
 import type { ExpenseDraft, ExpenseFormErrors, ReceiptWithPreview } from "@/types/finance";
 
@@ -34,6 +38,8 @@ const EMPTY_DRAFT: ExpenseDraft = {
 type LaunchpadAppProps = {
   user: AuthenticatedUser;
   receipts: ReceiptWithPreview[];
+  financeOptions?: FinanceOptions;
+  settingsMessage?: string;
 };
 
 type OcrMessageTone = "info" | "success" | "error";
@@ -60,7 +66,12 @@ function processReceiptWithClientTimeout(receiptId: string): Promise<ProcessRece
   });
 }
 
-export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
+export function LaunchpadApp({
+  user,
+  receipts,
+  financeOptions = DEFAULT_FINANCE_OPTIONS,
+  settingsMessage = "",
+}: LaunchpadAppProps) {
   const router = useRouter();
   const [draft, setDraft] = useState<ExpenseDraft>(EMPTY_DRAFT);
   const [errors, setErrors] = useState<ExpenseFormErrors>({});
@@ -175,7 +186,13 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
 
   return (
     <main className="app-shell launchpad-shell">
-      <PrivateHeader activePath="/lancamentos" email={user.email} name={user.name} />
+      <PrivateHeader
+        activePath="/lancamentos"
+        email={user.email}
+        financeOptions={financeOptions}
+        name={user.name}
+        settingsMessage={settingsMessage}
+      />
 
       <section className="launchpad-form-grid">
         <aside className="prototype-upload-column">
@@ -200,6 +217,7 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
           {ocrReview ? (
             <ReceiptOcrReviewForm
               errors={ocrErrors}
+              financeOptions={financeOptions}
               isSubmitting={isConfirmingOcr}
               review={ocrReview}
               onCancel={() => {
@@ -221,10 +239,16 @@ export function LaunchpadApp({ user, receipts }: LaunchpadAppProps) {
             <ExpenseForm
               draft={draft}
               errors={errors}
+              financeOptions={financeOptions}
               isSubmitting={isSubmitting}
               onChange={handleChange}
               onSubmit={handleSubmit}
             />
+            {settingsMessage ? (
+              <p className="info-message" role="status">
+                {settingsMessage}
+              </p>
+            ) : null}
             {message ? (
               <p className="success-message" role="status">
                 {message}

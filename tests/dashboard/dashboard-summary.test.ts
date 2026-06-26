@@ -3,6 +3,8 @@ import {
   buildDashboardSummary,
   getDashboardDateRange,
   getDashboardYears,
+  parseDashboardPeriod,
+  type DashboardPeriod,
 } from "@/lib/dashboard/dashboard-summary";
 import type { Expense } from "@/types/finance";
 
@@ -23,6 +25,10 @@ function expense(overrides: Partial<Expense>): Expense {
   };
 }
 
+function monthPeriod(month: number, year: number): DashboardPeriod {
+  return parseDashboardPeriod({ dashboardPeriod: "month", month: String(month), year: String(year) });
+}
+
 describe("buildDashboardSummary", () => {
   it("uses only expenses from the selected month and year", () => {
     const summary = buildDashboardSummary(
@@ -31,7 +37,7 @@ describe("buildDashboardSummary", () => {
         expense({ id: "may", amountInCents: 5000, date: "2026-05-31" }),
         expense({ id: "last-year", amountInCents: 7000, date: "2025-06-10" }),
       ],
-      { month: 6, year: 2026 },
+      monthPeriod(6, 2026),
     );
 
     expect(summary.totalInCents).toBe(12000);
@@ -45,7 +51,7 @@ describe("buildDashboardSummary", () => {
         expense({ id: "leisure", amountInCents: 8000, expenseTypeId: "lazer" }),
         expense({ id: "optional", amountInCents: 6000, expenseTypeId: "superfluo" }),
       ],
-      { month: 6, year: 2026 },
+      monthPeriod(6, 2026),
     );
 
     expect(summary.necessaryInCents).toBe(20000);
@@ -65,7 +71,7 @@ describe("buildDashboardSummary", () => {
         expense({ id: "debt", amountInCents: 20000, expenseTypeId: "divida" }),
         expense({ id: "receivable", amountInCents: 20000, expenseTypeId: "a_receber" }),
       ],
-      { month: 6, year: 2026 },
+      monthPeriod(6, 2026),
     );
 
     expect(summary.superfluousInCents).toBe(20000);
@@ -78,7 +84,7 @@ describe("buildDashboardSummary", () => {
         expense({ id: "necessary", amountInCents: 20000, expenseTypeId: "necessario" }),
         expense({ id: "receivable", amountInCents: 20000, expenseTypeId: "a_receber" }),
       ],
-      { month: 6, year: 2026 },
+      monthPeriod(6, 2026),
     );
 
     expect(summary.superfluousInCents).toBe(0);
@@ -92,7 +98,7 @@ describe("buildDashboardSummary", () => {
         expense({ id: "empty-date", amountInCents: 5000, date: "" }),
         expense({ id: "invalid-date", amountInCents: 7000, date: "sem-data" }),
       ],
-      { month: 6, year: 2026 },
+      monthPeriod(6, 2026),
     );
 
     expect(summary.expenseCount).toBe(1);
@@ -109,7 +115,7 @@ describe("buildDashboardSummary", () => {
       }),
     );
 
-    const summary = buildDashboardSummary(expenses, { month: 6, year: 2026 });
+    const summary = buildDashboardSummary(expenses, monthPeriod(6, 2026));
 
     expect(summary.byCategory[0]).toMatchObject({ id: "lazer", totalInCents: 18000 });
     expect(summary.byCategory[1]).toMatchObject({ id: "mercado", totalInCents: 10000 });
@@ -121,7 +127,7 @@ describe("buildDashboardSummary", () => {
   });
 
   it("returns a stable empty summary", () => {
-    const summary = buildDashboardSummary([], { month: 6, year: 2026 });
+    const summary = buildDashboardSummary([], monthPeriod(6, 2026));
 
     expect(summary.totalInCents).toBe(0);
     expect(summary.byCategory).toEqual([]);
@@ -130,13 +136,40 @@ describe("buildDashboardSummary", () => {
   });
 
   it("builds an exclusive date range for regular months and December", () => {
-    expect(getDashboardDateRange({ month: 6, year: 2026 })).toEqual({
+    expect(getDashboardDateRange(monthPeriod(6, 2026))).toEqual({
       startDate: "2026-06-01",
       endDate: "2026-07-01",
     });
-    expect(getDashboardDateRange({ month: 12, year: 2026 })).toEqual({
+    expect(getDashboardDateRange(monthPeriod(12, 2026))).toEqual({
       startDate: "2026-12-01",
       endDate: "2027-01-01",
+    });
+  });
+
+  it("supports all expenses when no dashboard period is selected", () => {
+    const summary = buildDashboardSummary(
+      [
+        expense({ id: "june", amountInCents: 12000, date: "2026-06-10" }),
+        expense({ id: "may", amountInCents: 5000, date: "2026-05-31" }),
+      ],
+      parseDashboardPeriod({}, new Date("2026-06-25T12:00:00")),
+    );
+
+    expect(summary.totalInCents).toBe(17000);
+    expect(getDashboardDateRange(parseDashboardPeriod({}))).toBeNull();
+  });
+
+  it("supports custom date ranges", () => {
+    const period = parseDashboardPeriod({
+      dashboardPeriod: "custom",
+      startDate: "2026-06-10",
+      endDate: "2026-06-12",
+    });
+
+    expect(period).toMatchObject({
+      mode: "custom",
+      startDate: "2026-06-10",
+      endDate: "2026-06-13",
     });
   });
 

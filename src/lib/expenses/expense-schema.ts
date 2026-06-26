@@ -1,12 +1,13 @@
 import { z } from "zod";
-import { isKnownCategoryId } from "@/lib/categories/default-categories";
-import { DEFAULT_EXPENSE_TYPES } from "@/lib/expense-types/default-expense-types";
-import { DEFAULT_PAYMENT_METHODS } from "@/lib/payment-methods/default-payment-methods";
+import {
+  DEFAULT_FINANCE_OPTIONS,
+  isCategoryAllowed,
+  isExpenseTypeAllowed,
+  isPaymentMethodAllowed,
+  type FinanceOptions,
+} from "@/lib/user-settings/finance-options";
 import type { ExpenseDraft, ExpenseFormErrors } from "@/types/finance";
 import { parseCurrencyToCents } from "./money";
-
-const expenseTypeIds = new Set(DEFAULT_EXPENSE_TYPES.map((type) => type.id));
-const paymentMethodIds = new Set(DEFAULT_PAYMENT_METHODS.map((method) => method.id));
 
 export const expenseDraftSchema = z
   .object({
@@ -41,30 +42,6 @@ export const expenseDraftSchema = z
         message: "Informe uma data válida.",
       });
     }
-
-    if (draft.categoryId && !isKnownCategoryId(draft.categoryId)) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["categoryId"],
-        message: "Escolha uma categoria válida.",
-      });
-    }
-
-    if (draft.expenseTypeId && !expenseTypeIds.has(draft.expenseTypeId)) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["expenseTypeId"],
-        message: "Escolha um tipo válido.",
-      });
-    }
-
-    if (draft.paymentMethod && !paymentMethodIds.has(draft.paymentMethod)) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["paymentMethod"],
-        message: "Escolha uma forma de pagamento válida.",
-      });
-    }
   });
 
 export type ValidExpenseDraft = z.infer<typeof expenseDraftSchema>;
@@ -73,7 +50,10 @@ export type ExpenseValidationResult =
   | { ok: true; data: ValidExpenseDraft; amountInCents: number }
   | { ok: false; errors: ExpenseFormErrors };
 
-export function validateExpenseDraft(draft: ExpenseDraft): ExpenseValidationResult {
+export function validateExpenseDraft(
+  draft: ExpenseDraft,
+  options: FinanceOptions = DEFAULT_FINANCE_OPTIONS,
+): ExpenseValidationResult {
   const result = expenseDraftSchema.safeParse(draft);
 
   if (!result.success) {
@@ -93,6 +73,18 @@ export function validateExpenseDraft(draft: ExpenseDraft): ExpenseValidationResu
 
   if (amountInCents === null) {
     return { ok: false, errors: { amount: "Informe um valor válido." } };
+  }
+
+  if (!isCategoryAllowed(result.data.categoryId, options)) {
+    return { ok: false, errors: { categoryId: "Escolha uma categoria válida." } };
+  }
+
+  if (!isExpenseTypeAllowed(result.data.expenseTypeId, options)) {
+    return { ok: false, errors: { expenseTypeId: "Escolha um tipo válido." } };
+  }
+
+  if (!isPaymentMethodAllowed(result.data.paymentMethod, options)) {
+    return { ok: false, errors: { paymentMethod: "Escolha uma forma de pagamento válida." } };
   }
 
   return { ok: true, data: result.data, amountInCents };
