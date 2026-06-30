@@ -5418,3 +5418,202 @@ body:has(.settings-page-shell) {
     flex-direction: column;
   }
 }
+
+/* Settings responsive hardening */
+.settings-page-shell,
+.settings-page-shell * {
+  box-sizing: border-box;
+}
+
+.settings-page-shell {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.settings-page-shell .settings-page-grid,
+.settings-page-shell .settings-content,
+.settings-page-shell .settings-glass-card,
+.settings-page-shell .settings-option-list,
+.settings-page-shell .settings-option-list li,
+.settings-option-summary,
+.settings-option-editor {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.settings-page-shell .settings-content {
+  display: grid;
+  width: 100%;
+  justify-self: stretch;
+}
+
+.settings-page-shell .settings-option-list li.is-editing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-page-shell .settings-option-list li.is-editing .settings-edit-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(90px, auto));
+  justify-content: end;
+  gap: 8px;
+}
+
+.settings-page-shell .settings-option-list li.is-confirming-delete {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-page-shell .settings-option-list li.is-confirming-delete .settings-confirm-actions {
+  display: grid;
+  grid-template-columns: auto minmax(96px, auto) minmax(96px, auto);
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+}
+
+.settings-page-shell .settings-option-list li.is-confirming-delete .settings-confirm-actions > span {
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.settings-confirm-edit,
+.settings-cancel-edit {
+  min-width: 90px;
+  white-space: nowrap;
+}
+
+.settings-confirm-delete,
+.settings-cancel-delete {
+  min-width: 96px;
+  padding-inline: 14px;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .settings-sidebar {
+    display: none;
+  }
+
+  .settings-page-shell .settings-page-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .settings-mobile-profile {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .settings-mobile-tabs {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overscroll-behavior-x: contain;
+  }
+}
+
+@media (max-width: 720px) {
+  .settings-page-shell {
+    padding-inline: 14px;
+  }
+
+  .settings-page-shell .settings-glass-card {
+    width: 100%;
+  }
+
+  .settings-mobile-tabs {
+    margin-inline: 0;
+  }
+
+  .settings-page-shell .settings-option-list li.is-editing {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .settings-page-shell .settings-option-list li.is-editing .settings-edit-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .settings-page-shell .settings-option-list li.is-confirming-delete {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .settings-page-shell .settings-option-list li.is-confirming-delete .settings-confirm-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .settings-page-shell .settings-option-list li.is-confirming-delete .settings-confirm-actions > span {
+    grid-column: 1 / -1;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .settings-confirm-edit,
+  .settings-cancel-edit {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .settings-confirm-delete,
+  .settings-cancel-delete {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .settings-page-shell .settings-create-row {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-page-shell .settings-create-row .settings-primary-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .settings-page-shell .settings-option-list li {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .settings-option-summary {
+    width: 100%;
+  }
+
+  .settings-item-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .settings-page-shell .settings-option-list li.is-confirming-delete .settings-confirm-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-page-shell .settings-option-list li.is-confirming-delete .settings-confirm-actions > span {
+    grid-column: auto;
+  }
+
+  .settings-confirm-delete,
+  .settings-cancel-delete {
+    padding-inline: 8px;
+    font-size: 0.7rem;
+  }
+
+  .settings-icon-button {
+    width: 100%;
+    min-width: 0;
+  }
+}

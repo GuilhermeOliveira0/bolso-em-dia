@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bolso em Dia - Mobile PWA Completo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --bg-dark: #090A0F;
+            --surface-glass: rgba(255, 255, 255, 0.03);
+            --surface-glass-hover: rgba(255, 255, 255, 0.06);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            --text-main: #FFFFFF;
+            --text-muted: #8B8D97;
+            
+            --primary-blue: #3B82F6;
+            --primary-purple: #8B5CF6;
+            --accent-pink: #EC4899;
+            --success-green: #10B981;
+            --warning-orange: #F59E0B;
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 9999px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1rem;
+            padding-bottom: 6rem; /* Espaço para a barra inferior */
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Efeitos de iluminação de fundo */
+        .glow-orb { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(9, 10, 15, 0) 70%); border-radius: 50%; top: -50px; left: -50px; z-index: -1; filter: blur(40px); }
+        .glow-orb-2 { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(9, 10, 15, 0) 70%); border-radius: 50%; bottom: 100px; right: -50px; z-index: -1; filter: blur(40px); }
+
+        /* --- TOP BAR --- */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding: 0.5rem 0.2rem; }
+        .user-greeting h3 { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        .user-greeting h2 { font-size: 1.1rem; font-weight: 700; }
+        .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-purple); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid rgba(255,255,255,0.1); }
+
+        /* --- UTILS --- */
+        .glass-card { background: var(--surface-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.25rem; }
+        .section-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* --- ABA DASHBOARD --- */
+        .total-card { background: linear-gradient(135deg, #1E3A8A 0%, #4C1D95 100%); border: none; padding: 1.5rem; text-align: center; }
+        .total-label { font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem; }
+        .total-value { font-size: 2.25rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem; }
+        .total-trend { font-size: 0.8rem; color: #A7F3D0; background: rgba(255,255,255,0.15); padding: 0.3rem 0.7rem; border-radius: var(--radius-pill); display: inline-flex; align-items: center; gap: 0.3rem; }
+
+        .mini-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.25rem; }
+        .mini-card { padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .mini-card-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .mini-card-header i { font-size: 1.25rem; }
+        .mini-card-value { font-size: 1.2rem; font-weight: 700; }
+
+        .cat-item { margin-bottom: 1rem; }
+        .cat-info { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem; }
+        .cat-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+        .cat-bar-fill { height: 100%; border-radius: 3px; }
+
+        /* --- ABA CADASTRAR DESPESAS --- */
+        .upload-area { border: 2px dashed rgba(139, 92, 246, 0.3); background: rgba(139, 92, 246, 0.02); border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem; }
+        .upload-icon { font-size: 2rem; color: var(--primary-purple); margin-bottom: 0.5rem; }
+        .upload-title { font-size: 0.9rem; font-weight: 600; }
+        .upload-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase; }
+        input, select { width: 100%; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--surface-border); color: var(--text-main); padding: 0.85rem; border-radius: 12px; font-size: 0.95rem; outline: none; transition: var(--transition); }
+        input:focus, select:focus { border-color: var(--primary-blue); background: rgba(59, 130, 246, 0.04); }
+        
+        .input-valor-wrapper { position: relative; }
+        .input-valor-wrapper span { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.3rem; font-weight: 700; color: var(--success-green); }
+        .input-valor { padding-left: 3rem; font-size: 1.3rem; font-weight: 700; color: var(--success-green); }
+
+        .btn-submit { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)); color: white; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; }
+
+        /* --- ABA EXTRATO / LISTA --- */
+        /* Barra de Pesquisa */
+        .search-bar { display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid var(--surface-border); border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 1rem; gap: 0.5rem; }
+        .search-bar i { color: var(--text-muted); font-size: 1.2rem; }
+        .search-bar input { background: transparent; border: none; color: var(--text-main); font-size: 0.95rem; width: 100%; outline: none; padding: 0; }
+        
+        /* Pílulas de Filtro */
+        .filter-pills { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 1rem; scrollbar-width: none; }
+        .filter-pills::-webkit-scrollbar { display: none; }
+        .filter-pill { background: rgba(255,255,255,0.05); border: 1px solid var(--surface-border); color: var(--text-muted); padding: 0.5rem 1rem; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 600; white-space: nowrap; cursor: pointer; transition: var(--transition); }
+        .filter-pill.active { background: var(--primary-purple); border-color: var(--primary-purple); color: white; }
+
+        .total-list-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem; padding: 0 0.5rem; }
+        .total-list-header p { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 0.2rem; }
+        .total-list-header h3 { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+        .btn-filter-icon { background: rgba(255,255,255,0.05); border: 1px solid var(--surface-border); color: var(--text-main); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+
+        /* Lista de Transações */
+        .transaction-list { display: flex; flex-direction: column; gap: 0.65rem; }
+        .date-separator { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.8rem; font-weight: 600; padding-left: 0.2rem; }
+        .transaction-item { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem; background: rgba(255, 255, 255, 0.02); border-radius: 14px; border: 1px solid var(--surface-border); transition: var(--transition); }
+        .tx-left { display: flex; align-items: center; gap: 0.75rem; }
+        .tx-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: rgba(255,255,255,0.04); }
+        .tx-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.1rem; }
+        .tx-info p { font-size: 0.7rem; color: var(--text-muted); }
+        .tx-amount { font-weight: 700; font-size: 0.95rem; }
+        .tag-tipo { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--text-muted); margin-left: 4px; }
+
+        /* --- BOTTOM NAVIGATION BAR FIXA --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            height: 70px;
+            background: rgba(15, 17, 23, 0.85);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid var(--surface-border);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 999; padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-muted); text-decoration: none; font-size: 0.7rem; font-weight: 500;
+            gap: 0.25rem; flex: 1; height: 100%; transition: var(--transition);
+            background: transparent; border: none; cursor: pointer;
+        }
+        .nav-item i { font-size: 1.5rem; transition: var(--transition); }
+        .nav-item.active { color: var(--primary-blue); }
+        .nav-item.active i { transform: translateY(-2px); color: var(--primary-blue); }
+
+        /* Controlar Visibilidade das Telas */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+<div class="glow-orb"></div>
+<div class="glow-orb-2"></div>
+
+<div class="container">
+    
+    <div class="top-bar">
+        <div class="user-greeting">
+            <h3>Bolso em Dia</h3>
+            <h2>Olá, Guilherme</h2>
+        </div>
+        <div class="avatar">G</div>
+    </div>
+
+    <div id="dashboard-tab" class="tab-content active">
+        
+        <div class="glass-card total-card">
+            <div class="total-label">Gasto Total do Mês</div>
+            <div class="total-value">R$ 1.250,00</div>
+            <div class="total-trend"><i class="ph-bold ph-trend-down"></i> No controle</div>
+        </div>
+
+        <div class="mini-cards-grid">
+            <div class="glass-card mini-card">
+                <div class="mini-card-header"><span>Necessário</span><i class="ph ph-house" style="color: var(--primary-blue);"></i></div>
+                <div class="mini-card-value">R$ 720,00</div>
+            </div>
+            <div class="glass-card mini-card">
+                <div class="mini-card-header"><span>Lazer</span><i class="ph ph-martini" style="color: var(--primary-purple);"></i></div>
+                <div class="mini-card-value">R$ 220,00</div>
+            </div>
+            <div class="glass-card mini-card">
+                <div class="mini-card-header"><span>Supérfluo</span><i class="ph ph-shopping-bag" style="color: var(--warning-orange);"></i></div>
+                <div class="mini-card-value">R$ 180,00</div>
+            </div>
+            <div class="glass-card mini-card" style="border-color: rgba(16, 185, 129, 0.2);">
+                <div class="mini-card-header"><span>Economia</span><i class="ph ph-lightbulb" style="color: var(--success-green);"></i></div>
+                <div class="mini-card-value" style="color: var(--success-green);">R$ 90,00</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h3 class="section-title"><i class="ph ph-chart-pie-slice"></i> Divisão de Categorias</h3>
+            <div class="cat-item">
+                <div class="cat-info"><span>Mercado (Necessário)</span><span>R$ 450,00</span></div>
+                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 60%; background: var(--primary-blue);"></div></div>
+            </div>
+            <div class="cat-item">
+                <div class="cat-info"><span>Alimentação (Lazer)</span><span>R$ 220,00</span></div>
+                <div class="cat-bar-bg"><div class="cat-bar-fill" style="width: 35%; background: var(--primary-purple);"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cadastrar-tab" class="tab-content">
+        
+        <div class="glass-card">
+            <h3 class="section-title"><i class="ph ph-plus-circle"></i> Cadastrar Despesa</h3>
+            
+            <div class="upload-area">
+                <i class="ph ph-receipt upload-icon"></i>
+                <h4 class="upload-title">Anexar Comprovante</h4>
+                <p class="upload-subtitle">Toque para carregar imagem do Pix</p>
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label>Valor</label>
+                    <div class="input-valor-wrapper">
+                        <span>R$</span>
+                        <input type="tel" class="input-valor" placeholder="0,00" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" value="2026-06-19" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <input type="text" placeholder="Ex: Mercado, Almoço..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select required>
+                        <option>Alimentação</option>
+                        <option>Mercado</option>
+                        <option>Transporte</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo do Gasto</label>
+                    <select required>
+                        <option>Necessário</option>
+                        <option>Lazer</option>
+                        <option>Supérfluo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Forma de Pagamento</label>
+                    <select required>
+                        <option>Pix</option>
+                        <option>Cartão de Crédito</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn-submit"><i class="ph ph-check-circle"></i> Salvar Despesa</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="extrato-tab" class="tab-content">
+        
+        <div class="total-list-header">
+            <div>
+                <p>Gastos em Junho</p>
+                <h3>R$ 1.250,00</h3>
+            </div>
+            <button class="btn-filter-icon"><i class="ph ph-faders"></i></button>
+        </div>
+
+        <div class="search-bar">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" placeholder="Buscar despesa, categoria ou local...">
+        </div>
+
+        <div class="filter-pills">
+            <div class="filter-pill active">Todos</div>
+            <div class="filter-pill">Necessários</div>
+            <div class="filter-pill">Lazer</div>
+            <div class="filter-pill">Supérfluos</div>
+            <div class="filter-pill">Pix</div>
+        </div>
+
+        <div class="transaction-list">
+            
+            <div class="date-separator">Hoje</div>
+            
+            <div class="transaction-item">
+                <div class="tx-left">
+                    <div class="tx-icon" style="color: var(--primary-blue);"><i class="ph-fill ph-car"></i></div>
+                    <div class="tx-info">
+                        <h4>Uber <span class="tag-tipo">Necessário</span></h4>
+                        <p>Transporte • Pix</p>
+                    </div>
+                </div>
+                <div class="tx-amount">- R$ 25,50</div>
+            </div>
+            
+            <div class="transaction-item">
+                <div class="tx-left">
+                    <div class="tx-icon" style="color: var(--success-green);"><i class="ph-fill ph-pill"></i></div>
+                    <div class="tx-info">
+                        <h4>Farmácia <span class="tag-tipo">Necessário</span></h4>
+                        <p>Saúde • Cartão de Crédito</p>
+                    </div>
+                </div>
+                <div class="tx-amount">- R$ 89,90</div>
+            </div>
+
+            <div class="date-separator">Ontem, 18 de Junho</div>
+            
+            <div class="transaction-item">
+                <div class="tx-left">
+                    <div class="tx-icon" style="color: var(--warning-orange);"><i class="ph-fill ph-hamburger"></i></div>
+                    <div class="tx-info">
+                        <h4>Burger House <span class="tag-tipo">Lazer</span></h4>
+                        <p>Alimentação • Pix</p>
+                    </div>
+                </div>
+                <div class="tx-amount">- R$ 42,90</div>
+            </div>
+
+            <div class="transaction-item">
+                <div class="tx-left">
+                    <div class="tx-icon" style="color: var(--primary-purple);"><i class="ph-fill ph-monitor-play"></i></div>
+                    <div class="tx-info">
+                        <h4>Netflix <span class="tag-tipo">Lazer</span></h4>
+                        <p>Assinaturas • Cartão de Crédito</p>
+                    </div>
+                </div>
+                <div class="tx-amount">- R$ 39,90</div>
+            </div>
+
+            <div class="date-separator">12 de Junho</div>
+            
+            <div class="transaction-item">
+                <div class="tx-left">
+                    <div class="tx-icon" style="color: var(--primary-blue);"><i class="ph-fill ph-shopping-cart"></i></div>
+                    <div class="tx-info">
+                        <h4>Supermercado Extra <span class="tag-tipo">Necessário</span></h4>
+                        <p>Mercado • Cartão de Débito</p>
+                    </div>
+                </div>
+                <div class="tx-amount">- R$ 450,00</div>
+            </div>
+
+            <div class="transaction-item">
+                <div class="tx-left">
+                    <div class="tx-icon" style="color: var(--accent-pink);"><i class="ph-fill ph-lightning"></i></div>
+                    <div class="tx-info">
+                        <h4>Conta de Luz <span class="tag-tipo">Necessário</span></h4>
+                        <p>Moradia • Pix</p>
+                    </div>
+                </div>
+                <div class="tx-amount">- R$ 180,00</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('dashboard-tab', event)">
+            <i class="ph-fill ph-squares-four"></i>
+            <span>Dashboard</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('cadastrar-tab', event)">
+            <i class="ph-fill ph-plus-circle"></i>
+            <span>Cadastrar</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('extrato-tab', event)">
+            <i class="ph-fill ph-list-dashes"></i>
+            <span>Extrato</span>
+        </button>
+    </div>
+
+</div>
+
+<script>
+    function switchTab(tabId, event) {
+        // Oculta todas as telas
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Remove active de todos os botões da barra inferior
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Ativa a tela correta
+        document.getElementById(tabId).classList.add('active');
+        
+        // Ativa o botão correto (usando o event passado pelo onclick)
+        event.currentTarget.classList.add('active');
+        
+        // Rola a página para o topo ao trocar de aba suavemente
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
